@@ -12,13 +12,19 @@ permissions:
 
 jobs:
   build_and_preview:
+    name: Build & Deploy Prod
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm run build
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SCRUM_POKER_F387C }}
