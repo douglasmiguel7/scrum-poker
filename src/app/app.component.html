@@ -1,22 +1,23 @@
-<h1 class="text-3xl font-bold underline">Hello world!</h1>
+<nz-layout>
+  <!-- header -->
+  <nz-header>
+    <div class="logo"></div>
+  </nz-header>
 
-Teste: {{ (testDocValue$ | async)?.quantidade }}
+  <!-- center -->
+  <nz-content>
+    <nz-layout class="inner-layout">
+      <!-- left side -->
+      <nz-sider nzWidth="200px" nzTheme="light">
+        <div>spectates</div>
+        <div>players</div>
+      </nz-sider>
+      <nz-content class="inner-content">Content</nz-content>
+      <!-- right side -->
+      <nz-sider nzWidth="200px" nzTheme="light"> tasks </nz-sider>
+    </nz-layout>
+  </nz-content>
 
-<nav>
-  <a
-    class="button"
-    routerLink="/tables"
-    routerLinkActive="activebutton"
-    ariaCurrentWhenActive="page"
-    >Tables
-  </a>
-  <a
-    class="button"
-    routerLink="/table"
-    routerLinkActive="activebutton"
-    ariaCurrentWhenActive="page"
-    >Table</a
-  >
-</nav>
-
-<router-outlet />
+  <!-- footer -->
+  <nz-footer>Footer</nz-footer>
+</nz-layout>
