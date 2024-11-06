@@ -1,9 +1,21 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
+import { registerLocaleData } from '@angular/common';
+import { provideHttpClient } from '@angular/common/http';
+import pt from '@angular/common/locales/pt';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { FormsModule } from '@angular/forms';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n';
 import { routes } from './app.routes';
+
+registerLocaleData(pt);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,5 +33,9 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideFirestore(() => getFirestore()),
+    provideNzI18n(pt_BR),
+    importProvidersFrom(FormsModule),
+    provideAnimationsAsync(),
+    provideHttpClient(),
   ],
 };
