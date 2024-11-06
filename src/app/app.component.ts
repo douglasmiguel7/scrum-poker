@@ -3,13 +3,16 @@ import { Component, OnInit } from '@angular/core';
 import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { traceUntilFirst } from '@angular/fire/performance';
 import { RouterOutlet } from '@angular/router';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { Observable } from 'rxjs';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +25,9 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
     NzButtonModule,
     NzLayoutModule,
     NzTypographyModule,
-    NzFlexModule
+    NzFlexModule,
+    NzGridModule,
+    NzIconModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -31,6 +36,8 @@ export class AppComponent implements OnInit {
   title = 'scrum-poker';
 
   public readonly testDocValue$: Observable<{ quantidade: number }>;
+
+  ingredientList = [0, 1, 2, 4, 8, 16, 32, 64];
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');

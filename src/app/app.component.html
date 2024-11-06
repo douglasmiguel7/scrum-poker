@@ -1,23 +1,45 @@
 <nz-layout>
   <!-- header -->
-  <nz-header>
-    <div class="logo"></div>
+  <nz-header nzTheme="light" nz-flex nzJustify="space-between" nzAlign="center">
+    <h2 nz-typography>
+      <span nz-icon nzType="fast-forward" nzTheme="outline"></span>
+      Scrum Poker
+    </h2>
+    <p nz-typography nzCopyable nzCopyText="Link do convite">
+      Copiar link do convite
+    </p>
   </nz-header>
 
   <!-- center -->
   <nz-content>
-    <nz-layout class="inner-layout">
+    <nz-layout>
       <!-- left side -->
-      <nz-sider nzWidth="200px" nzTheme="light">
+      <nz-sider>
         <div>spectates</div>
         <div>players</div>
       </nz-sider>
-      <nz-content class="inner-content">Content</nz-content>
+
+      <!-- center -->
+      <nz-content>Content</nz-content>
+
       <!-- right side -->
-      <nz-sider nzWidth="200px" nzTheme="light"> tasks </nz-sider>
+      <nz-sider>tasks</nz-sider>
     </nz-layout>
   </nz-content>
 
   <!-- footer -->
-  <nz-footer>Footer</nz-footer>
+  <nz-footer nz-flex nzJustify="center" nzGap="large">
+    @for (item of ingredientList; track item) {
+    <button class="scrum-card" nz-button nzSize="large" nzType="default">
+      <span>{{ item }}</span>
+    </button>
+    }
+
+    <button class="scrum-card" nz-button nzSize="large" nzType="default">
+      <span nz-icon nzType="question" nzTheme="outline"></span>
+    </button>
+    <button class="scrum-card" nz-button nzSize="large" nzType="default">
+      <span nz-icon nzType="coffee" nzTheme="outline"></span>
+    </button>
+  </nz-footer>
 </nz-layout>

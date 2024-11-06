@@ -1,17 +1,6 @@
-.logo {
-  width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px 24px 16px 0;
-  float: left;
-}
-
-nz-layout {
-  height: 100%;
-  margin: 0;
+.scrum-card {
+  height: 4rem;
+  width: 2.5rem;
   padding: 0;
-}
-
-nz-footer {
-  text-align: center;
+  overflow: hidden;
 }
