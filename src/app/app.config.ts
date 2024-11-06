@@ -12,10 +12,23 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { IconDefinition } from '@ant-design/icons-angular';
+import {
+  CoffeeOutline,
+  FastForwardOutline,
+  QuestionOutline,
+} from '@ant-design/icons-angular/icons';
 import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n';
+import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { routes } from './app.routes';
 
 registerLocaleData(pt);
+
+const icons: IconDefinition[] = [
+  FastForwardOutline,
+  CoffeeOutline,
+  QuestionOutline,
+];
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,5 +50,6 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
     provideHttpClient(),
+    provideNzIcons(icons),
   ],
 };
