@@ -29,7 +29,10 @@
               "src/styles.less",
               "src/theme-customization.less"
             ],
-            "scripts": []
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules"]
+            }
           },
           "configurations": {
             "production": {
