@@ -14,6 +14,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { Observable } from 'rxjs';
 
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -28,6 +30,7 @@ import { Observable } from 'rxjs';
     NzFlexModule,
     NzGridModule,
     NzIconModule,
+    NzDividerModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -37,7 +40,13 @@ export class AppComponent implements OnInit {
 
   public readonly testDocValue$: Observable<{ quantidade: number }>;
 
-  ingredientList = [0, 1, 2, 4, 8, 16, 32, 64];
+  cards = ['0', '1', '2', '4', '8', '16', '32', '64'];
+
+  spectators = ['Douglas', 'Fernando', 'Fabricio'];
+
+  players = ['Carlos', 'Augusto', 'Rodrigo'];
+
+  createdBy = 'você';
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');

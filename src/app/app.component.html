@@ -1,44 +1,83 @@
 <nz-layout>
-  <!-- header -->
+  <!-- page header -->
   <nz-header nzTheme="light" nz-flex nzJustify="space-between" nzAlign="center">
-    <h2 nz-typography>
+    <h2 nz-typography class="!m-0">
       <span nz-icon nzType="fast-forward" nzTheme="outline"></span>
       Scrum Poker
     </h2>
-    <p nz-typography nzCopyable nzCopyText="Link do convite">
+    <p class="!m-0" nz-typography nzCopyable nzCopyText="Link do convite">
       Copiar link do convite
     </p>
   </nz-header>
 
-  <!-- center -->
+  <nz-divider class="m-0"></nz-divider>
+
+  <!-- page content -->
   <nz-content>
     <nz-layout>
-      <!-- left side -->
-      <nz-sider>
-        <div>spectates</div>
-        <div>players</div>
-      </nz-sider>
+      <!-- content header -->
+      <nz-header
+        nzTheme="light"
+        nz-flex
+        nzJustify="space-between"
+        nzAlign="center"
+      >
+        <h2 nz-typography class="!m-0">Minha mesa</h2>
+        <button nz-button nzType="primary">teste</button>
+      </nz-header>
 
-      <!-- center -->
-      <nz-content>Content</nz-content>
+      <nz-divider class="m-0"></nz-divider>
 
-      <!-- right side -->
-      <nz-sider>tasks</nz-sider>
+      <nz-layout>
+        <!-- content left side -->
+        <nz-sider>
+          <div>spectates</div>
+          <div>players</div>
+        </nz-sider>
+
+        <nz-divider nzType="vertical" class="h-full"></nz-divider>
+
+        <!-- content center -->
+        <nz-content>Content</nz-content>
+
+        <nz-divider nzType="vertical" class="h-full"></nz-divider>
+
+        <!-- content right side -->
+        <nz-sider>tasks</nz-sider>
+      </nz-layout>
     </nz-layout>
   </nz-content>
 
-  <!-- footer -->
+  <nz-divider class="m-0"></nz-divider>
+
+  <!-- page footer -->
   <nz-footer nz-flex nzJustify="center" nzGap="large">
-    @for (item of ingredientList; track item) {
-    <button class="scrum-card" nz-button nzSize="large" nzType="default">
-      <span>{{ item }}</span>
+    @for (card of cards; track card) {
+    <button
+      class="overflow-hidden !p-0 !w-10 !h-16"
+      nz-button
+      nzSize="large"
+      nzType="default"
+    >
+      {{ card }}
     </button>
     }
 
-    <button class="scrum-card" nz-button nzSize="large" nzType="default">
+    <button
+      class="overflow-hidden !p-0 !w-10 !h-16"
+      nz-button
+      nzType="default"
+      nzSize="large"
+    >
       <span nz-icon nzType="question" nzTheme="outline"></span>
     </button>
-    <button class="scrum-card" nz-button nzSize="large" nzType="default">
+
+    <button
+      class="overflow-hidden !p-0 !w-10 !h-16"
+      nz-button
+      nzType="default"
+      nzSize="large"
+    >
       <span nz-icon nzType="coffee" nzTheme="outline"></span>
     </button>
   </nz-footer>
