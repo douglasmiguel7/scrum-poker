@@ -5,9 +5,17 @@
       <span nz-icon nzType="fast-forward" nzTheme="outline"></span>
       Scrum Poker
     </h2>
-    <p class="!m-0" nz-typography nzCopyable nzCopyText="Link do convite">
-      Copiar link do convite
-    </p>
+    <div nz-flex nzGap="large">
+      <div>
+        <p class="!m-0" nz-typography nzCopyable nzCopyText="Link do convite">
+          Copiar link do convite
+        </p>
+      </div>
+      <div nz-flex nzAlign="center" nzGap="small">
+        <nz-avatar nzText="D"></nz-avatar>
+        Douglas
+      </div>
+    </div>
   </nz-header>
 
   <nz-divider class="m-0"></nz-divider>
@@ -23,24 +31,61 @@
         nzAlign="center"
       >
         <h2 nz-typography class="!m-0">Minha mesa</h2>
-        <button nz-button nzType="primary">teste</button>
+        <div nz-flex nzJustify="center" nzGap="small">
+          <div><span nz-typography class="h-0">00:00</span></div>
+          <div nz-flex nzAlign="center">
+            <button nz-button nzType="link">
+              <span nz-icon nzType="play-circle" nzTheme="outline"></span>
+              Iniciar
+            </button>
+            <button nz-button nzType="link">
+              <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+              Adicionar 1 minuto
+            </button>
+            <button nz-button nzType="text">
+              <span nz-icon nzType="redo" nzTheme="outline"></span>
+              Reiniciar
+            </button>
+            <button nz-button nzType="text" nzDanger>
+              <span nz-icon nzType="close-circle" nzTheme="outline"></span>
+              Parar
+            </button>
+          </div>
+        </div>
       </nz-header>
 
       <nz-divider class="m-0"></nz-divider>
 
-      <nz-layout>
+      <nz-layout class="mt-3">
         <!-- content left side -->
         <nz-sider>
-          <div>spectates</div>
-          <div>players</div>
-        </nz-sider>
+          <div class="pl-5">
+            <div>
+              <h5>Sentados</h5>
+            </div>
+            <ul nz-list [nzDataSource]="players">
+              @for (spectator of players; track spectator) {
+              <li nz-list-item nzNoFlex>
+                <nz-avatar nzIcon="user"></nz-avatar>
+                {{ spectator }}
+              </li>
+              }
+            </ul>
 
-        <nz-divider nzType="vertical" class="h-full"></nz-divider>
+            <h5>Assistindo</h5>
+            <ul nz-list [nzDataSource]="spectators">
+              @for (spectator of spectators; track spectator) {
+              <li nz-list-item nzNoFlex>
+                <nz-avatar nzIcon="user"></nz-avatar>
+                {{ spectator }}
+              </li>
+              }
+            </ul>
+          </div>
+        </nz-sider>
 
         <!-- content center -->
         <nz-content>Content</nz-content>
-
-        <nz-divider nzType="vertical" class="h-full"></nz-divider>
 
         <!-- content right side -->
         <nz-sider>tasks</nz-sider>

@@ -4,17 +4,17 @@ import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { traceUntilFirst } from '@angular/fire/performance';
 import { RouterOutlet } from '@angular/router';
 
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzListModule } from 'ng-zorro-antd/list';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { Observable } from 'rxjs';
-
-import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +22,6 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
   imports: [
     RouterOutlet,
     CommonModule,
-    NzPageHeaderModule,
     NzDropDownModule,
     NzButtonModule,
     NzLayoutModule,
@@ -31,6 +30,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     NzGridModule,
     NzIconModule,
     NzDividerModule,
+    NzListModule,
+    NzAvatarModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -42,9 +43,9 @@ export class AppComponent implements OnInit {
 
   cards = ['0', '1', '2', '4', '8', '16', '32', '64'];
 
-  spectators = ['Douglas', 'Fernando', 'Fabricio'];
+  spectators = ['Espectador 1', 'Espectador 2'];
 
-  players = ['Carlos', 'Augusto', 'Rodrigo'];
+  players = ['Jogador 1', 'Jogador 2', 'Jogador 3'];
 
   createdBy = 'você';
 

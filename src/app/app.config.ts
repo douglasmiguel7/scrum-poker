@@ -14,9 +14,14 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { IconDefinition } from '@ant-design/icons-angular';
 import {
+  CloseCircleOutline,
   CoffeeOutline,
   FastForwardOutline,
+  PlayCircleOutline,
+  PlusCircleOutline,
   QuestionOutline,
+  RedoOutline,
+  UserOutline,
 } from '@ant-design/icons-angular/icons';
 import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
@@ -28,6 +33,11 @@ const icons: IconDefinition[] = [
   FastForwardOutline,
   CoffeeOutline,
   QuestionOutline,
+  UserOutline,
+  PlayCircleOutline,
+  PlusCircleOutline,
+  CloseCircleOutline,
+  RedoOutline,
 ];
 
 export const appConfig: ApplicationConfig = {
