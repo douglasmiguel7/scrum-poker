@@ -16,6 +16,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark';
 import {
@@ -54,6 +55,7 @@ const MINUTES_DEFAULT = 1;
     NzFormModule,
     CountdownModule,
     NzWaterMarkModule,
+    NzToolTipModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -65,9 +67,13 @@ export class AppComponent implements OnInit {
 
   cards = ['0', '1', '2', '4', '8', '16', '32', '64'];
 
-  spectators = new Array(10).fill(null).map((_, index) => `Espectador ${index}`);
+  spectators = new Array(10)
+    .fill(null)
+    .map((_, index) => `Espectador sdlfhdhdjhfkhsd ${index}`);
 
-  players = new Array(10).fill(null).map((_, index) => `Jogador ${index}`);
+  players = new Array(10)
+    .fill(null)
+    .map((_, index) => `Douglas Miguel shajkshkjahskja ${index}`);
 
   createdBy = 'você';
 

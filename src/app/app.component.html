@@ -112,29 +112,51 @@
     <nz-layout>
       <!-- content left side -->
       <nz-sider class="overflow-x-hidden overflow-y-auto">
-        <div class="mt-3 pl-5">
-          <div>
+        <nz-space nzDirection="vertical" class="mt-3 pl-5" nzSize="middle">
+          <div *nzSpaceItem>
             <h4>Sentados ({{ players.length }})</h4>
+            <nz-space nzDirection="vertical">
+              @for (player of players; track player) {
+              <nz-space *nzSpaceItem nzAlign="baseline">
+                <nz-avatar *nzSpaceItem [nzText]="player.charAt(0)" />
+                <span
+                  *nzSpaceItem
+                  nz-typography
+                  nzEllipsis
+                  class="w-32"
+                  nz-tooltip
+                  [nzTooltipTitle]="player"
+                  nzTooltipPlacement="right"
+                >
+                  {{ player }}
+                </span>
+              </nz-space>
+              }
+            </nz-space>
           </div>
-          <ul nz-list [nzDataSource]="players">
-            @for (player of players; track player) {
-            <li nz-list-item nzNoFlex>
-              <nz-avatar nzIcon="user"></nz-avatar>
-              {{ player }}
-            </li>
-            }
-          </ul>
 
-          <h4>Assistindo ({{ spectators.length }})</h4>
-          <ul nz-list [nzDataSource]="spectators">
-            @for (spectator of spectators; track spectator) {
-            <li nz-list-item nzNoFlex>
-              <nz-avatar nzIcon="user"></nz-avatar>
-              {{ spectator }}
-            </li>
-            }
-          </ul>
-        </div>
+          <div *nzSpaceItem>
+            <h4>Assistindo ({{ spectators.length }})</h4>
+            <nz-space nzDirection="vertical">
+              @for (spectator of spectators; track spectator) {
+              <nz-space *nzSpaceItem nzAlign="baseline">
+                <nz-avatar *nzSpaceItem [nzText]="spectator.charAt(0)" />
+                <span
+                  *nzSpaceItem
+                  nz-typography
+                  nzEllipsis
+                  class="w-32"
+                  nz-tooltip
+                  [nzTooltipTitle]="spectator"
+                  nzTooltipPlacement="right"
+                >
+                  {{ spectator }}
+                </span>
+              </nz-space>
+              }
+            </nz-space>
+          </div>
+        </nz-space>
       </nz-sider>
 
       <!-- content center -->
