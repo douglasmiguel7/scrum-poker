@@ -17,6 +17,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark';
 import {
   CountdownConfig,
   CountdownEvent,
@@ -51,6 +52,7 @@ const MINUTES_DEFAULT = 1;
     NzSpaceModule,
     NzFormModule,
     CountdownModule,
+    NzWaterMarkModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
