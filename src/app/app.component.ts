@@ -13,6 +13,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzListModule } from 'ng-zorro-antd/list';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { Observable } from 'rxjs';
 
@@ -32,6 +34,8 @@ import { Observable } from 'rxjs';
     NzDividerModule,
     NzListModule,
     NzAvatarModule,
+    NzPageHeaderModule,
+    NzSpaceModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -43,11 +47,13 @@ export class AppComponent implements OnInit {
 
   cards = ['0', '1', '2', '4', '8', '16', '32', '64'];
 
-  spectators = ['Espectador 1', 'Espectador 2'];
+  spectators = new Array(3).fill('').map((_, index) => `Espectador ${index}`);
 
-  players = ['Jogador 1', 'Jogador 2', 'Jogador 3'];
+  players = new Array(3).fill('').map((_, index) => `Jogador ${index}`);
 
   createdBy = 'você';
+
+  inviteLink = 'tiranu';
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');
