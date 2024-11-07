@@ -49,9 +49,9 @@ export class AppComponent implements OnInit {
 
   cards = ['0', '1', '2', '4', '8', '16', '32', '64'];
 
-  spectators = new Array(3).fill('').map((_, index) => `Espectador ${index}`);
+  spectators = new Array(3).fill(null).map((_, index) => `Espectador ${index}`);
 
-  players = new Array(3).fill('').map((_, index) => `Jogador ${index}`);
+  players = new Array(3).fill(null).map((_, index) => `Jogador ${index}`);
 
   createdBy = 'você';
 
