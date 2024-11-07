@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
 
   public readonly testDocValue$: Observable<{ quantidade: number }>;
 
-  cards = ['0', '1', '2', '4', '8', '16', '32', '64'];
+  cards = ['1', '2', '4', '8', '16', '32', '64'];
 
   spectators = new Array(10)
     .fill(null)

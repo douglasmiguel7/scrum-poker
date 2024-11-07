@@ -226,6 +226,17 @@
 
     <!-- page footer -->
     <nz-footer nz-flex nzJustify="center" nzGap="large">
+      <button
+        class="overflow-hidden !p-0 !w-10 !h-16"
+        nz-button
+        nzSize="large"
+        nzType="default"
+        nz-tooltip
+        nzTooltipTitle="Já está pronto"
+      >
+        0
+      </button>
+
       @for (card of cards; track card) {
       <button
         class="overflow-hidden !p-0 !w-10 !h-16"
@@ -242,6 +253,8 @@
         nz-button
         nzType="default"
         nzSize="large"
+        nz-tooltip
+        nzTooltipTitle="Falta informção"
       >
         <span nz-icon nzType="question" nzTheme="outline"></span>
       </button>
@@ -251,6 +264,8 @@
         nz-button
         nzType="default"
         nzSize="large"
+        nz-tooltip
+        nzTooltipTitle="Preciso de uma pausa"
       >
         <span nz-icon nzType="coffee" nzTheme="outline"></span>
       </button>
