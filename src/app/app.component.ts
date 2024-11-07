@@ -25,6 +25,7 @@ import {
   CountdownStatus,
 } from 'ngx-countdown';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 const LEFT_TIME_KEY = 'time';
 const LEFT_TIME_DEFAULT = 0;
@@ -70,7 +71,7 @@ export class AppComponent implements OnInit {
 
   createdBy = 'você';
 
-  inviteLink = 'tiranu';
+  inviteLink = `${environment.appUrl}/tables/4ca022b9-649e-412c-9f27-6aa835b45c83`;
 
   tasks = new Array(3).fill(null).map((_, index) => ({
     title: `Titulo ${index}`,
