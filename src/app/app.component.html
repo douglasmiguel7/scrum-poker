@@ -94,7 +94,61 @@
         </nz-content>
 
         <!-- content right side -->
-        <nz-sider>tasks</nz-sider>
+        <nz-sider class="overflow-x-hidden overflow-y-auto">
+          <nz-space nzDirection="vertical" class="mt-3 pr-5" nzSize="small">
+            <div *nzSpaceItem>
+              <h4>Tarefas</h4>
+              <nz-space [nzSplit]="spaceSplit">
+                <ng-template #spaceSplit>•</ng-template>
+
+                <span *nzSpaceItem>{{ tasks.length }} tarefas</span>
+                <span *nzSpaceItem>{{ points }} pontos</span>
+              </nz-space>
+            </div>
+            <div *nzSpaceItem [class.hidden]="toggleAddAnotherTask">
+              <button
+                nz-button
+                nzType="link"
+                class="!p-0"
+                (click)="handleToggleAddAnotherTask()"
+              >
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Adicionar outra tarefa
+              </button>
+            </div>
+            <div *nzSpaceItem [class.hidden]="!toggleAddAnotherTask">
+              <form nz-form nzLayout="vertical">
+                <nz-form-item>
+                  <nz-form-label nzRequired nzLabelWrap>Título</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="title" />
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label nzLabelWrap>Link</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="link" />
+                  </nz-form-control>
+                </nz-form-item>
+              </form>
+              <div nz-flex nzJustify="space-between">
+                <button
+                  nz-button
+                  nzType="link"
+                  nzDanger
+                  class="!p-0"
+                  (click)="handleToggleAddAnotherTask()"
+                >
+                  Cancelar
+                </button>
+                <button nz-button nzType="link" class="!p-0">Salvar</button>
+              </div>
+            </div>
+            <div *nzSpaceItem>
+
+            </div>
+          </nz-space>
+        </nz-sider>
       </nz-layout>
     </nz-layout>
   </nz-content>

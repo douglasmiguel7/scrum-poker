@@ -38,6 +38,7 @@ const icons: IconDefinition[] = [
   PlusCircleOutline,
   CloseCircleOutline,
   RedoOutline,
+  PlusCircleOutline,
 ];
 
 export const appConfig: ApplicationConfig = {

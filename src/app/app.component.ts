@@ -9,6 +9,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
+import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -36,6 +37,7 @@ import { Observable } from 'rxjs';
     NzAvatarModule,
     NzPageHeaderModule,
     NzSpaceModule,
+    NzFormModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -55,10 +57,23 @@ export class AppComponent implements OnInit {
 
   inviteLink = 'tiranu';
 
+  tasks = new Array(3).fill(null).map((_, index) => ({
+    title: `Titulo ${index}`,
+    link: `https://scrum-poker.opentools.org?taksId=${index}`,
+  }));
+
+  points = 8;
+
+  toggleAddAnotherTask = false;
+
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');
     this.testDocValue$ = docData(ref).pipe(traceUntilFirst('firestore'));
   }
 
   ngOnInit(): void {}
+
+  handleToggleAddAnotherTask(): void {
+    this.toggleAddAnotherTask = !this.toggleAddAnotherTask;
+  }
 }
