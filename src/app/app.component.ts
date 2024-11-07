@@ -17,7 +17,19 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import {
+  CountdownConfig,
+  CountdownEvent,
+  CountdownModule,
+  CountdownStatus,
+} from 'ngx-countdown';
 import { Observable } from 'rxjs';
+
+const LEFT_TIME_KEY = 'time';
+const LEFT_TIME_DEFAULT = 0;
+const TIMER_STARTED_KEY = 'time_started';
+const MINUTES_KEY = 'selected_minutes';
+const MINUTES_DEFAULT = 1;
 
 @Component({
   selector: 'app-root',
@@ -38,6 +50,7 @@ import { Observable } from 'rxjs';
     NzPageHeaderModule,
     NzSpaceModule,
     NzFormModule,
+    CountdownModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -66,14 +79,120 @@ export class AppComponent implements OnInit {
 
   toggleAddAnotherTask = false;
 
+  countdownStarted = false;
+
+  countdownConfig: CountdownConfig = {
+    demand: false,
+    format: 'mm:ss',
+    leftTime: LEFT_TIME_DEFAULT,
+    notify: 0,
+  };
+
+  minutes: number = 0;
+
+  minutesOptions = [1, 2, 5, 10, 20, 30];
+
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');
     this.testDocValue$ = docData(ref).pipe(traceUntilFirst('firestore'));
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    let leftTime = (localStorage.getItem(LEFT_TIME_KEY) ||
+      LEFT_TIME_DEFAULT) as number;
+    leftTime = isNaN(leftTime) ? LEFT_TIME_DEFAULT : leftTime;
+
+    this.countdownConfig = {
+      ...this.countdownConfig,
+      leftTime: leftTime / 1000,
+    };
+
+    this.countdownStarted = localStorage.getItem(TIMER_STARTED_KEY) === 'true';
+
+    let minutes = (localStorage.getItem(MINUTES_KEY) ||
+      MINUTES_DEFAULT) as number;
+    minutes = isNaN(minutes) ? MINUTES_DEFAULT : minutes;
+    this.minutes = minutes;
+  }
 
   handleToggleAddAnotherTask(): void {
     this.toggleAddAnotherTask = !this.toggleAddAnotherTask;
+  }
+
+  handleStartTimer(minutes: number): void {
+    this.countdownStarted = true;
+
+    this.countdownConfig = {
+      ...this.countdownConfig,
+      leftTime: 60 * minutes,
+    };
+
+    localStorage.setItem(TIMER_STARTED_KEY, 'true');
+
+    localStorage.setItem(MINUTES_KEY, `${minutes}`);
+  }
+
+  handleRestartTimer(): void {
+    this.countdownConfig = {
+      ...this.countdownConfig,
+      leftTime: 60 * this.minutes,
+    };
+  }
+
+  handleStopTimer(): void {
+    this.countdownStarted = false;
+
+    this.countdownConfig = {
+      ...this.countdownConfig,
+      leftTime: 0,
+    };
+
+    localStorage.setItem(TIMER_STARTED_KEY, 'false');
+
+    localStorage.setItem(LEFT_TIME_KEY, '0');
+  }
+
+  handleAddOneMinute(): void {
+    let leftTime = (localStorage.getItem(LEFT_TIME_KEY) || 0) as number;
+    if (leftTime <= 0 || isNaN(leftTime)) {
+      leftTime = LEFT_TIME_DEFAULT;
+    }
+
+    this.countdownConfig = {
+      ...this.countdownConfig,
+      leftTime: leftTime / 1000 + 60,
+    };
+  }
+
+  handleTimerEvent(event: CountdownEvent): void {
+    const status: Record<number, string> = {
+      [CountdownStatus.done]: 'done',
+      [CountdownStatus.ing]: 'ing',
+      [CountdownStatus.pause]: 'pause',
+      [CountdownStatus.stop]: 'stop',
+    };
+
+    console.log(
+      `(new timer event) action: ${event.action} - status: ${
+        status[event.status]
+      } - text: ${event.text} - left: ${event.left}`
+    );
+
+    switch (event.action) {
+      case 'done':
+        this.countdownStarted = false;
+
+        localStorage.setItem(LEFT_TIME_KEY, '0');
+
+        break;
+      case 'notify':
+        if (!this.countdownStarted) {
+          break;
+        }
+
+        localStorage.setItem(LEFT_TIME_KEY, `${event.left}`);
+
+        break;
+    }
   }
 }
