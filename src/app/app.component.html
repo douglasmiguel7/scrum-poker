@@ -114,7 +114,7 @@
       <nz-sider class="overflow-x-hidden overflow-y-auto">
         <nz-space nzDirection="vertical" class="py-3 pl-3" nzSize="middle">
           <div *nzSpaceItem>
-            <h4>Sentados ({{ players.length }})</h4>
+            <h4>Na mesa ({{ players.length }})</h4>
             <nz-space nzDirection="vertical">
               @for (player of players; track player) {
               <nz-space *nzSpaceItem nzAlign="baseline">
@@ -167,57 +167,113 @@
       </nz-content>
 
       <!-- content right side -->
-      <nz-sider class="overflow-x-hidden overflow-y-auto">
-        <nz-space nzDirection="vertical" class="py-3 pr-3" nzSize="small">
+      <nz-sider [nzWidth]="250" class="overflow-x-hidden overflow-y-auto">
+        <nz-space nzDirection="vertical" class="p-3 w-full" nzSize="small">
           <div *nzSpaceItem>
             <h4>Tarefas</h4>
             <nz-space [nzSplit]="spaceSplit">
               <ng-template #spaceSplit>•</ng-template>
 
               <span *nzSpaceItem>{{ tasks.length }} tarefas</span>
-              <span *nzSpaceItem>{{ points }} pontos</span>
+              <span *nzSpaceItem>{{ estimation }} estimativa</span>
             </nz-space>
           </div>
-          <div *nzSpaceItem [class.hidden]="toggleAddAnotherTask">
-            <button
-              nz-button
-              nzType="link"
-              class="!p-0"
-              (click)="handleToggleAddAnotherTask()"
-            >
-              <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-              Adicionar outra tarefa
-            </button>
-          </div>
-          <div *nzSpaceItem [class.hidden]="!toggleAddAnotherTask">
-            <form nz-form nzLayout="vertical">
-              <nz-form-item>
-                <nz-form-label nzRequired nzLabelWrap>Título</nz-form-label>
-                <nz-form-control>
-                  <input nz-input formControlName="title" />
-                </nz-form-control>
-              </nz-form-item>
-              <nz-form-item>
-                <nz-form-label nzLabelWrap>Link</nz-form-label>
-                <nz-form-control>
-                  <input nz-input formControlName="link" />
-                </nz-form-control>
-              </nz-form-item>
-            </form>
-            <div nz-flex nzJustify="space-between">
+
+          <div *nzSpaceItem>
+            <!-- add another task button -->
+            <div [class.hidden]="toggleAddAnotherTask" class="mb-2">
               <button
                 nz-button
                 nzType="link"
-                nzDanger
                 class="!p-0"
                 (click)="handleToggleAddAnotherTask()"
               >
-                Cancelar
+                <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+                Adicionar outra tarefa
               </button>
-              <button nz-button nzType="link" class="!p-0">Salvar</button>
+            </div>
+
+            <!-- add another task form -->
+            <div [class.hidden]="!toggleAddAnotherTask">
+              <form nz-form nzLayout="vertical">
+                <nz-form-item>
+                  <nz-form-label nzRequired nzLabelWrap>Título</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="title" />
+                  </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                  <nz-form-label nzLabelWrap>Link</nz-form-label>
+                  <nz-form-control>
+                    <input nz-input formControlName="link" />
+                  </nz-form-control>
+                </nz-form-item>
+              </form>
+              <nz-space nzSize="large">
+                <button
+                  *nzSpaceItem
+                  nz-button
+                  nzType="link"
+                  nzDanger
+                  class="!p-0"
+                  (click)="handleToggleAddAnotherTask()"
+                >
+                  Cancelar
+                </button>
+                <button *nzSpaceItem nz-button nzType="link" class="!p-0">
+                  Salvar
+                </button>
+              </nz-space>
             </div>
           </div>
-          <div *nzSpaceItem>tasks</div>
+
+          <!-- tasks -->
+          <div *nzSpaceItem>
+            <nz-space nzDirection="vertical" class="w-full">
+              @for (task of tasks; track task) {
+              <nz-card *nzSpaceItem nzHoverable class="cursor-default">
+                <p
+                  nz-typography
+                  nzEditable
+                  nzEditTooltip="Alterar título"
+                  [(nzContent)]="task.title"
+                >
+                  {{ task.title }}
+                </p>
+
+                @if (task.link) {
+                <p>
+                  <a
+                    [href]="task.link"
+                    target="_blank"
+                    nz-typography
+                    nzEllipsis
+                    class="w-full"
+                    nzEditable
+                    nzEditTooltip="Alterar link"
+                    [(nzContent)]="task.link"
+                  >
+                    {{ task.link }}
+                  </a>
+                </p>
+                }
+
+                <button
+                  nz-button
+                  [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
+                  (click)="handleTaskToVote(task.id)"
+                  nz-tooltip
+                  nzTooltipPlacement="left"
+                  nzTooltipTitle="Clique para cancelar"
+                  [nzTooltipTrigger]="votingTask === task.id ? 'hover' : null"
+                >
+                  @if (votingTask !== task.id) { Votar essa tarefa } @if
+                  (votingTask === task.id) { Votando essa tarefa }
+                </button>
+              </nz-card>
+              }
+            </nz-space>
+          </div>
         </nz-space>
       </nz-sider>
     </nz-layout>

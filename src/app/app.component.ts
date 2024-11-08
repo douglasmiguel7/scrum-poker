@@ -2,18 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { doc, docData, Firestore } from '@angular/fire/firestore';
 import { traceUntilFirst } from '@angular/fire/performance';
-import { RouterOutlet } from '@angular/router';
 
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -38,17 +36,14 @@ const MINUTES_DEFAULT = 1;
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
     CommonModule,
     NzDropDownModule,
     NzButtonModule,
     NzLayoutModule,
     NzTypographyModule,
     NzFlexModule,
-    NzGridModule,
     NzIconModule,
     NzDividerModule,
-    NzListModule,
     NzAvatarModule,
     NzPageHeaderModule,
     NzSpaceModule,
@@ -56,6 +51,7 @@ const MINUTES_DEFAULT = 1;
     CountdownModule,
     NzWaterMarkModule,
     NzToolTipModule,
+    NzCardModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -67,24 +63,27 @@ export class AppComponent implements OnInit {
 
   cards = ['1', '2', '4', '8', '16', '32', '64'];
 
-  spectators = new Array(10)
+  spectators = new Array(3)
     .fill(null)
-    .map((_, index) => `Espectador sdlfhdhdjhfkhsd ${index}`);
+    .map((_, index) => `Exemplo nome grande ${index}`);
 
-  players = new Array(10)
-    .fill(null)
-    .map((_, index) => `Douglas Miguel shajkshkjahskja ${index}`);
+  players = new Array(3).fill(null).map((_, index) => `Maria ${index}`);
 
   createdBy = 'você';
 
   inviteLink = `${environment.appUrl}/tables/4ca022b9-649e-412c-9f27-6aa835b45c83`;
 
-  tasks = new Array(3).fill(null).map((_, index) => ({
-    title: `Titulo ${index}`,
-    link: `https://scrum-poker.opentools.org?taksId=${index}`,
-  }));
+  tasks: { id: number; title: string; link: string; estimation: number }[] =
+    new Array(5).fill(null).map((_, index) => ({
+      id: index,
+      title: `Titulo ${index}`,
+      link: `https://scrum-poker.opentools.org?taksId=${index}`,
+      estimation: Math.floor(Math.random() * (index + 1) * 2),
+    }));
 
-  points = 8;
+  estimation: number = this.tasks
+    .map((task) => task.estimation)
+    .reduce((prev, curr) => prev + curr);
 
   toggleAddAnotherTask = false;
 
@@ -100,6 +99,8 @@ export class AppComponent implements OnInit {
   minutes: number = 0;
 
   minutesOptions = [1, 2, 5, 10, 20, 30];
+
+  votingTask: number | null = null;
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');
@@ -203,5 +204,14 @@ export class AppComponent implements OnInit {
 
         break;
     }
+  }
+
+  handleTaskToVote(id: number) {
+    if (this.votingTask === id) {
+      this.votingTask = null;
+      return;
+    }
+
+    this.votingTask = id;
   }
 }
