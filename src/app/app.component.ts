@@ -77,7 +77,7 @@ export class AppComponent implements OnInit {
       text: '0',
       value: 0,
       icon: null,
-      tip: 'Já esta pronto',
+      tip: 'já esta pronto',
     },
     {
       id: '02694b93-b3cd-4fb2-851c-70447aea8184',
@@ -133,14 +133,14 @@ export class AppComponent implements OnInit {
       text: null,
       value: 0,
       icon: 'question',
-      tip: 'Falta informção',
+      tip: 'falta informação',
     },
     {
       id: '03446fa7-aab0-477c-8fae-0405557112f2',
       text: null,
       value: 0,
       icon: 'coffee',
-      tip: 'Pausa para café',
+      tip: 'pausa para o café',
     },
   ]
 

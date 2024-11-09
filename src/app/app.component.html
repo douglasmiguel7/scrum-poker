@@ -37,7 +37,9 @@
                 @for (contact of env.contacts; track $index) {
                   <div>
                     <strong>{{ contact.title }}:</strong>
-                    {{ contact.value }}
+                    <span nz-typography nzCopyable [nzCopyText]="contact.value">
+                      {{ contact.value }}
+                    </span>
                   </div>
                 }
               </div>
@@ -93,7 +95,7 @@
           </ng-template>
 
           <u>
-            <strong>{{ '@douglasmiguel7' }}</strong>
+            <strong>{{ env.githubUsername }}</strong>
           </u>
         </a>
       </span>
@@ -604,6 +606,9 @@
           nzSize="large"
           [nzType]="votedCardId === card.id ? 'primary' : 'dashed'"
           (click)="handleVote(card)"
+          nz-tooltip
+          [nzTooltipTitle]="card.tip"
+          [nzTooltipTrigger]="card.tip !== null ? 'hover' : null"
         >
           @if (card.text) {
             {{ card.text }}

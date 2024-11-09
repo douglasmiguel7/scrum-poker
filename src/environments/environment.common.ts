@@ -5,6 +5,7 @@ const phoneNumber = '5511936183634'
 
 const environment: EnvironmentType = {
   appUrl: '',
+  githubUsername: '@douglasmiguel7',
   githubProfileUrl: 'https://github.com/douglasmiguel7',
   repositoryUrl: 'https://github.com/douglasmiguel7/scrum-poker',
   linkedInProfileUrl: 'https://www.linkedin.com/in/douglasmiguel7',
