@@ -151,7 +151,7 @@ export class AppComponent implements OnInit {
   inviteLink = `${environment.appUrl}/tables/4ca022b9-649e-412c-9f27-6aa835b45c83`;
 
   tasks: { id: number; title: string; link: string; estimation: number }[] =
-    new Array(5).fill(null).map((_, index) => ({
+    new Array(2).fill(null).map((_, index) => ({
       id: index,
       title: `Titulo ${index}`,
       link: `https://scrum-poker.opentools.org?taksId=${index}`,
