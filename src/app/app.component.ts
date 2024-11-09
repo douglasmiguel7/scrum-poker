@@ -61,7 +61,84 @@ export class AppComponent implements OnInit {
 
   public readonly testDocValue$: Observable<{ quantidade: number }>;
 
-  cards = ['1', '2', '4', '8', '16', '32', '64'];
+  cards: {
+    id: string;
+    icon: string | null;
+    text: string | null;
+    tip: string | null;
+    value: number;
+  }[] = [
+    {
+      id: '11610a31-9fea-4e8e-ab42-99d0ef54ffbe',
+      text: '0',
+      value: 0,
+      icon: null,
+      tip: 'Já esta pronto',
+    },
+    {
+      id: '02694b93-b3cd-4fb2-851c-70447aea8184',
+      text: '1',
+      value: 1,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: '6f7b2fc8-7c50-426b-bf6e-6cf6e83c3b4d',
+      text: '2',
+      value: 2,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: 'a45d0965-f34f-4946-9ce5-521f8401a44c',
+      text: '4',
+      value: 4,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: 'ceeebc75-8a19-4653-a5d0-591eee3e24c7',
+      text: '8',
+      value: 8,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: 'fbdd9770-519c-4880-9c7b-36be9d3295f8',
+      text: '16',
+      value: 16,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: '483f563c-10f9-41b5-9eb9-9383a446dfee',
+      text: '32',
+      value: 32,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: 'de7f4b66-fd99-4582-844c-c6800f91bfe0',
+      text: '64',
+      value: 64,
+      icon: null,
+      tip: null,
+    },
+    {
+      id: 'e6f44190-fbc4-4756-b82a-e8fad010fa5b',
+      text: null,
+      value: 0,
+      icon: 'question',
+      tip: 'Falta informção',
+    },
+    {
+      id: '03446fa7-aab0-477c-8fae-0405557112f2',
+      text: '0',
+      value: 0,
+      icon: 'coffee',
+      tip: 'Pausa para café',
+    },
+  ];
 
   spectators = new Array(3)
     .fill(null)
@@ -101,6 +178,8 @@ export class AppComponent implements OnInit {
   minutesOptions = [1, 2, 5, 10, 20, 30];
 
   votingTask: number | null = null;
+
+  votedCardId: string | null = null;
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config');
@@ -213,5 +292,9 @@ export class AppComponent implements OnInit {
     }
 
     this.votingTask = id;
+  }
+
+  handleVote(cardId: string) {
+    this.votedCardId = cardId;
   }
 }

@@ -262,10 +262,6 @@
                   nz-button
                   [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
                   (click)="handleTaskToVote(task.id)"
-                  nz-tooltip
-                  nzTooltipPlacement="left"
-                  nzTooltipTitle="Clique para cancelar"
-                  [nzTooltipTrigger]="votingTask === task.id ? 'hover' : null"
                 >
                   @if (votingTask !== task.id) { Votar essa tarefa } @if
                   (votingTask === task.id) { Votando essa tarefa }
@@ -282,49 +278,21 @@
 
     <!-- page footer -->
     <nz-footer nz-flex nzJustify="center" nzGap="large">
-      <button
-        class="overflow-hidden !p-0 !w-10 !h-16"
-        nz-button
-        nzSize="large"
-        nzType="default"
-        nz-tooltip
-        nzTooltipTitle="Já está pronto"
-      >
-        0
-      </button>
-
       @for (card of cards; track card) {
       <button
-        class="overflow-hidden !p-0 !w-10 !h-16"
         nz-button
+        class="overflow-hidden !p-0 !w-10 !h-16"
         nzSize="large"
-        nzType="default"
+        [nzType]="votedCardId === card.id ? 'primary' : 'dashed'"
+        (click)="handleVote(card.id)"
       >
-        {{ card }}
+        @if (card.text) {
+        {{ card.text }}
+        } @else if (card.icon) {
+        <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
+        }
       </button>
       }
-
-      <button
-        class="overflow-hidden !p-0 !w-10 !h-16"
-        nz-button
-        nzType="default"
-        nzSize="large"
-        nz-tooltip
-        nzTooltipTitle="Falta informção"
-      >
-        <span nz-icon nzType="question" nzTheme="outline"></span>
-      </button>
-
-      <button
-        class="overflow-hidden !p-0 !w-10 !h-16"
-        nz-button
-        nzType="default"
-        nzSize="large"
-        nz-tooltip
-        nzTooltipTitle="Preciso de uma pausa"
-      >
-        <span nz-icon nzType="coffee" nzTheme="outline"></span>
-      </button>
     </nz-footer>
   </nz-layout>
 </nz-water-mark>
