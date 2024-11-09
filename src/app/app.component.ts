@@ -146,7 +146,7 @@ export class AppComponent implements OnInit {
     .fill(null)
     .map((_, index) => `Exemplo nome grande ${index}`)
 
-  players = new Array(1).fill(null).map((_, index) => `Maria ${index}`)
+  players = new Array(5).fill(null).map((_, index) => `Maria ${index}`)
 
   table = {
     name: 'Minha mesa',
@@ -329,12 +329,7 @@ export class AppComponent implements OnInit {
   handleVote({ id, value }: { id: string; value: number }) {
     this.votedCardId = id
     this.vote = { player: 'doug', estimation: value }
-    this.votes = [this.vote!]
-  }
-
-  handleCardsRevealed() {
-    this.cardsRevealed = !this.cardsRevealed
-
+    this.votes = new Array(this.players.length).fill(this.vote)
     this.votingEstimationTotal = this.votes.reduce(
       (prev, curr) => prev + curr.estimation,
       0,
@@ -354,5 +349,9 @@ export class AppComponent implements OnInit {
         {} as Record<number, number>,
       ),
     ).map(([estimation, quantity]) => ({ estimation, quantity }))
+  }
+
+  handleCardsRevealed() {
+    this.cardsRevealed = !this.cardsRevealed
   }
 }
