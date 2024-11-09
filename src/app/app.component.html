@@ -207,6 +207,7 @@
                     nzSize="large"
                     nzType="primary"
                     [disabled]="votes.length !== players.length"
+                    [nzLoading]="votes.length !== players.length"
                     (click)="handleCardsRevealed()"
                   >
                     @if (votes.length === players.length) {
