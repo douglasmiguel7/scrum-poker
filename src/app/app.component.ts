@@ -185,7 +185,7 @@ export class AppComponent implements OnInit {
 
   allVoted = false
 
-  cardsRevealed: boolean = false
+  cardsRevealed = false
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config')

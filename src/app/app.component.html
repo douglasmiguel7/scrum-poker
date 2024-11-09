@@ -51,7 +51,7 @@
               @for (option of minutesOptions; track option) {
                 <li nz-menu-item (click,keyup)="handleStartTimer(option)">
                   <a>
-                    @if (option == 1) {
+                    @if (option === 1) {
                       {{ option }} minuto
                     }
                     @if (option > 1) {
