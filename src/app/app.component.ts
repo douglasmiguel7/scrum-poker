@@ -14,6 +14,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header'
 import { NzSpaceModule } from 'ng-zorro-antd/space'
+import { NzTagModule } from 'ng-zorro-antd/tag'
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
@@ -52,6 +53,7 @@ const MINUTES_DEFAULT = 1
     NzWaterMarkModule,
     NzToolTipModule,
     NzCardModule,
+    NzTagModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -144,23 +146,33 @@ export class AppComponent implements OnInit {
     .fill(null)
     .map((_, index) => `Exemplo nome grande ${index}`)
 
-  players = new Array(3).fill(null).map((_, index) => `Maria ${index}`)
+  players = new Array(1).fill(null).map((_, index) => `Maria ${index}`)
 
-  createdBy = 'você'
+  table = {
+    name: 'Minha mesa',
+    createdBy: 'você',
+  }
 
   inviteLink = `${environment.appUrl}/tables/4ca022b9-649e-412c-9f27-6aa835b45c83`
 
-  tasks: { id: number; title: string; link: string; estimation: number }[] =
-    new Array(2).fill(null).map((_, index) => ({
-      id: index,
-      title: `Titulo ${index}`,
-      link: `https://scrum-poker.opentools.org?taksId=${index}`,
-      estimation: Math.floor(Math.random() * (index + 1) * 2),
-    }))
+  tasks: {
+    id: number
+    title: string
+    link: string
+    estimation: number
+    voted: boolean
+  }[] = new Array(2).fill(null).map((_, index) => ({
+    id: index,
+    title: `Titulo ${index}`,
+    link: `https://scrum-poker.opentools.org?taksId=${index}`,
+    estimation: Math.floor(Math.random() * (index + 1) * 2),
+    voted: Math.random() < 0.5,
+  }))
 
-  estimation: number = this.tasks
-    .map(task => task.estimation)
-    .reduce((prev, curr) => prev + curr)
+  estimationTotal: number = this.tasks.reduce(
+    (prev, curr) => prev + curr.estimation,
+    0,
+  )
 
   toggleAddAnotherTask = false
 
@@ -183,9 +195,23 @@ export class AppComponent implements OnInit {
 
   items = new Array(2).fill(null)
 
-  allVoted = false
-
   cardsRevealed = false
+
+  votes: { player: string; estimation: number }[] = []
+
+  votingEstimationTotal = this.votes.reduce(
+    (prev, curr) => prev + curr.estimation,
+    0,
+  )
+
+  votingEstimationAverage = Math.floor(
+    this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
+      this.players.length,
+  )
+
+  vote: { player: string; estimation: number } | null = null
+
+  votesByQuantity: { estimation: string; quantity: number }[] = []
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config')
@@ -300,12 +326,33 @@ export class AppComponent implements OnInit {
     this.votingTask = id
   }
 
-  handleVote(cardId: string) {
-    this.allVoted = !this.allVoted
-    this.votedCardId = cardId
+  handleVote({ id, value }: { id: string; value: number }) {
+    this.votedCardId = id
+    this.vote = { player: 'doug', estimation: value }
+    this.votes = [this.vote!]
   }
 
   handleCardsRevealed() {
     this.cardsRevealed = !this.cardsRevealed
+
+    this.votingEstimationTotal = this.votes.reduce(
+      (prev, curr) => prev + curr.estimation,
+      0,
+    )
+
+    this.votingEstimationAverage = Math.floor(
+      this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
+        this.players.length,
+    )
+
+    this.votesByQuantity = Object.entries(
+      this.votes.reduce(
+        (prev, curr) => ({
+          ...prev,
+          [curr.estimation]: (prev[curr.estimation] || 0) + 1,
+        }),
+        {} as Record<number, number>,
+      ),
+    ).map(([estimation, quantity]) => ({ estimation, quantity }))
   }
 }
