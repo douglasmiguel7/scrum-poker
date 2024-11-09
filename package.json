@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "format": "prettier --write \"**/*.+(ts)\""
+    "format": "prettier --write \"**/*.+(ts|html)\""
   },
   "dependencies": {
     "@angular/animations": "^18.2.0",

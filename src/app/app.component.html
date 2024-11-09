@@ -21,13 +21,15 @@
 
     <!-- page content header -->
     <nz-page-header>
-      <nz-page-header-title>Minha mesa</nz-page-header-title>
-      <nz-page-header-subtitle>
-        criado por {{ createdBy }}
-      </nz-page-header-subtitle>
+      <nz-page-header-title nz-space nzDirection="vertical" [nzSize]="0">
+        {{ table.name }}
+        <span nz-typography nzType="secondary" class="text-xs"
+          >criado por {{ table.createdBy }}</span
+        >
+      </nz-page-header-title>
 
       <nz-page-header-extra>
-        <nz-space nzSize="middle">
+        <nz-space nzSize="middle" nzAlign="center">
           <countdown
             *nzSpaceItem
             [config]="countdownConfig"
@@ -49,13 +51,22 @@
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
               @for (option of minutesOptions; track option) {
-              <li nz-menu-item (click,keyup)="handleStartTimer(option)">
-                <a>
-                  @if (option === 1) {
-                  {{ option }} minuto } @if (option > 1) { {{ option }} minutos
-                  }
-                </a>
-              </li>
+                <li
+                  tabindex="1"
+                  nz-menu-item
+                  (click)="handleStartTimer(option)"
+                  (keyup)="handleStartTimer(option)"
+                >
+                  <a>
+                    @if (option === 1) {
+                      {{ option }} minuto
+                    }
+
+                    @if (option > 1) {
+                      {{ option }} minutos
+                    }
+                  </a>
+                </li>
               }
             </ul>
           </nz-dropdown-menu>
@@ -117,20 +128,20 @@
             <h4>Na mesa ({{ players.length }})</h4>
             <nz-space nzDirection="vertical">
               @for (player of players; track player) {
-              <nz-space *nzSpaceItem nzAlign="baseline">
-                <nz-avatar *nzSpaceItem [nzText]="player.charAt(0)" />
-                <span
-                  *nzSpaceItem
-                  nz-typography
-                  nzEllipsis
-                  class="w-32"
-                  nz-tooltip
-                  [nzTooltipTitle]="player"
-                  nzTooltipPlacement="right"
-                >
-                  {{ player }}
-                </span>
-              </nz-space>
+                <nz-space *nzSpaceItem nzAlign="baseline">
+                  <nz-avatar *nzSpaceItem [nzText]="player.charAt(0)" />
+                  <span
+                    *nzSpaceItem
+                    nz-typography
+                    nzEllipsis
+                    class="w-32"
+                    nz-tooltip
+                    [nzTooltipTitle]="player"
+                    nzTooltipPlacement="right"
+                  >
+                    {{ player }}
+                  </span>
+                </nz-space>
               }
             </nz-space>
           </div>
@@ -139,20 +150,20 @@
             <h4>Assistindo ({{ spectators.length }})</h4>
             <nz-space nzDirection="vertical">
               @for (spectator of spectators; track spectator) {
-              <nz-space *nzSpaceItem nzAlign="baseline">
-                <nz-avatar *nzSpaceItem [nzText]="spectator.charAt(0)" />
-                <span
-                  *nzSpaceItem
-                  nz-typography
-                  nzEllipsis
-                  class="w-32"
-                  nz-tooltip
-                  [nzTooltipTitle]="spectator"
-                  nzTooltipPlacement="right"
-                >
-                  {{ spectator }}
-                </span>
-              </nz-space>
+                <nz-space *nzSpaceItem nzAlign="baseline">
+                  <nz-avatar *nzSpaceItem [nzText]="spectator.charAt(0)" />
+                  <span
+                    *nzSpaceItem
+                    nz-typography
+                    nzEllipsis
+                    class="w-32"
+                    nz-tooltip
+                    [nzTooltipTitle]="spectator"
+                    nzTooltipPlacement="right"
+                  >
+                    {{ spectator }}
+                  </span>
+                </nz-space>
               }
             </nz-space>
           </div>
@@ -163,107 +174,153 @@
       <nz-content>
         <div class="h-full" nz-flex nzJustify="center" nzAlign="center">
           <nz-card>
-            <nz-space nzDirection="vertical">
-              <nz-space nzDirection="vertical" nzAlign="center" nzSize="middle">
-                <h2 *nzSpaceItem nz-typography class="!m-0">
-                  Escolha sua carta!
-                </h2>
-                <button
-                  *nzSpaceItem
-                  nz-button
-                  nzSize="large"
-                  nzType="primary"
-                  [disabled]="!allVoted"
-                >
-                  @if (allVoted) { Revelar cartas } @else { Aguardando 1 voto }
-                </button>
-              </nz-space>
-
-              <nz-space nzDirection="vertical" nzAlign="center" nzSize="middle">
+            <nz-space nzDirection="vertical" nzAlign="center">
+              @if (!cardsRevealed) {
                 <nz-space
                   *nzSpaceItem
                   nzDirection="vertical"
                   nzAlign="center"
-                  nzSize="small"
+                  nzSize="middle"
                 >
-                  <h2 *nzSpaceItem nz-typography class="!m-0">Votos</h2>
-                  <nz-space *nzSpaceItem nzSize="small">
-                    @for (item of items; track $index) {
-                    <nz-space
-                      *nzSpaceItem
-                      nzDirection="vertical"
-                      nzAlign="center"
-                      [nzSize]="0"
-                    >
-                      <span *nzSpaceItem nz-typography>Jogador</span>
-                      <button
-                        *nzSpaceItem
-                        nz-button
-                        class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
-                        nzSize="large"
-                        nzType="primary"
-                      >
-                        0
-                      </button>
-                    </nz-space>
+                  <h2 *nzSpaceItem nz-typography class="!m-0">
+                    Escolha sua carta!
+                  </h2>
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzSize="large"
+                    nzType="primary"
+                    [disabled]="votes.length !== players.length"
+                    (click)="handleCardsRevealed()"
+                  >
+                    @if (votes.length === players.length) {
+                      Revelar cartas
                     }
-                  </nz-space>
-                </nz-space>
 
+                    @if (
+                      votes.length !== players.length &&
+                      players.length - votes.length === 1
+                    ) {
+                      Arguardando {{ players.length - votes.length }} voto
+                    }
+
+                    @if (
+                      votes.length !== players.length &&
+                      players.length - votes.length > 1
+                    ) {
+                      Arguardando {{ players.length - votes.length }} votos
+                    }
+                  </button>
+                </nz-space>
+              }
+
+              @if (cardsRevealed) {
                 <nz-space
                   *nzSpaceItem
                   nzDirection="vertical"
                   nzAlign="center"
-                  nzSize="small"
+                  nzSize="middle"
                 >
-                  <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
-                  <nz-space *nzSpaceItem nzSize="small">
-                    @for (item of items; track $index) {
+                  <nz-space
+                    *nzSpaceItem
+                    nzDirection="vertical"
+                    nzAlign="center"
+                    nzSize="small"
+                  >
+                    <h2 *nzSpaceItem nz-typography class="!m-0">Votos</h2>
+                    <nz-space *nzSpaceItem nzSize="small">
+                      @for (vote of votes; track $index) {
+                        <nz-space
+                          *nzSpaceItem
+                          nzDirection="vertical"
+                          nzAlign="center"
+                          [nzSize]="0"
+                        >
+                          <span *nzSpaceItem nz-typography>{{
+                            vote.player
+                          }}</span>
+                          <button
+                            *nzSpaceItem
+                            nz-button
+                            class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
+                            nzSize="large"
+                            nzType="primary"
+                          >
+                            {{ vote.estimation }}
+                          </button>
+                        </nz-space>
+                      }
+                    </nz-space>
+                  </nz-space>
+
+                  <nz-space
+                    *nzSpaceItem
+                    nzDirection="vertical"
+                    nzAlign="center"
+                    nzSize="small"
+                  >
+                    <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
+                    <nz-space *nzSpaceItem nzSize="small">
+                      @for (vote of votesByQuantity; track $index) {
+                        <nz-space
+                          *nzSpaceItem
+                          nzDirection="vertical"
+                          nzAlign="center"
+                          [nzSize]="0"
+                        >
+                          <span *nzSpaceItem nz-typography>
+                            {{ vote.quantity }}
+                            @if (vote.quantity === 1) {
+                              voto
+                            }
+
+                            @if (vote.quantity > 1) {
+                              votos
+                            }
+                          </span>
+                          <button
+                            *nzSpaceItem
+                            nz-button
+                            class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
+                            nzSize="large"
+                            nzType="primary"
+                          >
+                            {{ vote.estimation }}
+                          </button>
+                        </nz-space>
+                      }
+                    </nz-space>
+                  </nz-space>
+
+                  <nz-space *nzSpaceItem nzSize="large">
                     <nz-space
                       *nzSpaceItem
-                      nzDirection="vertical"
+                      nzSize="small"
                       nzAlign="center"
+                      nzDirection="vertical"
                       [nzSize]="0"
                     >
-                      <span *nzSpaceItem nz-typography>10 votos</span>
-                      <button
-                        *nzSpaceItem
-                        nz-button
-                        class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
-                        nzSize="large"
-                        nzType="primary"
-                      >
-                        0
-                      </button>
+                      <h2 *nzSpaceItem nz-typography class="!m-0">Total</h2>
+                      <h2 *nzSpaceItem nz-typography class="!m-0">
+                        {{ votingEstimationTotal }}
+                      </h2>
                     </nz-space>
-                    }
+
+                    <nz-space
+                      *nzSpaceItem
+                      nzSize="small"
+                      nzAlign="center"
+                      nzDirection="vertical"
+                      [nzSize]="0"
+                    >
+                      <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
+                      <h2 *nzSpaceItem nz-typography class="!m-0">
+                        {{ votingEstimationAverage }}
+                      </h2>
+                    </nz-space>
                   </nz-space>
                 </nz-space>
-
-                <nz-space *nzSpaceItem nzSize="large">
-                  <nz-space
-                    *nzSpaceItem
-                    nzSize="small"
-                    nzAlign="center"
-                    nzDirection="vertical"
-                    [nzSize]="0"
-                  >
-                    <h2 *nzSpaceItem nz-typography class="!m-0">Total</h2>
-                    <h2 *nzSpaceItem nz-typography class="!m-0">0</h2>
-                  </nz-space>
-
-                  <nz-space
-                    *nzSpaceItem
-                    nzSize="small"
-                    nzAlign="center"
-                    nzDirection="vertical"
-                    [nzSize]="0"
-                  >
-                    <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
-                    <h2 *nzSpaceItem nz-typography class="!m-0">0</h2>
-                  </nz-space>
-                </nz-space>
-              </nz-space>
+              }
             </nz-space>
           </nz-card>
         </div>
@@ -277,14 +334,34 @@
             <nz-space [nzSplit]="spaceSplit">
               <ng-template #spaceSplit>•</ng-template>
 
-              <span *nzSpaceItem>{{ tasks.length }} tarefas</span>
-              <span *nzSpaceItem>{{ estimation }} estimativa</span>
+              <span *nzSpaceItem>
+                {{ tasks.length }}
+
+                @if (tasks.length === 1) {
+                  tarefa
+                }
+
+                @if (tasks.length > 1) {
+                  tarefas
+                }
+              </span>
+              <span *nzSpaceItem>
+                {{ estimationTotal }}
+
+                @if (estimationTotal === 1) {
+                  ponto
+                }
+
+                @if (estimationTotal > 1) {
+                  pontos
+                }
+              </span>
             </nz-space>
           </div>
 
           <div *nzSpaceItem>
             <!-- add another task button -->
-            <div [class.hidden]="toggleAddAnotherTask" class="mb-2">
+            @if (!toggleAddAnotherTask) {
               <button
                 nz-button
                 nzType="link"
@@ -294,10 +371,10 @@
                 <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                 Adicionar outra tarefa
               </button>
-            </div>
+            }
 
             <!-- add another task form -->
-            <div [class.hidden]="!toggleAddAnotherTask">
+            @if (toggleAddAnotherTask) {
               <form nz-form nzLayout="vertical">
                 <nz-form-item>
                   <nz-form-label nzRequired nzLabelWrap>Título</nz-form-label>
@@ -311,65 +388,88 @@
                     <input nz-input formControlName="link" />
                   </nz-form-control>
                 </nz-form-item>
+                <nz-space nzSize="large">
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzType="link"
+                    nzDanger
+                    class="!p-0"
+                    (click)="handleToggleAddAnotherTask()"
+                  >
+                    Cancelar
+                  </button>
+                  <button *nzSpaceItem nz-button nzType="link" class="!p-0">
+                    Salvar
+                  </button>
+                </nz-space>
               </form>
-              <nz-space nzSize="large">
-                <button
-                  *nzSpaceItem
-                  nz-button
-                  nzType="link"
-                  nzDanger
-                  class="!p-0"
-                  (click)="handleToggleAddAnotherTask()"
-                >
-                  Cancelar
-                </button>
-                <button *nzSpaceItem nz-button nzType="link" class="!p-0">
-                  Salvar
-                </button>
-              </nz-space>
-            </div>
+            }
           </div>
 
           <!-- tasks -->
           <div *nzSpaceItem>
             <nz-space nzDirection="vertical" class="w-full">
               @for (task of tasks; track task) {
-              <nz-card *nzSpaceItem nzHoverable class="cursor-default">
-                <p
-                  nz-typography
-                  nzEditable
-                  nzEditTooltip="Alterar título"
-                  [(nzContent)]="task.title"
+                <nz-card
+                  *nzSpaceItem
+                  nzHoverable
+                  [nzTitle]="title"
+                  [nzExtra]="extra"
+                  class="cursor-default"
                 >
-                  {{ task.title }}
-                </p>
+                  <ng-template #title>
+                    <p
+                      nz-typography
+                      nzEditable
+                      nzEditTooltip="Alterar título"
+                      [(nzContent)]="task.title"
+                    >
+                      {{ task.title }}
+                    </p>
+                  </ng-template>
+                  <ng-template #extra>
+                    @if (task.voted) {
+                      <nz-tag
+                        nz-tooltip
+                        nzTooltipTitle="Estimativa"
+                        nzColor="green"
+                      >
+                        {{ task.estimation }}
+                      </nz-tag>
+                    }
+                  </ng-template>
 
-                @if (task.link) {
-                <p>
-                  <a
-                    [href]="task.link"
-                    target="_blank"
-                    nz-typography
-                    nzEllipsis
-                    class="w-full"
-                    nzEditable
-                    nzEditTooltip="Alterar link"
-                    [(nzContent)]="task.link"
+                  @if (task.link) {
+                    <p>
+                      <a
+                        [href]="task.link"
+                        target="_blank"
+                        nz-typography
+                        nzEllipsis
+                        class="w-full"
+                        nzEditable
+                        nzEditTooltip="Alterar link"
+                        [(nzContent)]="task.link"
+                      >
+                        {{ task.link }}
+                      </a>
+                    </p>
+                  }
+
+                  <button
+                    nz-button
+                    [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
+                    (click)="handleTaskToVote(task.id)"
                   >
-                    {{ task.link }}
-                  </a>
-                </p>
-                }
-
-                <button
-                  nz-button
-                  [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
-                  (click)="handleTaskToVote(task.id)"
-                >
-                  @if (votingTask !== task.id) { Votar essa tarefa } @if
-                  (votingTask === task.id) { Votando essa tarefa }
-                </button>
-              </nz-card>
+                    @if (votingTask !== task.id) {
+                      Votar essa tarefa
+                    }
+                    @if (votingTask === task.id) {
+                      Votando essa tarefa
+                    }
+                  </button>
+                </nz-card>
               }
             </nz-space>
           </div>
@@ -382,19 +482,21 @@
     <!-- page footer -->
     <nz-footer nz-flex nzJustify="center" nzGap="large">
       @for (card of cards; track card) {
-      <button
-        nz-button
-        class="overflow-hidden !p-0 !w-10 !h-16"
-        nzSize="large"
-        [nzType]="votedCardId === card.id ? 'primary' : 'dashed'"
-        (click)="handleVote(card.id)"
-      >
-        @if (card.text) {
-        {{ card.text }}
-        } @else if (card.icon) {
-        <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
-        }
-      </button>
+        <button
+          nz-button
+          class="overflow-hidden !p-0 !w-10 !h-16"
+          nzSize="large"
+          [nzType]="votedCardId === card.id ? 'primary' : 'dashed'"
+          (click)="handleVote(card)"
+        >
+          @if (card.text) {
+            {{ card.text }}
+          }
+
+          @if (card.icon) {
+            <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
+          }
+        </button>
       }
     </nz-footer>
   </nz-layout>

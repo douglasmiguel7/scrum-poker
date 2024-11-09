@@ -2,20 +2,23 @@
 const eslint = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const angular = require('angular-eslint')
-const prettier = require('eslint-plugin-prettier/recommended')
+const prettier = require('eslint-plugin-prettier')
 
 module.exports = tseslint.config(
   {
     files: ['**/*.ts'],
+    plugins: {
+      prettier,
+    },
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
-      prettier,
     ],
     processor: angular.processInlineTemplates,
     rules: {
+      eqeqeq: ['error', 'always'],
       '@angular-eslint/directive-selector': [
         'error',
         {
@@ -41,6 +44,8 @@ module.exports = tseslint.config(
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
     ],
-    rules: {},
+    rules: {
+      eqeqeq: ['error', 'always'],
+    },
   },
 )
