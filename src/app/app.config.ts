@@ -2,17 +2,17 @@ import {
   ApplicationConfig,
   importProvidersFrom,
   provideZoneChangeDetection,
-} from '@angular/core';
-import { provideRouter } from '@angular/router';
+} from '@angular/core'
+import { provideRouter } from '@angular/router'
 
-import { registerLocaleData } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
-import pt from '@angular/common/locales/pt';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { FormsModule } from '@angular/forms';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { IconDefinition } from '@ant-design/icons-angular';
+import { registerLocaleData } from '@angular/common'
+import { provideHttpClient } from '@angular/common/http'
+import pt from '@angular/common/locales/pt'
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app'
+import { getFirestore, provideFirestore } from '@angular/fire/firestore'
+import { FormsModule } from '@angular/forms'
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
+import { IconDefinition } from '@ant-design/icons-angular'
 import {
   CloseCircleOutline,
   CoffeeOutline,
@@ -22,12 +22,12 @@ import {
   QuestionOutline,
   RedoOutline,
   UserOutline,
-} from '@ant-design/icons-angular/icons';
-import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n';
-import { provideNzIcons } from 'ng-zorro-antd/icon';
-import { routes } from './app.routes';
+} from '@ant-design/icons-angular/icons'
+import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n'
+import { provideNzIcons } from 'ng-zorro-antd/icon'
+import { routes } from './app.routes'
 
-registerLocaleData(pt);
+registerLocaleData(pt)
 
 const icons: IconDefinition[] = [
   FastForwardOutline,
@@ -39,7 +39,7 @@ const icons: IconDefinition[] = [
   CloseCircleOutline,
   RedoOutline,
   PlusCircleOutline,
-];
+]
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -54,7 +54,7 @@ export const appConfig: ApplicationConfig = {
         authDomain: 'scrum-poker-f387c.firebaseapp.com',
         messagingSenderId: '257699867582',
         measurementId: 'G-NNZZNKMWBV',
-      })
+      }),
     ),
     provideFirestore(() => getFirestore()),
     provideNzI18n(pt_BR),
@@ -63,4 +63,4 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideNzIcons(icons),
   ],
-};
+}

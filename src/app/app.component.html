@@ -49,9 +49,9 @@
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
               @for (option of minutesOptions; track option) {
-              <li nz-menu-item (click)="handleStartTimer(option)">
+              <li nz-menu-item (click,keyup)="handleStartTimer(option)">
                 <a>
-                  @if (option == 1) {
+                  @if (option === 1) {
                   {{ option }} minuto } @if (option > 1) { {{ option }} minutos
                   }
                 </a>
@@ -162,7 +162,110 @@
       <!-- content center -->
       <nz-content>
         <div class="h-full" nz-flex nzJustify="center" nzAlign="center">
-          <div>content</div>
+          <nz-card>
+            <nz-space nzDirection="vertical">
+              <nz-space nzDirection="vertical" nzAlign="center" nzSize="middle">
+                <h2 *nzSpaceItem nz-typography class="!m-0">
+                  Escolha sua carta!
+                </h2>
+                <button
+                  *nzSpaceItem
+                  nz-button
+                  nzSize="large"
+                  nzType="primary"
+                  [disabled]="!allVoted"
+                >
+                  @if (allVoted) { Revelar cartas } @else { Aguardando 1 voto }
+                </button>
+              </nz-space>
+
+              <nz-space nzDirection="vertical" nzAlign="center" nzSize="middle">
+                <nz-space
+                  *nzSpaceItem
+                  nzDirection="vertical"
+                  nzAlign="center"
+                  nzSize="small"
+                >
+                  <h2 *nzSpaceItem nz-typography class="!m-0">Votos</h2>
+                  <nz-space *nzSpaceItem nzSize="small">
+                    @for (item of items; track $index) {
+                    <nz-space
+                      *nzSpaceItem
+                      nzDirection="vertical"
+                      nzAlign="center"
+                      [nzSize]="0"
+                    >
+                      <span *nzSpaceItem nz-typography>Jogador</span>
+                      <button
+                        *nzSpaceItem
+                        nz-button
+                        class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
+                        nzSize="large"
+                        nzType="primary"
+                      >
+                        0
+                      </button>
+                    </nz-space>
+                    }
+                  </nz-space>
+                </nz-space>
+
+                <nz-space
+                  *nzSpaceItem
+                  nzDirection="vertical"
+                  nzAlign="center"
+                  nzSize="small"
+                >
+                  <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
+                  <nz-space *nzSpaceItem nzSize="small">
+                    @for (item of items; track $index) {
+                    <nz-space
+                      *nzSpaceItem
+                      nzDirection="vertical"
+                      nzAlign="center"
+                      [nzSize]="0"
+                    >
+                      <span *nzSpaceItem nz-typography>10 votos</span>
+                      <button
+                        *nzSpaceItem
+                        nz-button
+                        class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
+                        nzSize="large"
+                        nzType="primary"
+                      >
+                        0
+                      </button>
+                    </nz-space>
+                    }
+                  </nz-space>
+                </nz-space>
+
+                <nz-space *nzSpaceItem nzSize="large">
+                  <nz-space
+                    *nzSpaceItem
+                    nzSize="small"
+                    nzAlign="center"
+                    nzDirection="vertical"
+                    [nzSize]="0"
+                  >
+                    <h2 *nzSpaceItem nz-typography class="!m-0">Total</h2>
+                    <h2 *nzSpaceItem nz-typography class="!m-0">0</h2>
+                  </nz-space>
+
+                  <nz-space
+                    *nzSpaceItem
+                    nzSize="small"
+                    nzAlign="center"
+                    nzDirection="vertical"
+                    [nzSize]="0"
+                  >
+                    <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
+                    <h2 *nzSpaceItem nz-typography class="!m-0">0</h2>
+                  </nz-space>
+                </nz-space>
+              </nz-space>
+            </nz-space>
+          </nz-card>
         </div>
       </nz-content>
 

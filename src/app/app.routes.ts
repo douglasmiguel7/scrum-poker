@@ -1,7 +1,7 @@
-import { Routes } from '@angular/router';
-import { TableComponent } from './table/table.component';
-import { TablesComponent } from './tables/tables.component';
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { Routes } from '@angular/router'
+import { TableComponent } from './table/table.component'
+import { TablesComponent } from './tables/tables.component'
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 export const routes: Routes = [
   {
@@ -16,4 +16,4 @@ export const routes: Routes = [
     path: '**',
     component: PageNotFoundComponent,
   },
-];
+]
