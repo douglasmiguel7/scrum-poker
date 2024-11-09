@@ -11,6 +11,93 @@
         <span nz-icon nzType="fast-forward" nzTheme="outline"></span>
         Scrum Poker
       </h2>
+      <span nz-typography>
+        Feito com ❤️ por
+        <a
+          nz-popover
+          [nzPopoverContent]="madeWithLovePopover"
+          nzPopoverPlacement="bottom"
+          [nzPopoverVisible]="true"
+        >
+          <ng-template #madeWithLovePopover>
+            <nz-page-header class="p-0">
+              <nz-avatar
+                nz-page-header-avatar
+                [nzSrc]="env.profilePictureUrl"
+              ></nz-avatar>
+              <nz-page-header-title>Douglas Andrade</nz-page-header-title>
+              <nz-page-header-extra>
+                <nz-tag nzColor="green">Open Source</nz-tag>
+              </nz-page-header-extra>
+            </nz-page-header>
+
+            <div nz-flex nzVertical nzGap="small">
+              <!-- meu dados -->
+              <div>
+                <strong>Engenheiro de software</strong>
+                @for (contact of env.contacts; track $index) {
+                  <div>
+                    <strong>{{ contact.title }}:</strong>
+                    {{ contact.value }}
+                  </div>
+                }
+              </div>
+
+              <!-- links -->
+              <nz-space nzSize="large">
+                <a
+                  *nzSpaceItem
+                  nz-button
+                  nzType="link"
+                  [href]="env.linkedInProfileUrl"
+                  target="_blank"
+                  class="!p-0"
+                >
+                  <span nz-icon nzType="linkedin" nzTheme="outline"></span>
+                  LinkedIn
+                </a>
+                <a
+                  *nzSpaceItem
+                  nz-button
+                  nzType="link"
+                  [href]="env.whatsappUrl"
+                  target="_blank"
+                  class="!p-0"
+                >
+                  <span nz-icon nzType="whats-app" nzTheme="outline"></span>
+                  WhatsApp
+                </a>
+                <a
+                  *nzSpaceItem
+                  nz-button
+                  nzType="link"
+                  [href]="env.githubProfileUrl"
+                  target="_blank"
+                  class="!p-0"
+                >
+                  <span nz-icon nzType="github" nzTheme="outline"></span>
+                  GitHub
+                </a>
+                <a
+                  *nzSpaceItem
+                  nz-button
+                  nzType="link"
+                  [href]="env.repositoryUrl"
+                  target="_blank"
+                  class="!p-0"
+                >
+                  <span nz-icon nzType="code" nzTheme="outline"></span>
+                  Repository
+                </a>
+              </nz-space>
+            </div>
+          </ng-template>
+
+          <u>
+            <strong>{{ '@douglasmiguel7' }}</strong>
+          </u>
+        </a>
+      </span>
       <div nz-flex nzAlign="center" nzGap="small">
         <nz-avatar nzText="D"></nz-avatar>
         Douglas
@@ -26,7 +113,6 @@
           nz-typography
           nzEditable
           [nzEditIcon]="editableIcon"
-          class="!m-0"
           nzEditTooltip="alterar nome"
         >
           {{ table.name }}
@@ -121,15 +207,14 @@
             Parar
           </button>
           <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
-          <p
+          <span
             *nzSpaceItem
-            class="!m-0"
             nz-typography
             nzCopyable
-            [nzCopyText]="inviteLink"
+            [nzCopyText]="env.appUrl + env.tablesEndpoint + '/' + table.id"
           >
             Copiar link do convite
-          </p>
+          </span>
         </nz-space>
       </nz-page-header-extra>
     </nz-page-header>

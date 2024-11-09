@@ -13,6 +13,7 @@ import { NzFormModule } from 'ng-zorro-antd/form'
 import { NzIconModule } from 'ng-zorro-antd/icon'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header'
+import { NzPopoverModule } from 'ng-zorro-antd/popover'
 import { NzSpaceModule } from 'ng-zorro-antd/space'
 import { NzTagModule } from 'ng-zorro-antd/tag'
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
@@ -54,6 +55,7 @@ const MINUTES_DEFAULT = 1
     NzToolTipModule,
     NzCardModule,
     NzTagModule,
+    NzPopoverModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -149,11 +151,12 @@ export class AppComponent implements OnInit {
   players = new Array(5).fill(null).map((_, index) => `Maria ${index}`)
 
   table = {
+    id: '4ca022b9-649e-412c-9f27-6aa835b45c83',
     name: 'Minha mesa',
     createdBy: 'você',
   }
 
-  inviteLink = `${environment.appUrl}/tables/4ca022b9-649e-412c-9f27-6aa835b45c83`
+  env = environment
 
   tasks: {
     id: number
