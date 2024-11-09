@@ -9,5 +9,5 @@ export type EnvironmentType = {
   profilePictureUrl: string
   tablesEndpoint: string
   whatsappUrl: string
-  contacts: { title: string, value: string }[]
+  contacts: { title: string; value: string }[]
 }
