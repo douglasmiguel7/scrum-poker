@@ -243,7 +243,7 @@
                     nzAlign="center"
                     nzSize="small"
                   >
-                    <h2 *nzSpaceItem nz-typography class="!m-0">Votos</h2>
+                    <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
                     <nz-space *nzSpaceItem nzSize="small">
                       @for (vote of votes; track $index) {
                         <nz-space
@@ -258,8 +258,8 @@
                             nzEllipsis
                             nz-tooltip
                             class="w-20 text-center"
+                            nz-tooltip
                             [nzTooltipTitle]="vote.player"
-                            nzTooltipPlacement="top"
                           >
                             {{ vote.player }}
                           </span>
@@ -283,7 +283,7 @@
                     nzAlign="center"
                     nzSize="small"
                   >
-                    <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
+                    <h2 *nzSpaceItem nz-typography class="!m-0">Análise</h2>
                     <nz-space *nzSpaceItem nzSize="small">
                       @for (vote of votesByQuantity; track $index) {
                         <nz-space
@@ -323,6 +323,9 @@
                       nzAlign="center"
                       nzDirection="vertical"
                       [nzSize]="0"
+                      nz-tooltip
+                      nzTooltipPlacement="bottom"
+                      nzTooltipTitle="soma da pontuação"
                     >
                       <h2 *nzSpaceItem nz-typography class="!m-0">Total</h2>
                       <h2 *nzSpaceItem nz-typography class="!m-0">
@@ -336,6 +339,9 @@
                       nzAlign="center"
                       nzDirection="vertical"
                       [nzSize]="0"
+                      nz-tooltip
+                      nzTooltipPlacement="bottom"
+                      nzTooltipTitle="soma da pontuação ÷ quantidade de votos"
                     >
                       <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
                       <h2 *nzSpaceItem nz-typography class="!m-0">
