@@ -337,7 +337,7 @@ export class AppComponent implements OnInit {
 
     this.votingEstimationAverage = Math.floor(
       this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
-        this.players.length,
+        this.votes.length,
     )
 
     this.votesByQuantity = Object.entries(
