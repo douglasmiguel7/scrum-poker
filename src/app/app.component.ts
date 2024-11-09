@@ -185,6 +185,8 @@ export class AppComponent implements OnInit {
 
   allVoted = false
 
+  cardsRevealed: boolean = false
+
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config')
     this.testDocValue$ = docData(ref).pipe(traceUntilFirst('firestore'))
@@ -301,5 +303,9 @@ export class AppComponent implements OnInit {
   handleVote(cardId: string) {
     this.allVoted = !this.allVoted
     this.votedCardId = cardId
+  }
+
+  handleCardsRevealed() {
+    this.cardsRevealed = !this.cardsRevealed
   }
 }

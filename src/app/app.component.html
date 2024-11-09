@@ -49,13 +49,16 @@
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
               @for (option of minutesOptions; track option) {
-              <li nz-menu-item (click,keyup)="handleStartTimer(option)">
-                <a>
-                  @if (option === 1) {
-                  {{ option }} minuto } @if (option > 1) { {{ option }} minutos
-                  }
-                </a>
-              </li>
+                <li nz-menu-item (click,keyup)="handleStartTimer(option)">
+                  <a>
+                    @if (option == 1) {
+                      {{ option }} minuto
+                    }
+                    @if (option > 1) {
+                      {{ option }} minutos
+                    }
+                  </a>
+                </li>
               }
             </ul>
           </nz-dropdown-menu>
@@ -117,20 +120,20 @@
             <h4>Na mesa ({{ players.length }})</h4>
             <nz-space nzDirection="vertical">
               @for (player of players; track player) {
-              <nz-space *nzSpaceItem nzAlign="baseline">
-                <nz-avatar *nzSpaceItem [nzText]="player.charAt(0)" />
-                <span
-                  *nzSpaceItem
-                  nz-typography
-                  nzEllipsis
-                  class="w-32"
-                  nz-tooltip
-                  [nzTooltipTitle]="player"
-                  nzTooltipPlacement="right"
-                >
-                  {{ player }}
-                </span>
-              </nz-space>
+                <nz-space *nzSpaceItem nzAlign="baseline">
+                  <nz-avatar *nzSpaceItem [nzText]="player.charAt(0)" />
+                  <span
+                    *nzSpaceItem
+                    nz-typography
+                    nzEllipsis
+                    class="w-32"
+                    nz-tooltip
+                    [nzTooltipTitle]="player"
+                    nzTooltipPlacement="right"
+                  >
+                    {{ player }}
+                  </span>
+                </nz-space>
               }
             </nz-space>
           </div>
@@ -139,20 +142,20 @@
             <h4>Assistindo ({{ spectators.length }})</h4>
             <nz-space nzDirection="vertical">
               @for (spectator of spectators; track spectator) {
-              <nz-space *nzSpaceItem nzAlign="baseline">
-                <nz-avatar *nzSpaceItem [nzText]="spectator.charAt(0)" />
-                <span
-                  *nzSpaceItem
-                  nz-typography
-                  nzEllipsis
-                  class="w-32"
-                  nz-tooltip
-                  [nzTooltipTitle]="spectator"
-                  nzTooltipPlacement="right"
-                >
-                  {{ spectator }}
-                </span>
-              </nz-space>
+                <nz-space *nzSpaceItem nzAlign="baseline">
+                  <nz-avatar *nzSpaceItem [nzText]="spectator.charAt(0)" />
+                  <span
+                    *nzSpaceItem
+                    nz-typography
+                    nzEllipsis
+                    class="w-32"
+                    nz-tooltip
+                    [nzTooltipTitle]="spectator"
+                    nzTooltipPlacement="right"
+                  >
+                    {{ spectator }}
+                  </span>
+                </nz-space>
               }
             </nz-space>
           </div>
@@ -175,7 +178,11 @@
                   nzType="primary"
                   [disabled]="!allVoted"
                 >
-                  @if (allVoted) { Revelar cartas } @else { Aguardando 1 voto }
+                  @if (allVoted) {
+                    Revelar cartas
+                  } @else {
+                    Aguardando 1 voto
+                  }
                 </button>
               </nz-space>
 
@@ -189,23 +196,23 @@
                   <h2 *nzSpaceItem nz-typography class="!m-0">Votos</h2>
                   <nz-space *nzSpaceItem nzSize="small">
                     @for (item of items; track $index) {
-                    <nz-space
-                      *nzSpaceItem
-                      nzDirection="vertical"
-                      nzAlign="center"
-                      [nzSize]="0"
-                    >
-                      <span *nzSpaceItem nz-typography>Jogador</span>
-                      <button
+                      <nz-space
                         *nzSpaceItem
-                        nz-button
-                        class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
-                        nzSize="large"
-                        nzType="primary"
+                        nzDirection="vertical"
+                        nzAlign="center"
+                        [nzSize]="0"
                       >
-                        0
-                      </button>
-                    </nz-space>
+                        <span *nzSpaceItem nz-typography>Jogador</span>
+                        <button
+                          *nzSpaceItem
+                          nz-button
+                          class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
+                          nzSize="large"
+                          nzType="primary"
+                        >
+                          0
+                        </button>
+                      </nz-space>
                     }
                   </nz-space>
                 </nz-space>
@@ -219,23 +226,23 @@
                   <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
                   <nz-space *nzSpaceItem nzSize="small">
                     @for (item of items; track $index) {
-                    <nz-space
-                      *nzSpaceItem
-                      nzDirection="vertical"
-                      nzAlign="center"
-                      [nzSize]="0"
-                    >
-                      <span *nzSpaceItem nz-typography>10 votos</span>
-                      <button
+                      <nz-space
                         *nzSpaceItem
-                        nz-button
-                        class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
-                        nzSize="large"
-                        nzType="primary"
+                        nzDirection="vertical"
+                        nzAlign="center"
+                        [nzSize]="0"
                       >
-                        0
-                      </button>
-                    </nz-space>
+                        <span *nzSpaceItem nz-typography>10 votos</span>
+                        <button
+                          *nzSpaceItem
+                          nz-button
+                          class="overflow-hidden !p-0 !w-10 !h-16 !cursor-default"
+                          nzSize="large"
+                          nzType="primary"
+                        >
+                          0
+                        </button>
+                      </nz-space>
                     }
                   </nz-space>
                 </nz-space>
@@ -334,42 +341,46 @@
           <div *nzSpaceItem>
             <nz-space nzDirection="vertical" class="w-full">
               @for (task of tasks; track task) {
-              <nz-card *nzSpaceItem nzHoverable class="cursor-default">
-                <p
-                  nz-typography
-                  nzEditable
-                  nzEditTooltip="Alterar título"
-                  [(nzContent)]="task.title"
-                >
-                  {{ task.title }}
-                </p>
-
-                @if (task.link) {
-                <p>
-                  <a
-                    [href]="task.link"
-                    target="_blank"
+                <nz-card *nzSpaceItem nzHoverable class="cursor-default">
+                  <p
                     nz-typography
-                    nzEllipsis
-                    class="w-full"
                     nzEditable
-                    nzEditTooltip="Alterar link"
-                    [(nzContent)]="task.link"
+                    nzEditTooltip="Alterar título"
+                    [(nzContent)]="task.title"
                   >
-                    {{ task.link }}
-                  </a>
-                </p>
-                }
+                    {{ task.title }}
+                  </p>
 
-                <button
-                  nz-button
-                  [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
-                  (click)="handleTaskToVote(task.id)"
-                >
-                  @if (votingTask !== task.id) { Votar essa tarefa } @if
-                  (votingTask === task.id) { Votando essa tarefa }
-                </button>
-              </nz-card>
+                  @if (task.link) {
+                    <p>
+                      <a
+                        [href]="task.link"
+                        target="_blank"
+                        nz-typography
+                        nzEllipsis
+                        class="w-full"
+                        nzEditable
+                        nzEditTooltip="Alterar link"
+                        [(nzContent)]="task.link"
+                      >
+                        {{ task.link }}
+                      </a>
+                    </p>
+                  }
+
+                  <button
+                    nz-button
+                    [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
+                    (click)="handleTaskToVote(task.id)"
+                  >
+                    @if (votingTask !== task.id) {
+                      Votar essa tarefa
+                    }
+                    @if (votingTask === task.id) {
+                      Votando essa tarefa
+                    }
+                  </button>
+                </nz-card>
               }
             </nz-space>
           </div>
@@ -382,19 +393,19 @@
     <!-- page footer -->
     <nz-footer nz-flex nzJustify="center" nzGap="large">
       @for (card of cards; track card) {
-      <button
-        nz-button
-        class="overflow-hidden !p-0 !w-10 !h-16"
-        nzSize="large"
-        [nzType]="votedCardId === card.id ? 'primary' : 'dashed'"
-        (click)="handleVote(card.id)"
-      >
-        @if (card.text) {
-        {{ card.text }}
-        } @else if (card.icon) {
-        <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
-        }
-      </button>
+        <button
+          nz-button
+          class="overflow-hidden !p-0 !w-10 !h-16"
+          nzSize="large"
+          [nzType]="votedCardId === card.id ? 'primary' : 'dashed'"
+          (click)="handleVote(card.id)"
+        >
+          @if (card.text) {
+            {{ card.text }}
+          } @else if (card.icon) {
+            <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
+          }
+        </button>
       }
     </nz-footer>
   </nz-layout>
