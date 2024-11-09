@@ -15,13 +15,17 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { IconDefinition } from '@ant-design/icons-angular'
 import {
   CloseCircleOutline,
+  CodeOutline,
   CoffeeOutline,
   FastForwardOutline,
+  GithubOutline,
+  LinkedinOutline,
   PlayCircleOutline,
   PlusCircleOutline,
   QuestionOutline,
   RedoOutline,
   UserOutline,
+  WhatsAppOutline,
 } from '@ant-design/icons-angular/icons'
 import { provideNzI18n, pt_BR } from 'ng-zorro-antd/i18n'
 import { provideNzIcons } from 'ng-zorro-antd/icon'
@@ -39,6 +43,10 @@ const icons: IconDefinition[] = [
   CloseCircleOutline,
   RedoOutline,
   PlusCircleOutline,
+  GithubOutline,
+  LinkedinOutline,
+  WhatsAppOutline,
+  CodeOutline,
 ]
 
 export const appConfig: ApplicationConfig = {
