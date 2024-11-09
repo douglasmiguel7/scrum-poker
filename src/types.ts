@@ -1,4 +1,4 @@
-export type EnvironmentType = {
+export interface EnvironmentType {
   appUrl: string
   appVersion: string
   githubProfileUrl: string
