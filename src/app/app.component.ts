@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { doc, docData, Firestore } from '@angular/fire/firestore'
 import { traceUntilFirst } from '@angular/fire/performance'
 
@@ -27,6 +27,8 @@ import {
 } from 'ngx-countdown'
 import { Observable } from 'rxjs'
 import { environment } from '../environments/environment'
+import { User } from './model/user.model'
+import { UserService } from './services/user.service'
 
 const LEFT_TIME_KEY = 'time'
 const LEFT_TIME_DEFAULT = 0
@@ -215,6 +217,9 @@ export class AppComponent implements OnInit {
   vote: { player: string; estimation: number } | null = null
 
   votesByQuantity: { estimation: string; quantity: number }[] = []
+
+  private userService = inject(UserService)
+  user: User = this.userService.getMe()
 
   constructor(firestore: Firestore) {
     const ref = doc(firestore, 'teste/config')

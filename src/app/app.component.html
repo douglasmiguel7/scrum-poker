@@ -1,4 +1,8 @@
-<nz-water-mark nzContent="work in progress" [nzFont]="{ fontSize: 18 }" [nzGap]="[50, 50]">
+<nz-water-mark
+  nzContent="work in progress"
+  [nzFont]="{ fontSize: 18 }"
+  [nzGap]="[50, 50]"
+>
   <nz-layout>
     <!-- page header -->
     <nz-header
@@ -101,8 +105,8 @@
         </a>
       </span>
       <div nz-flex nzAlign="center" nzGap="small">
-        <nz-avatar nzText="D"></nz-avatar>
-        Douglas
+        <nz-avatar [nzText]="user.name.charAt(0)"></nz-avatar>
+        <span nz-typography nzEditable [nzContent]="user.name"></span>
       </div>
     </nz-header>
 
