@@ -488,7 +488,7 @@
                 nz-button
                 nzType="link"
                 class="!p-0"
-                (click)="handleToggleAddAnotherTask()"
+                (click)="handleToggleAddAnotherTask($event)"
               >
                 <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
                 Adicionar outra tarefa
@@ -517,11 +517,17 @@
                     nzType="link"
                     nzDanger
                     class="!p-0"
-                    (click)="handleToggleAddAnotherTask()"
+                    (click)="handleToggleAddAnotherTask($event)"
                   >
                     Cancelar
                   </button>
-                  <button *nzSpaceItem nz-button nzType="link" class="!p-0">
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzType="link"
+                    class="!p-0"
+                    (click)="handleToggleAddAnotherTask($event)"
+                  >
                     Salvar
                   </button>
                 </nz-space>

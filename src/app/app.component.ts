@@ -244,7 +244,8 @@ export class AppComponent implements OnInit {
     this.minutes = minutes
   }
 
-  handleToggleAddAnotherTask(): void {
+  handleToggleAddAnotherTask(event: Event): void {
+    event.preventDefault()
     this.toggleAddAnotherTask = !this.toggleAddAnotherTask
   }
 
@@ -300,12 +301,6 @@ export class AppComponent implements OnInit {
       [CountdownStatus.pause]: 'pause',
       [CountdownStatus.stop]: 'stop',
     }
-
-    console.log(
-      `(new timer event) action: ${event.action} - status: ${
-        status[event.status]
-      } - text: ${event.text} - left: ${event.left}`,
-    )
 
     switch (event.action) {
       case 'done':
