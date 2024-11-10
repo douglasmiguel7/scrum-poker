@@ -449,8 +449,8 @@
       </nz-content>
 
       <!-- content right side -->
-      <nz-sider [nzWidth]="250" class="overflow-x-hidden overflow-y-auto">
-        <nz-space nzDirection="vertical" class="p-3 w-full" nzSize="small">
+      <nz-sider [nzWidth]="300" class="overflow-x-hidden overflow-y-auto">
+        <nz-space nzDirection="vertical" class="p-3" nzSize="small">
           <div *nzSpaceItem>
             <h4>Tarefas</h4>
             <nz-space [nzSplit]="spaceSplit">
@@ -463,7 +463,7 @@
                   tarefa
                 }
 
-                @if (tasks.length > 1) {
+                @if (tasks.length < 1 || tasks.length > 1) {
                   tarefas
                 }
               </span>
@@ -474,7 +474,7 @@
                   ponto
                 }
 
-                @if (estimationTotal > 1) {
+                @if (estimationTotal < 1 || estimationTotal > 1) {
                   pontos
                 }
               </span>
@@ -501,13 +501,13 @@
                 <nz-form-item>
                   <nz-form-label nzRequired nzLabelWrap>Título</nz-form-label>
                   <nz-form-control>
-                    <input nz-input formControlName="title" />
+                    <input nz-input formControlName="title" class="w-full" />
                   </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
                   <nz-form-label nzLabelWrap>Link</nz-form-label>
                   <nz-form-control>
-                    <input nz-input formControlName="link" />
+                    <input nz-input formControlName="link" class="w-full" />
                   </nz-form-control>
                 </nz-form-item>
                 <nz-space nzSize="large">
@@ -555,7 +555,7 @@
                     @if (task.voted) {
                       <nz-tag
                         nz-tooltip
-                        nzTooltipTitle="Estimativa"
+                        nzTooltipTitle="estimativa"
                         nzColor="green"
                       >
                         {{ task.estimation }}
@@ -565,33 +565,46 @@
 
                   @if (task.link) {
                     <p>
-                      <a
-                        [href]="task.link"
-                        target="_blank"
+                      <span
                         nz-typography
                         nzEllipsis
-                        class="w-full"
                         nzEditable
                         nzEditTooltip="alterar link"
                         [(nzContent)]="task.link"
-                      >
-                        {{ task.link }}
-                      </a>
+                        class="w-full"
+                      ></span>
                     </p>
                   }
 
-                  <button
-                    nz-button
-                    [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
-                    (click)="handleTaskToVote(task.id)"
-                  >
-                    @if (votingTask !== task.id) {
-                      Votar essa tarefa
+                  <nz-space>
+                    <button
+                      *nzSpaceItem
+                      nz-button
+                      [nzType]="votingTask === task.id ? 'primary' : 'dashed'"
+                      (click)="handleTaskToVote(task.id)"
+                    >
+                      @if (votingTask !== task.id) {
+                        Votar essa tarefa
+                      }
+                      @if (votingTask === task.id) {
+                        Votando essa tarefa
+                      }
+                    </button>
+
+                    @if (task.link) {
+                      <a
+                        *nzSpaceItem
+                        nz-button
+                        nzType="link"
+                        class="!p-0"
+                        [href]="task.link"
+                        target="_blank"
+                      >
+                        <span nz-icon nzType="link" nzTheme="outline"></span>
+                        Abrir link
+                      </a>
                     }
-                    @if (votingTask === task.id) {
-                      Votando essa tarefa
-                    }
-                  </button>
+                  </nz-space>
                 </nz-card>
               }
             </nz-space>

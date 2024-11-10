@@ -20,6 +20,7 @@ import {
   FastForwardOutline,
   GithubOutline,
   LinkedinOutline,
+  LinkOutline,
   PlayCircleOutline,
   PlusCircleOutline,
   QuestionOutline,
@@ -47,6 +48,7 @@ const icons: IconDefinition[] = [
   LinkedinOutline,
   WhatsAppOutline,
   CodeOutline,
+  LinkOutline,
 ]
 
 export const appConfig: ApplicationConfig = {
