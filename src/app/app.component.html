@@ -390,7 +390,7 @@
                               voto
                             }
 
-                            @if (vote.quantity > 1) {
+                            @if (vote.quantity < 1 || vote.quantity > 1) {
                               votos
                             }
                           </span>
