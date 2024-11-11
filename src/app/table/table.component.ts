@@ -213,7 +213,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   votesByQuantity: { estimation: string; quantity: number }[] = []
 
-  user: User | null = null
+  user: User
 
   tableId: string | null = null
 
