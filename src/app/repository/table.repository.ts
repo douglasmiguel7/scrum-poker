@@ -19,6 +19,10 @@ export class TableRepository {
     return table
   }
 
+  update(table: Table): void {
+    localStorage.setItem(TABLE_KEY, JSON.stringify(table))
+  }
+
   findLocalTable(): Table | null {
     const table = localStorage.getItem(TABLE_KEY)
 

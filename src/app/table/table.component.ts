@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, OnInit } from '@angular/core'
 
-import { ActivatedRoute } from '@angular/router'
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
 import { NzButtonModule } from 'ng-zorro-antd/button'
 import { NzCardModule } from 'ng-zorro-antd/card'
@@ -208,20 +207,23 @@ export class TableComponent implements OnInit {
 
   votesByQuantity: { estimation: string; quantity: number }[] = []
 
-  user: User
+  user: Observable<User> | null = null
 
-  table: Table
+  table: Observable<Table> | null = null
 
   constructor(
-    private route: ActivatedRoute,
     private userService: UserService,
     private tableService: TableService,
   ) {
-    this.user = this.userService.getLocalUser()
-    this.table = this.tableService.findTableByUser(this.user)
+    this.user = this.userService.getUserObservable()
+    this.table = this.tableService.getTableObservable()
   }
 
   ngOnInit(): void {
+    this.loadTimer()
+  }
+
+  private loadTimer(): void {
     let leftTime = (localStorage.getItem(LEFT_TIME_KEY) ||
       LEFT_TIME_DEFAULT) as number
     leftTime = isNaN(leftTime) ? LEFT_TIME_DEFAULT : leftTime
@@ -237,6 +239,14 @@ export class TableComponent implements OnInit {
       MINUTES_DEFAULT) as number
     minutes = isNaN(minutes) ? MINUTES_DEFAULT : minutes
     this.minutes = minutes
+  }
+
+  handleUsernameChange(name: string) {
+    this.userService.changeName(name)
+  }
+
+  handleTableNameChange(name: string) {
+    this.tableService.changeName(name)
   }
 
   handleToggleAddAnotherTask(event: Event): void {

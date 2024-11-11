@@ -18,6 +18,10 @@ export class UserRepository {
     return user
   }
 
+  update(user: User): void {
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
+  }
+
   findLocalUser(): User | null {
     const user = localStorage.getItem(USER_KEY)
 

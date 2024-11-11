@@ -105,8 +105,13 @@
         </a>
       </span>
       <div nz-flex nzAlign="center" nzGap="small">
-        <nz-avatar [nzText]="user.name.charAt(0)"></nz-avatar>
-        <span nz-typography nzEditable [nzContent]="user.name"></span>
+        <nz-avatar [nzText]="(user | async)?.name?.charAt(0)"></nz-avatar>
+        <span
+          nz-typography
+          nzEditable
+          [nzContent]="(user | async)?.name"
+          (nzContentChange)="handleUsernameChange($event)"
+        ></span>
       </div>
     </nz-header>
 
@@ -120,8 +125,9 @@
           nzEditable
           [nzEditIcon]="editableIcon"
           nzEditTooltip="alterar nome"
+          (nzContentChange)="handleTableNameChange($event)"
         >
-          {{ table.name }}
+          {{ (table | async)?.name }}
           <ng-template #editableIcon>
             <span
               nz-icon
@@ -135,12 +141,12 @@
       <nz-page-header-subtitle>
         criado por
         <strong>
-          @if (table.owner.id === user.id) {
+          @if ((table | async)?.owner?.id === (user | async)?.id) {
             você
           }
 
-          @if (table.owner.id !== user.id) {
-            {{ table.owner.name }}
+          @if ((table | async)?.owner?.id !== (user | async)?.id) {
+            {{ (table | async)?.owner?.name }}
           }
         </strong>
       </nz-page-header-subtitle>
@@ -226,7 +232,9 @@
             *nzSpaceItem
             nz-typography
             nzCopyable
-            [nzCopyText]="env.appUrl + env.tablesEndpoint + '/' + table.id"
+            [nzCopyText]="
+              env.appUrl + env.tablesEndpoint + '/' + (table | async)?.id
+            "
           >
             Copiar link do convite
           </span>

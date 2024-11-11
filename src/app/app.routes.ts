@@ -4,10 +4,9 @@ import { TableComponent } from './table/table.component'
 
 export const routes: Routes = [
   {
-    path: 'tables/:id',
+    path: '',
     component: TableComponent,
   },
-
   {
     path: '**',
     component: PageNotFoundComponent,
