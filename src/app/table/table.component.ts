@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnDestroy, OnInit } from '@angular/core'
-import { Firestore } from '@angular/fire/firestore'
+import { Component, OnInit } from '@angular/core'
 
 import { ActivatedRoute } from '@angular/router'
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
@@ -20,9 +19,11 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
 import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
-import { Observable, Subscription } from 'rxjs'
+import { Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
+import { Table } from '../model/table.model'
 import { User } from '../model/user.model'
+import { TableService } from '../services/table.service'
 import { UserService } from '../services/user.service'
 
 const LEFT_TIME_KEY = 'time'
@@ -57,7 +58,7 @@ const MINUTES_DEFAULT = 1
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent implements OnInit {
   title = 'scrum-poker'
 
   testDocValue$: Observable<{ quantidade: number }> | null = null
@@ -147,12 +148,6 @@ export class TableComponent implements OnInit, OnDestroy {
 
   players = new Array(5).fill(null).map((_, index) => `Maria ${index}`)
 
-  table = {
-    id: '4ca022b9-649e-412c-9f27-6aa835b45c83',
-    name: 'Minha mesa',
-    createdBy: 'você',
-  }
-
   env = environment
 
   tasks: {
@@ -215,31 +210,18 @@ export class TableComponent implements OnInit, OnDestroy {
 
   user: User
 
-  tableId: string | null = null
-
-  selectedTableId: string | null = null
-
-  private routeSub!: Subscription
-  id!: string
+  table: Table
 
   constructor(
     private route: ActivatedRoute,
-    private firestore: Firestore,
     private userService: UserService,
+    private tableService: TableService,
   ) {
-    this.user = this.userService.getMe()
-  }
-
-  ngOnDestroy() {
-    this.routeSub.unsubscribe()
+    this.user = this.userService.getLocalUser()
+    this.table = this.tableService.findTableByUser(this.user)
   }
 
   ngOnInit(): void {
-    const snap = this.route.snapshot
-    const querymapentries = snap.queryParamMap.keys
-    const params = snap.queryParams
-    console.log({ params, querymapentries, snap })
-
     let leftTime = (localStorage.getItem(LEFT_TIME_KEY) ||
       LEFT_TIME_DEFAULT) as number
     leftTime = isNaN(leftTime) ? LEFT_TIME_DEFAULT : leftTime

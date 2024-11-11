@@ -1,7 +1,12 @@
 import { User } from './user.model'
 
-export interface Table {
+export interface NewTable {
   name: string
   owner: User
-  estimation: number
+}
+
+export interface Table {
+  id: string
+  name: string
+  owner: User
 }

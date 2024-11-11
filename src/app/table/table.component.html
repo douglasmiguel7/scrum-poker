@@ -13,7 +13,7 @@
     >
       <h2 nz-typography class="!m-0">
         <span nz-icon nzType="fast-forward" nzTheme="outline"></span>
-        Scrum Poker {{ tableId }} {{ selectedTableId }}
+        Scrum Poker
       </h2>
       <span nz-typography>
         Feito com ❤️ por
@@ -133,7 +133,14 @@
         </span>
       </nz-page-header-title>
       <nz-page-header-subtitle>
-        criado por {{ table.createdBy }}
+        criado por
+        @if (table.owner.id === user.id) {
+          você
+        }
+
+        @if (table.owner.id !== user.id) {
+          {{ table.owner.name }}
+        }
       </nz-page-header-subtitle>
 
       <nz-page-header-extra>

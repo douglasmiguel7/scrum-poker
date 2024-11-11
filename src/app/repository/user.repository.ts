@@ -1,36 +1,30 @@
 import { Injectable } from '@angular/core'
 import { NewUser, User } from '../model/user.model'
-import {
-  DEFAULT_USERNAME,
-  USER_ID_KEY,
-  USER_NAME_KEY as USERNAME_KEY,
-} from '../utils/constant'
-import { randomUuid, validateUuid } from '../utils/uuid'
+import { USER_KEY } from '../utils/constant'
+import { randomUuid } from '../utils/uuid'
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserRepository {
   save({ name }: NewUser): User {
-    const id = randomUuid()
+    const user: User = {
+      id: randomUuid(),
+      name,
+    }
 
-    localStorage.setItem(USER_ID_KEY, id)
-    localStorage.setItem(USERNAME_KEY, name)
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
 
-    return { id, name }
+    return user
   }
 
-  findMe(): User | null {
-    const id = localStorage.getItem(USER_ID_KEY) as string
+  findLocalUser(): User | null {
+    const user = localStorage.getItem(USER_KEY)
 
-    const valid = validateUuid(id)
-
-    if (!valid) {
+    if (!user) {
       return null
     }
 
-    const name = localStorage.getItem(USERNAME_KEY) || DEFAULT_USERNAME
-
-    return { id, name }
+    return JSON.parse(user) as User
   }
 }
