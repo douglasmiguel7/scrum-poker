@@ -3,7 +3,7 @@ import {
   importProvidersFrom,
   provideZoneChangeDetection,
 } from '@angular/core'
-import { provideRouter } from '@angular/router'
+import { provideRouter, withComponentInputBinding } from '@angular/router'
 
 import { registerLocaleData } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
@@ -54,7 +54,7 @@ const icons: IconDefinition[] = [
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideFirebaseApp(() =>
       initializeApp({
         projectId: 'scrum-poker-f387c',

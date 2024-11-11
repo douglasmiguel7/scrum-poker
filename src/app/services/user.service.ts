@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { User } from '../model/user.model'
 import { UserRepository } from '../repository/user.repository'
 import { DEFAULT_USERNAME } from '../utils/constant'
@@ -7,7 +7,7 @@ import { DEFAULT_USERNAME } from '../utils/constant'
   providedIn: 'root',
 })
 export class UserService {
-  repository = inject(UserRepository)
+  constructor(private repository: UserRepository) {}
 
   getMe(): User {
     const user = this.repository.findMe()
