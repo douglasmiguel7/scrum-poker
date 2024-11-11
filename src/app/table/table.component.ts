@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Firestore } from '@angular/fire/firestore'
 
 import { ActivatedRoute } from '@angular/router'
@@ -19,16 +19,11 @@ import { NzTagModule } from 'ng-zorro-antd/tag'
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
-import {
-  CountdownConfig,
-  CountdownEvent,
-  CountdownModule,
-  CountdownStatus,
-} from 'ngx-countdown'
+import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
 import { Observable, Subscription } from 'rxjs'
 import { environment } from '../../environments/environment'
-import { UserService } from '../services/user.service'
 import { User } from '../model/user.model'
+import { UserService } from '../services/user.service'
 
 const LEFT_TIME_KEY = 'time'
 const LEFT_TIME_DEFAULT = 0
@@ -62,7 +57,7 @@ const MINUTES_DEFAULT = 1
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnDestroy {
   title = 'scrum-poker'
 
   testDocValue$: Observable<{ quantidade: number }> | null = null
@@ -313,13 +308,6 @@ export class TableComponent implements OnInit {
   }
 
   handleTimerEvent(event: CountdownEvent): void {
-    const status: Record<number, string> = {
-      [CountdownStatus.done]: 'done',
-      [CountdownStatus.ing]: 'ing',
-      [CountdownStatus.pause]: 'pause',
-      [CountdownStatus.stop]: 'stop',
-    }
-
     switch (event.action) {
       case 'done':
         this.countdownStarted = false
