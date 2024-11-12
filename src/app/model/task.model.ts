@@ -1,3 +1,5 @@
+import { Vote } from './vote.model'
+
 export interface Task {
   id: string
   title: string
@@ -5,6 +7,7 @@ export interface Task {
   estimation: number
   selected: boolean
   voted: boolean
+  votes: Record<string, Vote>
   createdAt: string
   updatedAt: string
 }

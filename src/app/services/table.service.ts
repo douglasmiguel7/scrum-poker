@@ -24,7 +24,7 @@ import { UserService } from './user.service'
 export class TableService {
   private ref: DocumentReference
   private id: string
-  private taskId = 'a3725d11-e424-4f98-81f3-7a731b59e99b'
+  private sampleId = 'a3725d11-e424-4f98-81f3-7a731b59e99b'
 
   constructor(
     private firestore: Firestore,
@@ -52,15 +52,35 @@ export class TableService {
       const table: Table = {
         id: this.id,
         name: 'Minha mesa',
+        open: true,
         owner,
         tasks: {
-          [this.taskId]: {
-            id: this.taskId,
+          [this.sampleId]: {
+            id: this.sampleId,
             title: 'teste',
             estimation: 0,
             link: 'https://google.com',
             selected: false,
             voted: false,
+            votes: {
+              [this.sampleId]: {
+                id: this.sampleId,
+                createdAt: now,
+                updatedAt: now,
+                player: {
+                  id: this.sampleId,
+                  name: 'alguem',
+                  createdAt: now,
+                  updatedAt: now,
+                },
+                card: {
+                  id: this.sampleId,
+                  value: 1,
+                  icon: null,
+                  tip: null,
+                },
+              },
+            },
             createdAt: now,
             updatedAt: now,
           },
@@ -87,7 +107,7 @@ export class TableService {
   }
 
   async selectTask(): Promise<void> {
-    const path = `tasks.${this.taskId}.selected`
+    const path = `tasks.${this.sampleId}.selected`
 
     updateDoc(this.ref, {
       [path]: true,

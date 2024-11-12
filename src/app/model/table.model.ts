@@ -5,6 +5,7 @@ import { User } from './user.model'
 export interface Table {
   id: string
   name: string
+  open: boolean
   owner: DocumentReference<User>
   tasks: Record<string, Task>
   createdAt: string
