@@ -13,6 +13,7 @@ import { traceUntilFirst } from '@angular/fire/performance'
 import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
+import { TABLE_KEY } from '../utils/constant'
 import { getTableId } from '../utils/table'
 import { UserService } from './user.service'
 
@@ -40,6 +41,7 @@ export class TableService {
     const doc = await getDoc(this.ref)
 
     const exists = doc.exists()
+
     if (!exists) {
       const owner = this.userService.getRef()
 
@@ -48,6 +50,8 @@ export class TableService {
         name: 'Minha mesa',
         owner,
       }
+
+      localStorage.setItem(TABLE_KEY, this.id)
 
       await setDoc(this.ref, table)
     }
