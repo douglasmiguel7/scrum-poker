@@ -141,12 +141,12 @@
       <nz-page-header-subtitle>
         criado por
         <strong>
-          @if ((table | async)?.owner?.id === (user | async)?.id) {
+          @if ((owner | async)?.id === (user | async)?.id) {
             você
           }
 
-          @if ((table | async)?.owner?.id !== (user | async)?.id) {
-            {{ (table | async)?.owner?.name }}
+          @if ((owner | async)?.id !== (user | async)?.id) {
+            {{ (owner | async)?.name }}
           }
         </strong>
       </nz-page-header-subtitle>
@@ -640,7 +640,7 @@
 
     <!-- page footer -->
     <nz-footer nz-flex nzJustify="center" nzGap="large">
-      @for (card of cards; track card) {
+      @for (card of cards | async; track card) {
         <button
           nz-button
           class="overflow-hidden !p-0 !w-10 !h-16"
@@ -651,8 +651,8 @@
           [nzTooltipTitle]="card.tip"
           [nzTooltipTrigger]="card.tip !== null ? 'hover' : null"
         >
-          @if (card.text) {
-            {{ card.text }}
+          @if (!card.icon) {
+            {{ card.value }}
           }
 
           @if (card.icon) {

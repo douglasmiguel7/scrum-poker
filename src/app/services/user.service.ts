@@ -17,15 +17,15 @@ import { getUserId } from '../utils/user'
   providedIn: 'root',
 })
 export class UserService {
-  private ref: DocumentReference
+  private ref: DocumentReference<User>
   private id: string
 
   constructor(private firestore: Firestore) {
     this.id = getUserId()
-    this.ref = doc(this.firestore, 'users', this.id)
+    this.ref = doc(this.firestore, 'users', this.id) as DocumentReference<User>
   }
 
-  getRef(): DocumentReference {
+  getRef(): DocumentReference<User> {
     return this.ref
   }
 

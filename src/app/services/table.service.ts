@@ -3,6 +3,7 @@ import {
   doc,
   docData,
   DocumentReference,
+  DocumentSnapshot,
   Firestore,
   getDoc,
   setDoc,
@@ -29,6 +30,10 @@ export class TableService {
   ) {
     this.id = getTableId(this.route)
     this.ref = doc(this.firestore, 'tables', this.id)
+  }
+
+  async getTableSnapshot(): Promise<DocumentSnapshot> {
+    return getDoc(this.ref)
   }
 
   async getTableObservable(): Promise<Observable<Table>> {
