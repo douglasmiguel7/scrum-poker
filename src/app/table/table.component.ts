@@ -174,7 +174,7 @@ export class TableComponent implements OnInit {
   }
 
   async handleUsernameChange(name: string) {
-    await this.userService.changeName(name)
+    await this.userService.changeName(name.slice(0, 20))
   }
 
   async handleTableNameChange(name: string) {
