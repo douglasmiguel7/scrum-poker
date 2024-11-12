@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
 import { TABLE_ID_KEY } from '../utils/constant'
+import { getCurrentDate } from '../utils/date'
 import { getTableId } from '../utils/table'
 import { UserService } from './user.service'
 
@@ -45,10 +46,14 @@ export class TableService {
     if (!exists) {
       const owner = this.userService.getRef()
 
+      const now = getCurrentDate()
+
       const table: Table = {
         id: this.id,
         name: 'Minha mesa',
         owner,
+        createdAt: now,
+        updatedAt: now,
       }
 
       localStorage.setItem(TABLE_ID_KEY, this.id)
@@ -60,6 +65,11 @@ export class TableService {
   }
 
   changeName(name: string): void {
-    updateDoc(this.ref, { name })
+    const table: Partial<Table> = {
+      name,
+      updatedAt: getCurrentDate(),
+    }
+
+    updateDoc(this.ref, table)
   }
 }

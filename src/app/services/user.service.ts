@@ -11,6 +11,7 @@ import {
 import { traceUntilFirst } from '@angular/fire/performance'
 import { Observable } from 'rxjs'
 import { User } from '../model/user.model'
+import { getCurrentDate } from '../utils/date'
 import { getUserId } from '../utils/user'
 
 @Injectable({
@@ -34,9 +35,13 @@ export class UserService {
 
     const exists = doc.exists()
     if (!exists) {
+      const now = getCurrentDate()
+
       const user: User = {
         id: this.id,
         name: 'Anônimo',
+        createdAt: now,
+        updatedAt: now,
       }
 
       await setDoc(this.ref, user)
@@ -46,6 +51,11 @@ export class UserService {
   }
 
   async changeName(name: string): Promise<void> {
-    updateDoc(this.ref, { name })
+    const user: Partial<User> = {
+      name,
+      updatedAt: getCurrentDate(),
+    }
+
+    updateDoc(this.ref, user)
   }
 }

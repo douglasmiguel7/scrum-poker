@@ -5,4 +5,6 @@ export interface Table {
   id: string
   name: string
   owner: DocumentReference<User>
+  createdAt: string
+  updatedAt: string
 }
