@@ -214,12 +214,12 @@ export class TableComponent implements OnInit {
   constructor(
     private userService: UserService,
     private tableService: TableService,
-  ) {
-    this.user = this.userService.getUserObservable()
-    this.table = this.tableService.getTableObservable()
-  }
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.user = await this.userService.getUserObservable()
+    this.table = await this.tableService.getTableObservable()
+
     this.loadTimer()
   }
 
@@ -241,12 +241,12 @@ export class TableComponent implements OnInit {
     this.minutes = minutes
   }
 
-  handleUsernameChange(name: string) {
-    this.userService.changeName(name)
+  async handleUsernameChange(name: string) {
+    await this.userService.changeName(name)
   }
 
-  handleTableNameChange(name: string) {
-    this.tableService.changeName(name)
+  async handleTableNameChange(name: string) {
+    await this.tableService.changeName(name)
   }
 
   handleToggleAddAnotherTask(event: Event): void {

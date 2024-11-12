@@ -4,54 +4,48 @@ import {
   docData,
   DocumentReference,
   Firestore,
+  getDoc,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore'
 import { traceUntilFirst } from '@angular/fire/performance'
 import { Observable } from 'rxjs'
 import { User } from '../model/user.model'
-import { UserRepository } from '../repository/user.repository'
+import { getUserId } from '../utils/user'
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private ref: DocumentReference | null = null
+  private ref: DocumentReference
+  private id: string
 
-  constructor(
-    private firestore: Firestore,
-    private repository: UserRepository,
-  ) {}
-
-  getLocalUser(): User {
-    const user = this.repository.findLocalUser()
-
-    if (user) {
-      return user
-    }
-
-    return this.repository.save({ name: 'Anônimo' })
+  constructor(private firestore: Firestore) {
+    this.id = getUserId()
+    this.ref = doc(this.firestore, 'users', this.id)
   }
 
-  getUserObservable(): Observable<User> {
-    const user = this.getLocalUser()
+  getRef(): DocumentReference {
+    return this.ref
+  }
 
-    this.ref = doc(this.firestore, 'users', user.id)
+  async getUserObservable(): Promise<Observable<User>> {
+    const doc = await getDoc(this.ref)
 
-    setDoc(this.ref, user)
+    const exists = doc.exists()
+    if (!exists) {
+      const user: User = {
+        id: this.id,
+        name: 'Anônimo',
+      }
+
+      await setDoc(this.ref, user)
+    }
 
     return docData(this.ref).pipe(traceUntilFirst('firestore'))
   }
 
-  changeName(name: string): void {
-    const user = this.getLocalUser()
-
-    const updatedUser: User = {
-      ...user,
-      name,
-    }
-
-    setDoc(this.ref!, updatedUser)
-
-    this.repository.update(updatedUser)
+  async changeName(name: string): Promise<void> {
+    updateDoc(this.ref, { name })
   }
 }

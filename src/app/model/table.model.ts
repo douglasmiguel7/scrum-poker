@@ -1,3 +1,4 @@
+import { DocumentReference } from '@angular/fire/firestore'
 import { User } from './user.model'
 
 export interface NewTable {
@@ -8,5 +9,5 @@ export interface NewTable {
 export interface Table {
   id: string
   name: string
-  owner: User
+  owner: DocumentReference
 }

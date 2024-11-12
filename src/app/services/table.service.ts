@@ -4,58 +4,53 @@ import {
   docData,
   DocumentReference,
   Firestore,
+  getDoc,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore'
 import { traceUntilFirst } from '@angular/fire/performance'
+import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
-import { TableRepository } from '../repository/table.repository'
+import { getTableId } from '../utils/table'
 import { UserService } from './user.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class TableService {
-  private ref: DocumentReference | null = null
+  private ref: DocumentReference
+  private id: string
 
   constructor(
     private firestore: Firestore,
-    private tableRepository: TableRepository,
+    private route: ActivatedRoute,
     private userService: UserService,
-  ) {}
-
-  private getLocalTable(): Table {
-    const table = this.tableRepository.findLocalTable()
-
-    if (table) {
-      return table
-    }
-
-    const owner = this.userService.getLocalUser()
-
-    return this.tableRepository.save({ name: 'Minha mesa', owner })
+  ) {
+    this.id = getTableId(this.route)
+    this.ref = doc(this.firestore, 'tables', this.id)
   }
 
-  getTableObservable(): Observable<Table> {
-    const table = this.getLocalTable()
+  async getTableObservable(): Promise<Observable<Table>> {
+    const doc = await getDoc(this.ref)
 
-    this.ref = doc(this.firestore, 'tables', table.id)
+    const exists = doc.exists()
+    if (!exists) {
+      const owner = this.userService.getRef()
 
-    setDoc(this.ref, table)
+      const table: Table = {
+        id: this.id,
+        name: 'Minha mesa',
+        owner,
+      }
+
+      await setDoc(this.ref, table)
+    }
 
     return docData(this.ref).pipe(traceUntilFirst('firestore'))
   }
 
   changeName(name: string): void {
-    const table = this.getLocalTable()
-
-    const updatedTable: Table = {
-      ...table,
-      name,
-    }
-
-    setDoc(this.ref!, updatedTable)
-
-    this.tableRepository.update(updatedTable)
+    updateDoc(this.ref, { name })
   }
 }
