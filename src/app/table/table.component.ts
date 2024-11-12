@@ -178,7 +178,7 @@ export class TableComponent implements OnInit {
   }
 
   async handleTableNameChange(name: string) {
-    await this.tableService.changeName(name)
+    await this.tableService.changeName(name.slice(0, 40))
   }
 
   handleToggleAddAnotherTask(event: Event): void {
