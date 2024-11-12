@@ -147,10 +147,17 @@ export class TableComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.user = await this.userService.getUserObservable()
-    this.table = await this.tableService.getTableObservable()
-    this.owner = await this.ownerService.getOwnerObservable()
-    this.cards = this.cardService.getCardsObservable()
+    const [user, cards, table, owner] = await Promise.all([
+      this.userService.getUserObservable(),
+      this.cardService.getCardsObservable(),
+      this.tableService.getTableObservable(),
+      this.ownerService.getOwnerObservable(),
+    ])
+
+    this.user = user
+    this.cards = cards
+    this.table = table
+    this.owner = owner
 
     this.loadTimer()
   }
@@ -257,6 +264,8 @@ export class TableComponent implements OnInit {
     }
 
     this.votingTask = id
+
+    this.tableService.selectTask()
   }
 
   handleVote({ id, value }: { id: string; value: number }) {
