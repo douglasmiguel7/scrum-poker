@@ -13,7 +13,7 @@ import { traceUntilFirst } from '@angular/fire/performance'
 import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
-import { TABLE_KEY } from '../utils/constant'
+import { TABLE_ID_KEY } from '../utils/constant'
 import { getTableId } from '../utils/table'
 import { UserService } from './user.service'
 
@@ -51,7 +51,7 @@ export class TableService {
         owner,
       }
 
-      localStorage.setItem(TABLE_KEY, this.id)
+      localStorage.setItem(TABLE_ID_KEY, this.id)
 
       await setDoc(this.ref, table)
     }
