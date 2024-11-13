@@ -16,6 +16,7 @@ import { Table } from '../model/table.model'
 import { TABLE_ID_KEY } from '../utils/constant'
 import { getCurrentDate } from '../utils/date'
 import { getTableId } from '../utils/table'
+import { getUserId } from '../utils/user'
 import { UserService } from './user.service'
 
 @Injectable({
@@ -53,38 +54,13 @@ export class TableService {
         id: this.id,
         name: 'Minha mesa',
         open: true,
-        owner,
-        tasks: {
-          [this.sampleId]: {
-            id: this.sampleId,
-            title: 'teste',
-            estimation: 0,
-            link: 'https://google.com',
-            selected: false,
-            voted: false,
-            votes: {
-              [this.sampleId]: {
-                id: this.sampleId,
-                createdAt: now,
-                updatedAt: now,
-                player: {
-                  id: this.sampleId,
-                  name: 'alguem',
-                  createdAt: now,
-                  updatedAt: now,
-                },
-                card: {
-                  id: this.sampleId,
-                  value: 1,
-                  icon: null,
-                  tip: null,
-                },
-              },
-            },
-            createdAt: now,
-            updatedAt: now,
-          },
+        userRole: {
+          [getUserId()]: 'owner',
         },
+        owner,
+        players: [],
+        spectators: [],
+        tasks: {},
         createdAt: now,
         updatedAt: now,
       }
