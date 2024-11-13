@@ -18,36 +18,46 @@ import { getUserId } from '../utils/user'
   providedIn: 'root',
 })
 export class UserService {
-  private ref: DocumentReference<User>
+  private ref: DocumentReference
   private id: string
 
   constructor(private firestore: Firestore) {
     this.id = getUserId()
-    this.ref = doc(this.firestore, 'users', this.id) as DocumentReference<User>
+    this.ref = doc(this.firestore, 'users', this.id)
   }
 
   getRef(): DocumentReference<User> {
-    return this.ref
+    return this.ref as DocumentReference<User>
   }
 
-  async getUserObservable(): Promise<Observable<User>> {
-    const doc = await getDoc(this.ref)
+  getUserObservableByRef(ref: DocumentReference<User>): Observable<User> {
+    return docData<User>(ref).pipe(traceUntilFirst('firestore'))
+  }
 
-    const exists = doc.exists()
-    if (!exists) {
-      const now = getCurrentDate()
+  getUserObservable(): Observable<User> {
+    return new Observable((subscriber) => {
+      getDoc(this.ref).then((doc) => {
+        if (doc.exists()) {
+          docData(this.ref)
+            .pipe(traceUntilFirst('firestore'))
+            .subscribe((user: User) => subscriber.next(user))
+          return
+        }
 
-      const user: User = {
-        id: this.id,
-        name: 'Anônimo',
-        createdAt: now,
-        updatedAt: now,
-      }
+        const now = getCurrentDate()
 
-      await setDoc(this.ref, user)
-    }
+        const user: User = {
+          id: this.id,
+          name: 'Anônimo',
+          createdAt: now,
+          updatedAt: now,
+        }
 
-    return docData(this.ref).pipe(traceUntilFirst('firestore'))
+        setDoc(this.ref, user)
+
+        subscriber.next(user)
+      })
+    })
   }
 
   async changeName(name: string): Promise<void> {

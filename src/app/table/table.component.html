@@ -474,13 +474,16 @@
               <ng-template #spaceSplit>•</ng-template>
 
               <span *nzSpaceItem>
-                {{ tasks.length }}
+                {{ (tasks | async)?.length }}
 
-                @if (tasks.length === 1) {
+                @if ((tasks | async)?.length === 1) {
                   tarefa
                 }
 
-                @if (tasks.length < 1 || tasks.length > 1) {
+                @if (
+                  ((tasks | async)?.length || 0) < 1 ||
+                  ((tasks | async)?.length || 0) > 1
+                ) {
                   tarefas
                 }
               </span>
@@ -555,7 +558,7 @@
           <!-- tasks -->
           <div *nzSpaceItem>
             <nz-space nzDirection="vertical" class="w-full">
-              @for (task of tasks; track task) {
+              @for (task of tasks | async; track task) {
                 <nz-card
                   *nzSpaceItem
                   nzHoverable

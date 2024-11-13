@@ -40,37 +40,42 @@ export class TableService {
     return getDoc(this.ref)
   }
 
-  async getTableObservable(): Promise<Observable<Table>> {
-    const doc = await getDoc(this.ref)
+  getTableObservable(): Observable<Table> {
+    return new Observable((subscriber) => {
+      getDoc(this.ref).then((doc) => {
+        if (doc.exists()) {
+          docData(this.ref)
+            .pipe(traceUntilFirst('firestore'))
+            .subscribe((table: Table) => subscriber.next(table))
 
-    const exists = doc.exists()
+          return
+        }
 
-    if (!exists) {
-      const owner = this.userService.getRef()
+        const owner = this.userService.getRef()
+        const now = getCurrentDate()
 
-      const now = getCurrentDate()
+        const table: Table = {
+          id: this.id,
+          name: 'Minha mesa',
+          open: true,
+          userRole: {
+            [getUserId()]: 'owner',
+          },
+          owner,
+          players: [],
+          spectators: [],
+          tasks: {},
+          createdAt: now,
+          updatedAt: now,
+        }
 
-      const table: Table = {
-        id: this.id,
-        name: 'Minha mesa',
-        open: true,
-        userRole: {
-          [getUserId()]: 'owner',
-        },
-        owner,
-        players: [],
-        spectators: [],
-        tasks: {},
-        createdAt: now,
-        updatedAt: now,
-      }
+        localStorage.setItem(TABLE_ID_KEY, this.id)
 
-      localStorage.setItem(TABLE_ID_KEY, this.id)
+        setDoc(this.ref, table)
 
-      await setDoc(this.ref, table)
-    }
-
-    return docData(this.ref).pipe(traceUntilFirst('firestore'))
+        subscriber.next(table)
+      })
+    })
   }
 
   changeName(name: string): void {

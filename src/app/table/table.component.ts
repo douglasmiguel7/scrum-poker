@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
 import { NzButtonModule } from 'ng-zorro-antd/button'
@@ -18,13 +18,13 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
 import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
-import { Observable } from 'rxjs'
+import { map, mergeMap, Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Table } from '../model/table.model'
+import { Task } from '../model/task.model'
 import { User } from '../model/user.model'
 import { CardService } from '../services/card.service'
-import { OwnerService } from '../services/owner.service'
 import { TableService } from '../services/table.service'
 import { UserService } from '../services/user.service'
 
@@ -60,7 +60,7 @@ const MINUTES_DEFAULT = 1
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
 })
-export class TableComponent implements OnInit {
+export class TableComponent {
   title = 'scrum-poker'
 
   testDocValue$: Observable<{ quantidade: number }> | null = null
@@ -73,24 +73,7 @@ export class TableComponent implements OnInit {
 
   env = environment
 
-  tasks: {
-    id: number
-    title: string
-    link: string
-    estimation: number
-    voted: boolean
-  }[] = new Array(2).fill(null).map((_, index) => ({
-    id: index,
-    title: `Titulo ${index}`,
-    link: `https://scrum-poker.opentools.org?taksId=${index}`,
-    estimation: Math.floor(Math.random() * (index + 1) * 2),
-    voted: Math.random() < 0.5,
-  }))
-
-  estimationTotal: number = this.tasks.reduce(
-    (prev, curr) => prev + curr.estimation,
-    0,
-  )
+  estimationTotal = 0
 
   toggleAddAnotherTask = false
 
@@ -107,7 +90,7 @@ export class TableComponent implements OnInit {
 
   minutesOptions = [1, 2, 5, 10, 20, 30]
 
-  votingTask: number | null = null
+  votingTask: string | null = null
 
   votedCardId: string | null = null
 
@@ -131,33 +114,26 @@ export class TableComponent implements OnInit {
 
   votesByQuantity: { estimation: string; quantity: number }[] = []
 
-  user: Observable<User> | null = null
-
-  table: Observable<Table> | null = null
-
-  owner: Observable<User> | null = null
-
-  cards: Observable<Card[]> | null = null
+  user: Observable<User>
+  table: Observable<Table>
+  owner: Observable<User>
+  cards: Observable<Card[]>
+  tasks!: Observable<Task[]>
 
   constructor(
     private userService: UserService,
     private tableService: TableService,
-    private ownerService: OwnerService,
     private cardService: CardService,
-  ) {}
+  ) {
+    this.user = this.userService.getUserObservable()
+    this.cards = this.cardService.getCardsObservable()
+    this.table = this.tableService.getTableObservable()
 
-  async ngOnInit(): Promise<void> {
-    const [user, cards, table, owner] = await Promise.all([
-      this.userService.getUserObservable(),
-      this.cardService.getCardsObservable(),
-      this.tableService.getTableObservable(),
-      this.ownerService.getOwnerObservable(),
-    ])
+    this.owner = this.table.pipe(
+      mergeMap((t) => this.userService.getUserObservableByRef(t.owner)),
+    )
 
-    this.user = user
-    this.cards = cards
-    this.table = table
-    this.owner = owner
+    this.tasks = this.table.pipe(map((table) => Object.values(table.tasks)))
 
     this.loadTimer()
   }
@@ -257,7 +233,7 @@ export class TableComponent implements OnInit {
     }
   }
 
-  handleTaskToVote(id: number) {
+  handleTaskToVote(id: string) {
     if (this.votingTask === id) {
       this.votingTask = null
       return

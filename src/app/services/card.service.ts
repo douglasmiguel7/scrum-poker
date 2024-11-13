@@ -19,10 +19,10 @@ export class CardService {
     this.ref = doc(this.firestore, 'cards', 'default')
   }
 
-  async getCardsObservable(): Promise<Observable<Card[]>> {
+  getCardsObservable(): Observable<Card[]> {
     return docData(this.ref).pipe(
       traceUntilFirst('firestore'),
-      map((document: { cards: Card[] }) => document.cards),
+      map((d: { cards: Card[] }) => d.cards),
     )
   }
 }
