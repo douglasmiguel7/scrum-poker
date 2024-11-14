@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
+import { parseISO } from 'date-fns'
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
 import { NzButtonModule } from 'ng-zorro-antd/button'
 import { NzCardModule } from 'ng-zorro-antd/card'
@@ -151,14 +152,23 @@ export class TableComponent {
       mergeMap((t) => this.userService.getUserObservableByRef(t.owner)),
     )
 
-    this.tasks = this.table.pipe(map((table) => Object.values(table.tasks)))
+    this.tasks = this.table.pipe(
+      map((table) =>
+        Object.values(table.tasks).sort(
+          (a, b) =>
+            parseISO(b.createdAt).getTime() - parseISO(a.createdAt).getTime(),
+        ),
+      ),
+    )
 
     this.loadTimer()
   }
 
   private loadTimer(): void {
-    let leftTime = (localStorage.getItem(LEFT_TIME_KEY) ||
-      LEFT_TIME_DEFAULT) as number
+    let leftTime = Number(
+      localStorage.getItem(LEFT_TIME_KEY) || LEFT_TIME_DEFAULT,
+    )
+
     leftTime = isNaN(leftTime) ? LEFT_TIME_DEFAULT : leftTime
 
     this.countdownConfig = {
@@ -168,9 +178,9 @@ export class TableComponent {
 
     this.countdownStarted = localStorage.getItem(TIMER_STARTED_KEY) === 'true'
 
-    let minutes = (localStorage.getItem(MINUTES_KEY) ||
-      MINUTES_DEFAULT) as number
+    let minutes = Number(localStorage.getItem(MINUTES_KEY) || MINUTES_DEFAULT)
     minutes = isNaN(minutes) ? MINUTES_DEFAULT : minutes
+
     this.minutes = minutes
   }
 
@@ -210,12 +220,16 @@ export class TableComponent {
       leftTime: 60 * minutes,
     }
 
+    this.minutes = minutes
+
     localStorage.setItem(TIMER_STARTED_KEY, 'true')
 
     localStorage.setItem(MINUTES_KEY, `${minutes}`)
   }
 
   handleRestartTimer(): void {
+    console.log({ minutes: this.minutes })
+
     this.countdownConfig = {
       ...this.countdownConfig,
       leftTime: 60 * this.minutes,
@@ -245,6 +259,10 @@ export class TableComponent {
       ...this.countdownConfig,
       leftTime: leftTime / 1000 + 60,
     }
+
+    this.minutes = this.minutes + 1
+
+    localStorage.setItem(MINUTES_KEY, `${this.minutes}`)
   }
 
   handleTimerEvent(event: CountdownEvent): void {
