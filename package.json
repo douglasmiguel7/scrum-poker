@@ -11,6 +11,23 @@
     "lint": "ng lint",
     "format": "prettier --write \"**/*.+(ts|html)\""
   },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "repositoryUrl": "https://github.com/douglasmiguel7/scrum-poker.git",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github",
+      [
+        "@semantic-release/git",
+        {
+          "message": "chore(release): ${nextRelease.version} \n\n${nextRelease.notes}"
+        }
+      ]
+    ]
+  },
   "dependencies": {
     "@angular/animations": "^18.2.0",
     "@angular/common": "^18.2.0",
@@ -47,6 +64,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
+    "semantic-release": "^24.2.0",
     "source-map-explorer": "^2.5.3",
     "tailwindcss": "^3.4.14",
     "typescript": "~5.5.2",

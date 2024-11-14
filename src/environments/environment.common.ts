@@ -13,7 +13,7 @@ const environment: EnvironmentType = {
   email: 'douglasandrademiguel@gmail.com',
   profilePictureUrl: 'https://avatars.githubusercontent.com/u/17931093',
   tablesEndpoint: '/tables',
-  appVersion: version,
+  appVersion: `v${version}`,
   whatsappUrl: `https://wa.me/${phoneNumber}`,
   contacts: [
     { title: 'Telefone', value: `+${phoneNumber}` },
