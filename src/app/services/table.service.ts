@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import {
+  deleteField,
   doc,
   docData,
   DocumentReference,
@@ -13,10 +14,12 @@ import { traceUntilFirst } from '@angular/fire/performance'
 import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
+import { NewTask, Task } from '../model/task.model'
 import { TABLE_ID_KEY } from '../utils/constant'
 import { getCurrentDate } from '../utils/date'
 import { getTableId } from '../utils/table'
 import { getUserId } from '../utils/user'
+import { randomUuid } from '../utils/uuid'
 import { UserService } from './user.service'
 
 @Injectable({
@@ -76,6 +79,34 @@ export class TableService {
         subscriber.next(table)
       })
     })
+  }
+
+  addTask({ title, link }: NewTask): void {
+    const id = randomUuid()
+
+    const now = getCurrentDate()
+
+    const task: Task = {
+      id,
+      link,
+      title,
+      estimation: 0,
+      selected: false,
+      voted: false,
+      votes: {},
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    const path = `tasks.${id}`
+
+    updateDoc(this.ref, { [path]: task })
+  }
+
+  removeTask(id: string): void {
+    const path = `tasks.${id}`
+
+    updateDoc(this.ref, { [path]: deleteField() })
   }
 
   changeName(name: string): void {

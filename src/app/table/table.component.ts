@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common'
 import { Component } from '@angular/core'
 
+import {
+  FormGroup,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms'
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
 import { NzButtonModule } from 'ng-zorro-antd/button'
 import { NzCardModule } from 'ng-zorro-antd/card'
@@ -9,6 +15,7 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown'
 import { NzFlexModule } from 'ng-zorro-antd/flex'
 import { NzFormModule } from 'ng-zorro-antd/form'
 import { NzIconModule } from 'ng-zorro-antd/icon'
+import { NzInputModule } from 'ng-zorro-antd/input'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header'
 import { NzPopoverModule } from 'ng-zorro-antd/popover'
@@ -22,7 +29,7 @@ import { map, mergeMap, Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Table } from '../model/table.model'
-import { Task } from '../model/task.model'
+import { NewTask, Task } from '../model/task.model'
 import { User } from '../model/user.model'
 import { CardService } from '../services/card.service'
 import { TableService } from '../services/table.service'
@@ -56,6 +63,9 @@ const MINUTES_DEFAULT = 1
     NzCardModule,
     NzTagModule,
     NzPopoverModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
@@ -118,13 +128,21 @@ export class TableComponent {
   table: Observable<Table>
   owner: Observable<User>
   cards: Observable<Card[]>
-  tasks!: Observable<Task[]>
+  tasks: Observable<Task[]>
+
+  validateForm: FormGroup
 
   constructor(
+    private fb: NonNullableFormBuilder,
     private userService: UserService,
     private tableService: TableService,
     private cardService: CardService,
   ) {
+    this.validateForm = this.fb.group({
+      title: this.fb.control('', [Validators.required]),
+      link: this.fb.control(''),
+    })
+
     this.user = this.userService.getUserObservable()
     this.cards = this.cardService.getCardsObservable()
     this.table = this.tableService.getTableObservable()
@@ -164,9 +182,24 @@ export class TableComponent {
     await this.tableService.changeName(name.slice(0, 40))
   }
 
-  handleToggleAddAnotherTask(event: Event): void {
-    event.preventDefault()
+  handleToggleAddAnotherTask(): void {
     this.toggleAddAnotherTask = !this.toggleAddAnotherTask
+  }
+
+  handleSaveAnotherTask(): void {
+    if (!this.validateForm.valid) {
+      return
+    }
+
+    const value = this.validateForm.value as NewTask
+
+    this.tableService.addTask(value)
+
+    this.validateForm.reset()
+  }
+
+  handleDeleteTask(id: string) {
+    this.tableService.removeTask(id)
   }
 
   handleStartTimer(minutes: number): void {

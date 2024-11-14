@@ -17,6 +17,7 @@ import {
   CloseCircleOutline,
   CodeOutline,
   CoffeeOutline,
+  DeleteOutline,
   FastForwardOutline,
   GithubOutline,
   LinkedinOutline,
@@ -49,6 +50,7 @@ const icons: IconDefinition[] = [
   WhatsAppOutline,
   CodeOutline,
   LinkOutline,
+  DeleteOutline,
 ]
 
 export const appConfig: ApplicationConfig = {

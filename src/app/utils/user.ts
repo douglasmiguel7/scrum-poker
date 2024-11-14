@@ -6,7 +6,5 @@ export const getUserId = (): string => {
 
   localStorage.setItem(USER_ID_KEY, id)
 
-  console.log({ userId: id })
-
   return id
 }
