@@ -1,6 +1,7 @@
 export interface EnvironmentType {
   appUrl: string
   appVersion: string
+  appVersionTitle: string
   githubUsername: string
   githubProfileUrl: string
   repositoryUrl: string

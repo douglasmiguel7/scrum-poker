@@ -5,6 +5,8 @@ const phoneNumber = '5511936183634'
 
 const environment: EnvironmentType = {
   appUrl: '',
+  appVersion: `v${version}`,
+  appVersionTitle: 'alpha',
   githubUsername: '@douglasmiguel7',
   githubProfileUrl: 'https://github.com/douglasmiguel7',
   repositoryUrl: 'https://github.com/douglasmiguel7/scrum-poker',
@@ -13,7 +15,6 @@ const environment: EnvironmentType = {
   email: 'douglasandrademiguel@gmail.com',
   profilePictureUrl: 'https://avatars.githubusercontent.com/u/17931093',
   tablesEndpoint: '/tables',
-  appVersion: `v${version}`,
   whatsappUrl: `https://wa.me/${phoneNumber}`,
   contacts: [
     { title: 'Telefone', value: `+${phoneNumber}` },
