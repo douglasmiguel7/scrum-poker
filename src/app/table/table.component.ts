@@ -38,8 +38,8 @@ import { PlayerService } from '../services/player.service'
 import { SpectatorService } from '../services/spectator.service'
 import { TableService } from '../services/table.service'
 import { TaskService } from '../services/task.service'
-import { UserService } from '../services/user.service'
 import { UserRoleService } from '../services/user-role.service'
+import { UserService } from '../services/user.service'
 
 const LEFT_TIME_KEY = 'time'
 const LEFT_TIME_DEFAULT = 0
@@ -129,6 +129,7 @@ export class TableComponent implements OnInit {
   players$: Observable<User[]>
   spectators$: Observable<User[]>
   userRole$: Observable<UserRole>
+  changingUserRole = false
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -328,7 +329,9 @@ export class TableComponent implements OnInit {
     this.cardsRevealed = !this.cardsRevealed
   }
 
-  handleUserRoleChange() {
-    this.userRoleService.switchRole()
+  async handleUserRoleChange() {
+    this.changingUserRole = true
+    await this.userRoleService.switchRole()
+    this.changingUserRole = false
   }
 }

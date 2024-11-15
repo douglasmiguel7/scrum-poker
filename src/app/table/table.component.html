@@ -246,13 +246,17 @@
           nzType="link"
           class="!p-0"
           (click)="handleUserRoleChange()"
+          [nzLoading]="changingUserRole"
         >
-          <span nz-icon nzType="swap" nzTheme="outline"></span>
-          @if ((userRole$ | async)?.role === 'spectator') {
+          @if (!changingUserRole) {
+            <span nz-icon nzType="swap" nzTheme="outline"></span>
+          }
+
+          @if (!changingUserRole && (userRole$ | async)?.role === 'spectator') {
             Sentar na mesa
           }
 
-          @if ((userRole$ | async)?.role === 'player') {
+          @if (!changingUserRole && (userRole$ | async)?.role === 'player') {
             Assistir
           }
         </button>

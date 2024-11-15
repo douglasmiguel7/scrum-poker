@@ -74,8 +74,8 @@ export class UserRoleService {
         role: 'spectator',
       })
 
-      this.playerService.delete()
-      this.spectatorService.create()
+      await this.playerService.delete()
+      await this.spectatorService.create()
 
       return
     }
@@ -90,8 +90,8 @@ export class UserRoleService {
         role: 'player',
       })
 
-      this.spectatorService.delete()
-      this.playerService.create()
+      await this.spectatorService.delete()
+      await this.playerService.create()
 
       return
     }
