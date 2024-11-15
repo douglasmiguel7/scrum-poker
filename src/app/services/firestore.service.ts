@@ -6,6 +6,7 @@ import {
   doc,
   docData,
   DocumentReference,
+  DocumentSnapshot,
   Firestore,
   getDoc,
   query,
@@ -123,6 +124,19 @@ export class FirestoreService {
     return collectionData(collectionQuery).pipe(traceUntilFirst('firestore'))
   }
 
+  async getDocumentSnapshot<T>(
+    name: CollectionName,
+    key: string,
+  ): Promise<DocumentSnapshot<T>> {
+    console.log(getCurrentDate(), `document snapshot -> ${name}/${key}`)
+
+    const reference = this.getDocumentReference(name, key)
+
+    const snapshot = await getDoc(reference)
+
+    return snapshot as DocumentSnapshot<T>
+  }
+
   async exists(name: CollectionName, key: string): Promise<boolean> {
     console.log(getCurrentDate(), `exists -> ${name}/${key}`)
 
@@ -147,15 +161,15 @@ export class FirestoreService {
   updateAttirbute<T>(
     name: CollectionName,
     key: string,
-    attribute: keyof T,
-    value: string,
+    data: Partial<T>,
   ): void {
     console.log(
-      `update attribute -> changing "${attribute.toString()}" of "${name}/${key}" to "${value}"`,
+      getCurrentDate(),
+      `update attribute -> updating "${name}/${key}" to "${JSON.stringify(data)}"`,
     )
 
     const reference = this.getDocumentReference(name, key)
 
-    updateDoc(reference, { [attribute]: value })
+    updateDoc(reference, data)
   }
 }

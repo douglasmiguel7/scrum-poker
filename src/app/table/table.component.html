@@ -248,12 +248,12 @@
           (click)="handleUserRoleChange()"
         >
           <span nz-icon nzType="swap" nzTheme="outline"></span>
-          @if (userRole === 'spectator') {
-            Sentar para mesa
+          @if ((userRole$ | async)?.role === 'spectator') {
+            Sentar na mesa
           }
 
-          @if (userRole === 'player') {
-            Ficar de espectador
+          @if ((userRole$ | async)?.role === 'player') {
+            Assistir
           }
         </button>
         <div *nzSpaceItem>
@@ -261,14 +261,27 @@
           <nz-space nzDirection="vertical">
             @for (player of players$ | async; track player.id) {
               <nz-space *nzSpaceItem nzAlign="baseline">
-                <nz-avatar *nzSpaceItem [nzText]="player.name.charAt(0)" />
+                <nz-avatar
+                  *nzSpaceItem
+                  [nzText]="
+                    (user$ | async)?.id === player.id
+                      ? 'V'
+                      : player.name.charAt(0)
+                  "
+                />
                 <span *nzSpaceItem nz-typography nzEllipsis class="w-32">
                   <span
                     nz-tooltip
                     [nzTooltipTitle]="player.name"
                     nzTooltipPlacement="right"
                   >
-                    {{ player }}
+                    @if ((user$ | async)?.id === player.id) {
+                      Você
+                    }
+
+                    @if ((user$ | async)?.id !== player.id) {
+                      {{ player.name }}
+                    }
                   </span>
                 </span>
               </nz-space>

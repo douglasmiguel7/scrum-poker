@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { where } from '@angular/fire/firestore'
+import { deleteDoc, where } from '@angular/fire/firestore'
 import { ActivatedRoute } from '@angular/router'
 import { Observable, switchMap } from 'rxjs'
 import { Spectator } from '../model/spectator.model'
@@ -25,7 +25,16 @@ export class SpectatorService {
 
     const id = `${tableId}-${userId}`
 
-    const exists = await this.firestoreService.exists('spectators', id)
+    let exists = await this.firestoreService.exists('players', id)
+    if (exists) {
+      console.log(
+        getCurrentDate(),
+        `create spectator -> already exists as a player "players/${id}"`,
+      )
+      return
+    }
+
+    exists = await this.firestoreService.exists('spectators', id)
     if (exists) {
       console.log(
         getCurrentDate(),
@@ -46,6 +55,20 @@ export class SpectatorService {
     }
 
     this.firestoreService.save('spectators', id, spectator)
+  }
+
+  async delete(): Promise<void> {
+    const tableId = getTableId(this.route)
+    const userId = getUserId()
+
+    const id = `${tableId}-${userId}`
+
+    const reference = this.firestoreService.getDocumentReference(
+      'spectators',
+      id,
+    )
+
+    await deleteDoc(reference)
   }
 
   getSpectatorsObservable(): Observable<User[]> {

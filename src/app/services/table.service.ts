@@ -56,8 +56,7 @@ export class TableService {
     this.firestoreService.updateAttirbute<Table>(
       'tables',
       getTableId(this.route),
-      'name',
-      name,
+      { name },
     )
   }
 }

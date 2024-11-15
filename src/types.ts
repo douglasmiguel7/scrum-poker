@@ -26,3 +26,4 @@ export type CollectionName =
   | 'owners'
   | 'players'
   | 'spectators'
+  | 'userRoles'

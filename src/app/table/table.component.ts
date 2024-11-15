@@ -39,6 +39,7 @@ import { SpectatorService } from '../services/spectator.service'
 import { TableService } from '../services/table.service'
 import { TaskService } from '../services/task.service'
 import { UserService } from '../services/user.service'
+import { UserRoleService } from '../services/user-role.service'
 
 const LEFT_TIME_KEY = 'time'
 const LEFT_TIME_DEFAULT = 0
@@ -127,8 +128,7 @@ export class TableComponent implements OnInit {
   tasks$: Observable<Task[]>
   players$: Observable<User[]>
   spectators$: Observable<User[]>
-
-  userRole: UserRole = 'spectator'
+  userRole$: Observable<UserRole>
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -139,6 +139,7 @@ export class TableComponent implements OnInit {
     private ownerService: OwnerService,
     private playerService: PlayerService,
     private spectatorService: SpectatorService,
+    private userRoleService: UserRoleService,
   ) {
     console.log('constructor table component')
 
@@ -154,6 +155,7 @@ export class TableComponent implements OnInit {
     this.tasks$ = this.taskService.getTasksObservable()
     this.players$ = this.playerService.getPlayersObservable()
     this.spectators$ = this.spectatorService.getSpectatorsObservable()
+    this.userRole$ = this.userRoleService.getUserRoleObservable()
 
     this.loadTimer()
   }
@@ -163,6 +165,7 @@ export class TableComponent implements OnInit {
     this.tableService.create()
     this.userService.create()
     this.spectatorService.create()
+    this.userRoleService.create()
   }
 
   private loadTimer(): void {
@@ -326,16 +329,6 @@ export class TableComponent implements OnInit {
   }
 
   handleUserRoleChange() {
-    if (this.userRole === 'spectator') {
-      this.userRole = 'player'
-      return
-    }
-
-    if (this.userRole === 'player') {
-      this.userRole = 'spectator'
-      return
-    }
-
-    console.log(`user role -> ${this.userRole}`)
+    this.userRoleService.switchRole()
   }
 }

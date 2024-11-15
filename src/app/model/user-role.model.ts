@@ -1,5 +1,5 @@
-export type UserRole = 'player' | 'spectator' | 'owner'
+export type Role = 'player' | 'spectator' | 'owner'
 
-export interface UR {
-  id: string
+export interface UserRole {
+  role: Role
 }
