@@ -241,6 +241,21 @@
     <!-- content left side -->
     <nz-sider class="overflow-x-hidden overflow-y-auto">
       <nz-space nzDirection="vertical" class="py-3 pl-3" nzSize="middle">
+        <button
+          nz-button
+          nzType="link"
+          class="!p-0"
+          (click)="handleUserRoleChange()"
+        >
+          <span nz-icon nzType="swap" nzTheme="outline"></span>
+          @if (userRole === 'spectator') {
+            Sentar para mesa
+          }
+
+          @if (userRole === 'player') {
+            Ficar de espectador
+          }
+        </button>
         <div *nzSpaceItem>
           <h4>Na mesa ({{ (players$ | async)?.length }})</h4>
           <nz-space nzDirection="vertical">
@@ -266,14 +281,27 @@
           <nz-space nzDirection="vertical">
             @for (spectator of spectators$ | async; track spectator.id) {
               <nz-space *nzSpaceItem nzAlign="baseline">
-                <nz-avatar *nzSpaceItem [nzText]="spectator.name.charAt(0)" />
+                <nz-avatar
+                  *nzSpaceItem
+                  [nzText]="
+                    (user$ | async)?.id === spectator.id
+                      ? 'V'
+                      : spectator.name.charAt(0)
+                  "
+                />
                 <span *nzSpaceItem nz-typography nzEllipsis class="w-32">
                   <span
                     nz-tooltip
                     [nzTooltipTitle]="spectator.name"
                     nzTooltipPlacement="right"
                   >
-                    {{ spectator.name }}
+                    @if ((user$ | async)?.id === spectator.id) {
+                      Você
+                    }
+
+                    @if ((user$ | async)?.id !== spectator.id) {
+                      {{ spectator.name }}
+                    }
                   </span>
                 </span>
               </nz-space>

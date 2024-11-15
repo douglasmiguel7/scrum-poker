@@ -30,6 +30,7 @@ import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Table } from '../model/table.model'
 import { NewTask, Task } from '../model/task.model'
+import { UserRole } from '../model/user-role.model'
 import { User } from '../model/user.model'
 import { CardService } from '../services/card.service'
 import { OwnerService } from '../services/owner.service'
@@ -126,6 +127,8 @@ export class TableComponent implements OnInit {
   tasks$: Observable<Task[]>
   players$: Observable<User[]>
   spectators$: Observable<User[]>
+
+  userRole: UserRole = 'spectator'
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -320,5 +323,19 @@ export class TableComponent implements OnInit {
 
   handleCardsRevealed() {
     this.cardsRevealed = !this.cardsRevealed
+  }
+
+  handleUserRoleChange() {
+    if (this.userRole === 'spectator') {
+      this.userRole = 'player'
+      return
+    }
+
+    if (this.userRole === 'player') {
+      this.userRole = 'spectator'
+      return
+    }
+
+    console.log(`user role -> ${this.userRole}`)
   }
 }
