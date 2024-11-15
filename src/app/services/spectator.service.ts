@@ -19,7 +19,7 @@ export class SpectatorService {
   ) {}
 
   async create(): Promise<void> {
-    const { id, tableId, userId } = getMergedId(this.route)
+    const { id, tableId, userId } = getMergedId()
 
     let exists = await this.firestoreService.exists('players', id)
     if (exists) {
@@ -53,7 +53,7 @@ export class SpectatorService {
   }
 
   async delete(): Promise<void> {
-    const { id } = getMergedId(this.route)
+    const { id } = getMergedId()
 
     const reference = this.firestoreService.getDocumentReference(
       'spectators',
@@ -64,7 +64,7 @@ export class SpectatorService {
   }
 
   getSpectatorsObservable(): Observable<User[]> {
-    const tableId = getTableId(this.route)
+    const tableId = getTableId()
 
     return this.firestoreService
       .getCollecitonObservable<Spectator>(

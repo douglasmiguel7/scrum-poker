@@ -37,7 +37,7 @@ export class TaskService {
 
     const task: Task = {
       id,
-      tableId: getTableId(this.route),
+      tableId: getTableId(),
       link,
       title,
       estimation: 0,

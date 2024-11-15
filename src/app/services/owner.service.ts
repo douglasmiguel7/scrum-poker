@@ -16,7 +16,7 @@ export class OwnerService {
     private route: ActivatedRoute,
   ) {}
   async create(): Promise<void> {
-    const tableId = getTableId(this.route)
+    const tableId = getTableId()
 
     const exists = await this.firestoreService.exists('owners', tableId)
     if (exists) {
@@ -42,7 +42,7 @@ export class OwnerService {
 
   getOwnerObservable(): Observable<User> {
     return this.firestoreService
-      .getDocumentObservable<Owner>('owners', getTableId(this.route))
+      .getDocumentObservable<Owner>('owners', getTableId())
       .pipe(
         switchMap((owner: Owner) =>
           owner

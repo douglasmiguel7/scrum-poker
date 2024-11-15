@@ -20,7 +20,7 @@ export class UserRoleService {
   ) {}
 
   async create(): Promise<void> {
-    const { id } = getMergedId(this.route)
+    const { id } = getMergedId()
 
     const exists = await this.firestoreService.exists('userRoles', id)
     if (exists) {
@@ -35,13 +35,13 @@ export class UserRoleService {
   }
 
   getUserRoleObservable(): Observable<UserRole> {
-    const { id } = getMergedId(this.route)
+    const { id } = getMergedId()
 
     return this.firestoreService.getDocumentObservable('userRoles', id)
   }
 
   async switchRole(): Promise<void> {
-    const { id } = getMergedId(this.route)
+    const { id } = getMergedId()
 
     const snapshot = await this.firestoreService.getDocumentSnapshot<UserRole>(
       'userRoles',

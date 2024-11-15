@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
 import { getCurrentDate } from '../utils/date'
+import { getTableId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { OwnerService } from './owner.service'
-import { getTableId } from '../utils/id'
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class TableService {
   ) {}
 
   async create(): Promise<void> {
-    const id = getTableId(this.route)
+    const id = getTableId()
 
     const exists = await this.firestoreService.exists('tables', id)
     if (exists) {
@@ -46,14 +46,11 @@ export class TableService {
   }
 
   getTableObservable(): Observable<Table> {
-    return this.firestoreService.getDocumentObservable(
-      'tables',
-      getTableId(this.route),
-    )
+    return this.firestoreService.getDocumentObservable('tables', getTableId())
   }
 
   changeName(name: string): void {
-    this.firestoreService.update('tables', getTableId(this.route), {
+    this.firestoreService.update('tables', getTableId(), {
       name,
     })
   }

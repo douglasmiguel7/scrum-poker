@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
+import { ActivatedRoute } from '@angular/router'
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
 import { NzButtonModule } from 'ng-zorro-antd/button'
 import { NzCardModule } from 'ng-zorro-antd/card'
@@ -40,6 +41,7 @@ import { TableService } from '../services/table.service'
 import { TaskService } from '../services/task.service'
 import { UserRoleService } from '../services/user-role.service'
 import { UserService } from '../services/user.service'
+import { init } from '../utils/id'
 
 const LEFT_TIME_KEY = 'time'
 const LEFT_TIME_DEFAULT = 0
@@ -119,16 +121,16 @@ export class TableComponent implements OnInit {
 
   validateForm: FormGroup
 
-  user$: Observable<User>
-  table$: Observable<Table>
-  owner$: Observable<User>
-  cards$: Observable<Card[]>
-  tasks$: Observable<Task[]>
-  players$: Observable<User[]>
-  spectators$: Observable<User[]>
-  userRole$: Observable<UserRole>
+  user$: Observable<User> | null = null
+  table$: Observable<Table> | null = null
+  owner$: Observable<User> | null = null
+  cards$: Observable<Card[]> | null = null
+  tasks$: Observable<Task[]> | null = null
+  players$: Observable<User[]> | null = null
+  spectators$: Observable<User[]> | null = null
+  userRole$: Observable<UserRole> | null = null
   changingUserRole = false
-  estimationTotal$: Observable<number>
+  estimationTotal$: Observable<number> | null = null
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -140,8 +142,11 @@ export class TableComponent implements OnInit {
     private playerService: PlayerService,
     private spectatorService: SpectatorService,
     private userRoleService: UserRoleService,
+    private route: ActivatedRoute,
   ) {
-    console.log('constructor table component')
+    console.log('table component constructor')
+
+    init(this.route)
 
     this.validateForm = this.fb.group({
       title: this.fb.control('', [Validators.required]),
@@ -161,12 +166,13 @@ export class TableComponent implements OnInit {
         task.map((t) => t.estimation).reduce((prev, curr) => prev + curr, 0),
       ),
     )
-
-    this.loadTimer()
   }
 
   ngOnInit(): void {
     console.log('init table component')
+
+    this.loadTimer()
+
     this.tableService.create()
     this.userService.create()
     this.spectatorService.create()
@@ -206,7 +212,7 @@ export class TableComponent implements OnInit {
   }
 
   handleSaveAnotherTask(): void {
-    if (!this.validateForm.valid) {
+    if (!this.validateForm?.valid) {
       return
     }
 

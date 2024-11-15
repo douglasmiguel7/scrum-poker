@@ -3,13 +3,19 @@ import { v4, validate, version } from 'uuid'
 import { MergedId } from '../../types'
 import { TABLE_ID_KEY, USER_ID_KEY } from './constant'
 
+let route: ActivatedRoute
+
+export const init = (activatedRoute: ActivatedRoute): void => {
+  route = activatedRoute
+}
+
 export const randomUuid = () => v4()
 
 export const validateUuid = (uuid: string): boolean => {
   return validate(uuid) && version(uuid) === 4
 }
 
-export const getTableId = (route: ActivatedRoute): string => {
+export const getTableId = (): string => {
   return (
     route.snapshot.paramMap.get('id') ||
     localStorage.getItem(TABLE_ID_KEY) ||
@@ -25,8 +31,8 @@ export const getUserId = (): string => {
   return id
 }
 
-export const getMergedId = (route: ActivatedRoute): MergedId => {
-  const tableId = getTableId(route)
+export const getMergedId = (): MergedId => {
+  const tableId = getTableId()
   const userId = getUserId()
 
   return {

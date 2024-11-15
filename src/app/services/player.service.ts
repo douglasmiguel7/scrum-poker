@@ -19,7 +19,7 @@ export class PlayerService {
   ) {}
 
   async create(): Promise<void> {
-    const { id, tableId, userId } = getMergedId(this.route)
+    const { id, tableId, userId } = getMergedId()
 
     let exists = await this.firestoreService.exists('spectators', id)
     if (exists) {
@@ -50,7 +50,7 @@ export class PlayerService {
   }
 
   async delete(): Promise<void> {
-    const { id } = getMergedId(this.route)
+    const { id } = getMergedId()
 
     const reference = this.firestoreService.getDocumentReference('players', id)
 
@@ -58,7 +58,7 @@ export class PlayerService {
   }
 
   getPlayersObservable(): Observable<User[]> {
-    const tableId = getTableId(this.route)
+    const tableId = getTableId()
 
     return this.firestoreService
       .getCollecitonObservable<Player>(

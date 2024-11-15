@@ -3,27 +3,28 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { TableComponent } from './table/table.component'
 import { validateUuid } from './utils/id'
 
-const notFound: UrlSegment = new UrlSegment('not-found', {})
-
-const matcher: UrlMatcher = (url: UrlSegment[]): UrlMatchResult | null => {
-  const isRoot = url.length === 0
+const matcher: UrlMatcher = (segments: UrlSegment[]): UrlMatchResult | null => {
+  const isRoot = segments.length === 0
   if (isRoot) {
-    return { consumed: url }
+    return { consumed: segments }
   }
 
-  const hasTwoSegments = url.length === 2
+  const hasTwoSegments = segments.length === 2
   if (!hasTwoSegments) {
-    return { consumed: [notFound] }
+    return null
   }
 
-  const id = url[1].path
+  const id = segments[1].path
 
   const valid = validateUuid(id)
   if (!valid) {
-    return { consumed: [notFound] }
+    return null
   }
 
-  return { consumed: url, posParams: { id: new UrlSegment(id, {}) } }
+  return {
+    consumed: segments,
+    posParams: { id: new UrlSegment(id, {}) },
+  }
 }
 
 export const routes: Routes = [
