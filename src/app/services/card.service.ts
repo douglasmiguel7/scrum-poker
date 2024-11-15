@@ -1,28 +1,20 @@
 import { Injectable } from '@angular/core'
-import {
-  doc,
-  docData,
-  DocumentReference,
-  Firestore,
-} from '@angular/fire/firestore'
-import { traceUntilFirst } from '@angular/fire/performance'
-import { map, Observable } from 'rxjs'
-import { Card } from '../model/card.model'
+import { orderBy, where } from '@angular/fire/firestore'
+import { Observable } from 'rxjs'
+import { Card, CardPack } from '../model/card.model'
+import { FirestoreService } from './firestore.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class CardService {
-  ref: DocumentReference
-
-  constructor(private firestore: Firestore) {
-    this.ref = doc(this.firestore, 'cards', 'default')
-  }
+  constructor(private firestoreService: FirestoreService) {}
 
   getCardsObservable(): Observable<Card[]> {
-    return docData(this.ref).pipe(
-      traceUntilFirst('firestore'),
-      map((d: { cards: Card[] }) => d.cards),
+    return this.firestoreService.getCollecitonObservable(
+      'cards',
+      where('pack', '==', CardPack.Default),
+      orderBy('position', 'asc'),
     )
   }
 }

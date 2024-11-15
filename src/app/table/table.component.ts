@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 
 import {
   FormGroup,
@@ -7,7 +7,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
-import { parseISO } from 'date-fns'
 import { NzAvatarModule } from 'ng-zorro-antd/avatar'
 import { NzButtonModule } from 'ng-zorro-antd/button'
 import { NzCardModule } from 'ng-zorro-antd/card'
@@ -26,14 +25,18 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
 import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
-import { map, mergeMap, Observable } from 'rxjs'
+import { Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Table } from '../model/table.model'
 import { NewTask, Task } from '../model/task.model'
 import { User } from '../model/user.model'
 import { CardService } from '../services/card.service'
+import { OwnerService } from '../services/owner.service'
+import { PlayerService } from '../services/player.service'
+import { SpectatorService } from '../services/spectator.service'
 import { TableService } from '../services/table.service'
+import { TaskService } from '../services/task.service'
 import { UserService } from '../services/user.service'
 
 const LEFT_TIME_KEY = 'time'
@@ -71,16 +74,8 @@ const MINUTES_DEFAULT = 1
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
 })
-export class TableComponent {
+export class TableComponent implements OnInit {
   title = 'scrum-poker'
-
-  testDocValue$: Observable<{ quantidade: number }> | null = null
-
-  spectators = new Array(3)
-    .fill(null)
-    .map((_, index) => `Exemplo nome grande ${index}`)
-
-  players = new Array(5).fill(null).map((_, index) => `Maria ${index}`)
 
   env = environment
 
@@ -116,52 +111,55 @@ export class TableComponent {
     0,
   )
 
-  votingEstimationAverage = Math.floor(
-    this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
-      this.players.length,
-  )
+  votingEstimationAverage = 0
 
   vote: { player: string; estimation: number } | null = null
 
   votesByQuantity: { estimation: string; quantity: number }[] = []
 
-  user: Observable<User>
-  table: Observable<Table>
-  owner: Observable<User>
-  cards: Observable<Card[]>
-  tasks: Observable<Task[]>
-
   validateForm: FormGroup
+
+  user$: Observable<User>
+  table$: Observable<Table>
+  owner$: Observable<User>
+  cards$: Observable<Card[]>
+  tasks$: Observable<Task[]>
+  players$: Observable<User[]>
+  spectators$: Observable<User[]>
 
   constructor(
     private fb: NonNullableFormBuilder,
     private userService: UserService,
     private tableService: TableService,
     private cardService: CardService,
+    private taskService: TaskService,
+    private ownerService: OwnerService,
+    private playerService: PlayerService,
+    private spectatorService: SpectatorService,
   ) {
+    console.log('constructor table component')
+
     this.validateForm = this.fb.group({
       title: this.fb.control('', [Validators.required]),
       link: this.fb.control(''),
     })
 
-    this.user = this.userService.getUserObservable()
-    this.cards = this.cardService.getCardsObservable()
-    this.table = this.tableService.getTableObservable()
-
-    this.owner = this.table.pipe(
-      mergeMap((t) => this.userService.getUserObservableByRef(t.owner)),
-    )
-
-    this.tasks = this.table.pipe(
-      map((table) =>
-        Object.values(table.tasks).sort(
-          (a, b) =>
-            parseISO(b.createdAt).getTime() - parseISO(a.createdAt).getTime(),
-        ),
-      ),
-    )
+    this.user$ = this.userService.getUserObservable()
+    this.cards$ = this.cardService.getCardsObservable()
+    this.table$ = this.tableService.getTableObservable()
+    this.owner$ = this.ownerService.getOwnerObservable()
+    this.tasks$ = this.taskService.getTasksObservable()
+    this.players$ = this.playerService.getPlayersObservable()
+    this.spectators$ = this.spectatorService.getSpectatorsObservable()
 
     this.loadTimer()
+  }
+
+  ngOnInit(): void {
+    console.log('init table component')
+    this.tableService.create()
+    this.userService.create()
+    this.spectatorService.create()
   }
 
   private loadTimer(): void {
@@ -203,13 +201,13 @@ export class TableComponent {
 
     const value = this.validateForm.value as NewTask
 
-    this.tableService.addTask(value)
+    this.taskService.save(value)
 
     this.validateForm.reset()
   }
 
   handleDeleteTask(id: string) {
-    this.tableService.removeTask(id)
+    this.taskService.delete(id)
   }
 
   handleStartTimer(minutes: number): void {
@@ -292,13 +290,13 @@ export class TableComponent {
 
     this.votingTask = id
 
-    this.tableService.selectTask()
+    this.taskService.select(id)
   }
 
   handleVote({ id, value }: { id: string; value: number }) {
     this.votedCardId = id
     this.vote = { player: 'doug', estimation: value }
-    this.votes = new Array(this.players.length).fill(this.vote)
+    this.votes = [this.vote]
     this.votingEstimationTotal = this.votes.reduce(
       (prev, curr) => prev + curr.estimation,
       0,

@@ -13,3 +13,16 @@ export interface EnvironmentType {
   whatsappUrl: string
   contacts: { title: string; value: string }[]
 }
+
+export interface WithUserId {
+  userId: string
+}
+
+export type CollectionName =
+  | 'tables'
+  | 'tasks'
+  | 'users'
+  | 'cards'
+  | 'owners'
+  | 'players'
+  | 'spectators'
