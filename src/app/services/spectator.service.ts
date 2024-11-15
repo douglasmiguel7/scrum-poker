@@ -45,7 +45,6 @@ export class SpectatorService {
     )
 
     const spectator: Spectator = {
-      id,
       userId,
       tableId,
     }
