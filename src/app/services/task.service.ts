@@ -11,23 +11,18 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { NewTask, Task } from '../model/task.model'
 import { getCurrentDate } from '../utils/date'
-import { getTableId } from '../utils/table'
-import { randomUuid } from '../utils/uuid'
+import { getTableId, randomUuid } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  tableId: string
-
   constructor(
     private firestore: Firestore,
     private firestoreService: FirestoreService,
     private route: ActivatedRoute,
-  ) {
-    this.tableId = getTableId(this.route)
-  }
+  ) {}
 
   getTasksObservable(): Observable<Task[]> {
     return this.firestoreService.getCollecitonObservable<Task>(
@@ -42,7 +37,7 @@ export class TaskService {
 
     const task: Task = {
       id,
-      tableId: this.tableId,
+      tableId: getTableId(this.route),
       link,
       title,
       estimation: 0,

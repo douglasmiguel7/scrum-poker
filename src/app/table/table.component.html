@@ -524,13 +524,16 @@
               }
             </span>
             <span *nzSpaceItem>
-              {{ estimationTotal }}
+              {{ estimationTotal$ | async }}
 
-              @if (estimationTotal === 1) {
+              @if ((estimationTotal$ | async) === 1) {
                 ponto
               }
 
-              @if (estimationTotal < 1 || estimationTotal > 1) {
+              @if (
+                ((estimationTotal$ | async) || 0) < 1 ||
+                ((estimationTotal$ | async) || 0) > 1
+              ) {
                 pontos
               }
             </span>

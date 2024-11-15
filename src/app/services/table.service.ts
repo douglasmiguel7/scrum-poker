@@ -3,9 +3,9 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
 import { getCurrentDate } from '../utils/date'
-import { getTableId } from '../utils/table'
 import { FirestoreService } from './firestore.service'
 import { OwnerService } from './owner.service'
+import { getTableId } from '../utils/id'
 
 @Injectable({
   providedIn: 'root',

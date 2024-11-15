@@ -4,10 +4,8 @@ import { Observable, of, switchMap } from 'rxjs'
 import { Owner } from '../model/owner.model'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
-import { getTableId } from '../utils/table'
-import { getUserId } from '../utils/user'
-import { randomUuid } from '../utils/uuid'
 import { FirestoreService } from './firestore.service'
+import { getTableId, getUserId } from '../utils/id'
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +33,6 @@ export class OwnerService {
     )
 
     const owner: Owner = {
-      id: randomUuid(),
       tableId,
       userId: getUserId(),
     }

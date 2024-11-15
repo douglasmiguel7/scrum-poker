@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
-import { getUserId } from '../utils/user'
 import { FirestoreService } from './firestore.service'
+import { getUserId } from '../utils/id'
 
 @Injectable({
   providedIn: 'root',

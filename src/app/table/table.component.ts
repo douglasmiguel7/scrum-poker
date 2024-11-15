@@ -25,7 +25,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
 import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
-import { Observable } from 'rxjs'
+import { map, Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Table } from '../model/table.model'
@@ -81,8 +81,6 @@ export class TableComponent implements OnInit {
 
   env = environment
 
-  estimationTotal = 0
-
   toggleAddAnotherTask = false
 
   countdownStarted = false
@@ -130,6 +128,7 @@ export class TableComponent implements OnInit {
   spectators$: Observable<User[]>
   userRole$: Observable<UserRole>
   changingUserRole = false
+  estimationTotal$: Observable<number>
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -157,6 +156,11 @@ export class TableComponent implements OnInit {
     this.players$ = this.playerService.getPlayersObservable()
     this.spectators$ = this.spectatorService.getSpectatorsObservable()
     this.userRole$ = this.userRoleService.getUserRoleObservable()
+    this.estimationTotal$ = this.tasks$.pipe(
+      map((task) =>
+        task.map((t) => t.estimation).reduce((prev, curr) => prev + curr, 0),
+      ),
+    )
 
     this.loadTimer()
   }

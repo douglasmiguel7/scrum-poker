@@ -1,7 +1,7 @@
 import { Routes, UrlMatcher, UrlMatchResult, UrlSegment } from '@angular/router'
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 import { TableComponent } from './table/table.component'
-import { validateUuid } from './utils/uuid'
+import { validateUuid } from './utils/id'
 
 const notFound: UrlSegment = new UrlSegment('not-found', {})
 

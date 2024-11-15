@@ -3,8 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { UserRole } from '../model/user-role.model'
 import { getCurrentDate } from '../utils/date'
-import { getTableId } from '../utils/table'
-import { getUserId } from '../utils/user'
+import { getMergedId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { PlayerService } from './player.service'
 import { SpectatorService } from './spectator.service'
@@ -21,10 +20,7 @@ export class UserRoleService {
   ) {}
 
   async create(): Promise<void> {
-    const tableId = getTableId(this.route)
-    const userId = getUserId()
-
-    const id = `${tableId}-${userId}`
+    const { id } = getMergedId(this.route)
 
     const exists = await this.firestoreService.exists('userRoles', id)
     if (exists) {
@@ -39,19 +35,13 @@ export class UserRoleService {
   }
 
   getUserRoleObservable(): Observable<UserRole> {
-    const tableId = getTableId(this.route)
-    const userId = getUserId()
-
-    const id = `${tableId}-${userId}`
+    const { id } = getMergedId(this.route)
 
     return this.firestoreService.getDocumentObservable('userRoles', id)
   }
 
   async switchRole(): Promise<void> {
-    const tableId = getTableId(this.route)
-    const userId = getUserId()
-
-    const id = `${tableId}-${userId}`
+    const { id } = getMergedId(this.route)
 
     const snapshot = await this.firestoreService.getDocumentSnapshot<UserRole>(
       'userRoles',

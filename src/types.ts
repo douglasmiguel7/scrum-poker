@@ -18,6 +18,12 @@ export interface WithUserId {
   userId: string
 }
 
+export interface MergedId {
+  id: string
+  tableId: string
+  userId: string
+}
+
 export type CollectionName =
   | 'tables'
   | 'tasks'

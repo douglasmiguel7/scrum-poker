@@ -5,9 +5,8 @@ import { Observable, switchMap } from 'rxjs'
 import { Player } from '../model/player.model'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
+import { getMergedId, getTableId } from '../utils/id'
 import { toUserId } from '../utils/map'
-import { getTableId } from '../utils/table'
-import { getUserId } from '../utils/user'
 import { FirestoreService } from './firestore.service'
 
 @Injectable({
@@ -20,10 +19,7 @@ export class PlayerService {
   ) {}
 
   async create(): Promise<void> {
-    const tableId = getTableId(this.route)
-    const userId = getUserId()
-
-    const id = `${tableId}-${userId}`
+    const { id, tableId, userId } = getMergedId(this.route)
 
     let exists = await this.firestoreService.exists('spectators', id)
     if (exists) {
@@ -46,7 +42,6 @@ export class PlayerService {
     console.log(getCurrentDate(), `create player -> creating "players/${id}"`)
 
     const spectator: Player = {
-      id,
       userId,
       tableId,
     }
@@ -55,10 +50,7 @@ export class PlayerService {
   }
 
   async delete(): Promise<void> {
-    const tableId = getTableId(this.route)
-    const userId = getUserId()
-
-    const id = `${tableId}-${userId}`
+    const { id } = getMergedId(this.route)
 
     const reference = this.firestoreService.getDocumentReference('players', id)
 
