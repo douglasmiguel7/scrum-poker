@@ -121,16 +121,16 @@ export class TableComponent implements OnInit {
 
   validateForm: FormGroup
 
-  user$: Observable<User> | null = null
-  table$: Observable<Table> | null = null
-  owner$: Observable<User> | null = null
-  cards$: Observable<Card[]> | null = null
-  tasks$: Observable<Task[]> | null = null
-  players$: Observable<User[]> | null = null
-  spectators$: Observable<User[]> | null = null
-  userRole$: Observable<UserRole> | null = null
+  user$: Observable<User>
+  table$: Observable<Table>
+  owner$: Observable<User>
+  cards$: Observable<Card[]>
+  tasks$: Observable<Task[]>
+  players$: Observable<User[]>
+  spectators$: Observable<User[]>
+  userRole$: Observable<UserRole>
   changingUserRole = false
-  estimationTotal$: Observable<number> | null = null
+  estimationTotal$: Observable<number>
 
   constructor(
     private fb: NonNullableFormBuilder,
