@@ -158,18 +158,14 @@ export class FirestoreService {
     setDoc(reference, data)
   }
 
-  updateAttirbute<T>(
-    name: CollectionName,
-    key: string,
-    data: Partial<T>,
-  ): void {
+  update(name: CollectionName, key: string, data: unknown): void {
     console.log(
       getCurrentDate(),
-      `update attribute -> updating "${name}/${key}" to "${JSON.stringify(data)}"`,
+      `update -> "${name}/${key}" with "${JSON.stringify(data)}"`,
     )
 
     const reference = this.getDocumentReference(name, key)
 
-    updateDoc(reference, data)
+    updateDoc(reference, Object.assign({}, data))
   }
 }

@@ -70,7 +70,7 @@ export class UserRoleService {
         `switch role -> switching role to "spectator" in "${id}"`,
       )
 
-      this.firestoreService.updateAttirbute<UserRole>('userRoles', id, {
+      this.firestoreService.update('userRoles', id, {
         role: 'spectator',
       })
 
@@ -86,7 +86,7 @@ export class UserRoleService {
         `switch role -> switching role to "player" in "${id}"`,
       )
 
-      this.firestoreService.updateAttirbute<UserRole>('userRoles', id, {
+      this.firestoreService.update('userRoles', id, {
         role: 'player',
       })
 

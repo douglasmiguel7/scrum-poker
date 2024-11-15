@@ -42,6 +42,6 @@ export class UserService {
   }
 
   async changeName(name: string): Promise<void> {
-    this.firestoreService.updateAttirbute<User>('users', getUserId(), { name })
+    this.firestoreService.update('users', getUserId(), { name })
   }
 }

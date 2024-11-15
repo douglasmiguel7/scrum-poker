@@ -53,10 +53,8 @@ export class TableService {
   }
 
   changeName(name: string): void {
-    this.firestoreService.updateAttirbute<Table>(
-      'tables',
-      getTableId(this.route),
-      { name },
-    )
+    this.firestoreService.update('tables', getTableId(this.route), {
+      name,
+    })
   }
 }
