@@ -646,19 +646,33 @@
                   </button>
                 </ng-template>
 
-                @if (task.link) {
-                  <p>
-                    <span
-                      nz-typography
-                      nzEllipsis
-                      nzEditable
-                      nzEditTooltip="alterar link"
-                      [(nzContent)]="task.link"
-                      class="w-full"
-                      (nzContentChange)="handleTaskLinkChange(task.id, $event)"
-                    ></span>
-                  </p>
-                }
+                <p>
+                  <span
+                    nz-typography
+                    nzEllipsis
+                    nzEditable
+                    [nzEditIcon]="taskLinkEditIcon"
+                    [nzEditTooltip]="task.link ? 'alterar link' : null"
+                    [(nzContent)]="task.link"
+                    class="w-full"
+                    (nzContentChange)="handleTaskLinkChange(task.id, $event)"
+                  >
+                    <ng-template #taskLinkEditIcon>
+                      @if (task.link) {
+                        <span nz-icon nzType="edit" nzTheme="outline"></span>
+                      }
+
+                      @if (!task.link) {
+                        <span
+                          nz-icon
+                          nzType="plus-circle"
+                          nzTheme="outline"
+                        ></span>
+                        Adiconar link
+                      }
+                    </ng-template>
+                  </span>
+                </p>
 
                 <nz-space>
                   <button
