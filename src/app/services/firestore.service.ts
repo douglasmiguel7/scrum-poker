@@ -3,6 +3,7 @@ import {
   collection,
   collectionData,
   CollectionReference,
+  deleteDoc,
   doc,
   docData,
   DocumentReference,
@@ -16,7 +17,7 @@ import {
   where,
 } from '@angular/fire/firestore'
 import { traceUntilFirst } from '@angular/fire/performance'
-import { Observable, of } from 'rxjs'
+import { filter, Observable, of } from 'rxjs'
 import { CollectionName } from '../../types'
 import { getCurrentDate } from '../utils/date'
 
@@ -70,23 +71,15 @@ export class FirestoreService {
     return reference
   }
 
-  getDocumentObservableById<T>(
-    name: CollectionName,
-    id: string,
-  ): Observable<T> {
-    console.log(getCurrentDate(), `observing document (by id) -> ${name}/${id}`)
-
-    const reference = this.getDocumentReference(name, id)
-
-    return docData(reference).pipe(traceUntilFirst('firestore'))
-  }
-
   getDocumentObservable<T>(name: CollectionName, key: string): Observable<T> {
     console.log(getCurrentDate(), `observing document -> ${name}/${key}`)
 
     const reference = this.getDocumentReference(name, key)
 
-    return docData(reference).pipe(traceUntilFirst('firestore'))
+    return docData(reference).pipe(
+      traceUntilFirst('firestore'),
+      filter((value) => !!value),
+    )
   }
 
   getCollecitonObservable<T>(
@@ -167,5 +160,13 @@ export class FirestoreService {
     const reference = this.getDocumentReference(name, key)
 
     updateDoc(reference, Object.assign({}, data))
+  }
+
+  delete(name: CollectionName, key: string): void {
+    console.log(getCurrentDate(), `delete -> "${name}/${key}"`)
+
+    const reference = this.getDocumentReference(name, key)
+
+    deleteDoc(reference)
   }
 }
