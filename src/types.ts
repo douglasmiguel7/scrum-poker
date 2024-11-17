@@ -33,3 +33,5 @@ export type CollectionName =
   | 'players'
   | 'spectators'
   | 'userRoles'
+  | 'votes'
+  | 'selectedTasks'

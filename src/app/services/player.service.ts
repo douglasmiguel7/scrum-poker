@@ -6,7 +6,6 @@ import { Player } from '../model/player.model'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
 import { getMergedId, getTableId } from '../utils/id'
-import { toUserId } from '../utils/map'
 import { FirestoreService } from './firestore.service'
 
 @Injectable({
@@ -69,7 +68,7 @@ export class PlayerService {
         switchMap((players) =>
           this.firestoreService.getCollectionObservableByIds<User>(
             'users',
-            ...players.map(toUserId),
+            ...players.map((player) => player.userId),
           ),
         ),
       )

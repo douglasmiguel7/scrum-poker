@@ -6,7 +6,6 @@ import { Spectator } from '../model/spectator.model'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
 import { getMergedId, getTableId } from '../utils/id'
-import { toUserId } from '../utils/map'
 import { FirestoreService } from './firestore.service'
 
 @Injectable({
@@ -75,7 +74,7 @@ export class SpectatorService {
         switchMap((spectators) =>
           this.firestoreService.getCollectionObservableByIds<User>(
             'users',
-            ...spectators.map(toUserId),
+            ...spectators.map((spectator) => spectator.userId),
           ),
         ),
       )

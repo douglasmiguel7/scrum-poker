@@ -26,13 +26,14 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
 import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
-import { map, Observable } from 'rxjs'
+import { Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Table } from '../model/table.model'
 import { NewTask, Task } from '../model/task.model'
 import { UserRole } from '../model/user-role.model'
 import { User } from '../model/user.model'
+import { Vote } from '../model/vote.model'
 import { CardService } from '../services/card.service'
 import { OwnerService } from '../services/owner.service'
 import { PlayerService } from '../services/player.service'
@@ -41,6 +42,7 @@ import { TableService } from '../services/table.service'
 import { TaskService } from '../services/task.service'
 import { UserRoleService } from '../services/user-role.service'
 import { UserService } from '../services/user.service'
+import { VoteService } from '../services/vote.service'
 import { init } from '../utils/id'
 
 const LEFT_TIME_KEY = 'time'
@@ -79,47 +81,33 @@ const MINUTES_DEFAULT = 1
   styleUrl: './table.component.css',
 })
 export class TableComponent implements OnInit {
-  title = 'scrum-poker'
+  title = 'scrum-pokera'
 
-  env = environment
-
-  toggleAddAnotherTask = false
-
+  // old
   countdownStarted = false
-
   countdownConfig: CountdownConfig = {
     demand: false,
     format: 'mm:ss',
     leftTime: LEFT_TIME_DEFAULT,
     notify: 0,
   }
-
   minutes = 0
-
   minutesOptions = [1, 2, 5, 10, 20, 30]
-
-  votingTask: string | null = null
-
-  votedCardId: string | null = null
-
-  items = new Array(2).fill(null)
-
   cardsRevealed = false
-
   votes: { player: string; estimation: number }[] = []
-
   votingEstimationTotal = this.votes.reduce(
     (prev, curr) => prev + curr.estimation,
     0,
   )
-
   votingEstimationAverage = 0
-
-  vote: { player: string; estimation: number } | null = null
-
   votesByQuantity: { estimation: string; quantity: number }[] = []
 
+  // new
+  env = environment
+  toggleAddAnotherTask = false
+  vote: Vote | null = null
   validateForm: FormGroup
+  changingUserRole = false
 
   user$: Observable<User>
   table$: Observable<Table>
@@ -129,11 +117,14 @@ export class TableComponent implements OnInit {
   players$: Observable<User[]>
   spectators$: Observable<User[]>
   userRole$: Observable<UserRole>
-  changingUserRole = false
   estimationTotal$: Observable<number>
+  votes$: Observable<Vote[]>
+  vote$: Observable<Vote>
+  selectedTask$: Observable<Task>
 
   constructor(
     private fb: NonNullableFormBuilder,
+    private route: ActivatedRoute,
     private userService: UserService,
     private tableService: TableService,
     private cardService: CardService,
@@ -142,7 +133,7 @@ export class TableComponent implements OnInit {
     private playerService: PlayerService,
     private spectatorService: SpectatorService,
     private userRoleService: UserRoleService,
-    private route: ActivatedRoute,
+    private voteService: VoteService,
   ) {
     console.log('table component constructor')
 
@@ -161,11 +152,10 @@ export class TableComponent implements OnInit {
     this.players$ = this.playerService.getPlayersObservable()
     this.spectators$ = this.spectatorService.getSpectatorsObservable()
     this.userRole$ = this.userRoleService.getUserRoleObservable()
-    this.estimationTotal$ = this.tasks$.pipe(
-      map((task) =>
-        task.map((t) => t.estimation).reduce((prev, curr) => prev + curr, 0),
-      ),
-    )
+    this.estimationTotal$ = this.taskService.getEstimationTotalObservable()
+    this.votes$ = this.voteService.getVotesObservable()
+    this.vote$ = this.voteService.getVoteObservable()
+    this.selectedTask$ = this.taskService.getSelectedTaskIdObservable()
   }
 
   ngOnInit(): void {
@@ -299,40 +289,49 @@ export class TableComponent implements OnInit {
     }
   }
 
-  handleTaskToVote(id: string) {
-    if (this.votingTask === id) {
-      this.votingTask = null
+  handleSelectedTask(task: Task) {
+    this.taskService.select(task)
+  }
+
+  handleTaskLinkChange(id: string, link: string) {
+    this.taskService.update(id, { link })
+  }
+
+  handleTaskTitleChange(id: string, title: string) {
+    this.taskService.update(id, { title })
+  }
+
+  handleVote(card: Card) {
+    if (this.vote) {
+      this.vote = this.voteService.update(this.vote, card)
       return
     }
 
-    this.votingTask = id
+    if (!this.vote) {
+      this.vote = this.voteService.create(card)
+      return
+    }
 
-    this.taskService.select(id)
-  }
+    // TODO get this and implement later
+    // this.votingEstimationTotal = this.votes.reduce(
+    //   (prev, curr) => prev + curr.estimation,
+    //   0,
+    // )
 
-  handleVote({ id, value }: { id: string; value: number }) {
-    this.votedCardId = id
-    this.vote = { player: 'doug', estimation: value }
-    this.votes = [this.vote]
-    this.votingEstimationTotal = this.votes.reduce(
-      (prev, curr) => prev + curr.estimation,
-      0,
-    )
+    // this.votingEstimationAverage = Math.floor(
+    //   this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
+    //     this.votes.length,
+    // )
 
-    this.votingEstimationAverage = Math.floor(
-      this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
-        this.votes.length,
-    )
-
-    this.votesByQuantity = Object.entries(
-      this.votes.reduce(
-        (prev, curr) => ({
-          ...prev,
-          [curr.estimation]: (prev[curr.estimation] || 0) + 1,
-        }),
-        {} as Record<number, number>,
-      ),
-    ).map(([estimation, quantity]) => ({ estimation, quantity }))
+    // this.votesByQuantity = Object.entries(
+    //   this.votes.reduce(
+    //     (prev, curr) => ({
+    //       ...prev,
+    //       [curr.estimation]: (prev[curr.estimation] || 0) + 1,
+    //     }),
+    //     {} as Record<number, number>,
+    //   ),
+    // ).map(([estimation, quantity]) => ({ estimation, quantity }))
   }
 
   handleCardsRevealed() {

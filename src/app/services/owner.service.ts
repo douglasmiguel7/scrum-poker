@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { Observable, of, switchMap } from 'rxjs'
+import { Observable, switchMap } from 'rxjs'
 import { Owner } from '../model/owner.model'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
-import { FirestoreService } from './firestore.service'
 import { getTableId, getUserId } from '../utils/id'
+import { FirestoreService } from './firestore.service'
 
 @Injectable({
   providedIn: 'root',
@@ -45,12 +45,10 @@ export class OwnerService {
       .getDocumentObservable<Owner>('owners', getTableId())
       .pipe(
         switchMap((owner: Owner) =>
-          owner
-            ? this.firestoreService.getDocumentObservableById<User>(
-                'users',
-                owner.userId,
-              )
-            : of(),
+          this.firestoreService.getDocumentObservable<User>(
+            'users',
+            owner.userId,
+          ),
         ),
       )
   }
