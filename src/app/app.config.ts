@@ -18,6 +18,7 @@ import {
   CodeOutline,
   CoffeeOutline,
   DeleteOutline,
+  EnterOutline,
   FastForwardOutline,
   GithubOutline,
   LinkedinOutline,
@@ -51,6 +52,7 @@ const icons: IconDefinition[] = [
   CodeOutline,
   LinkOutline,
   DeleteOutline,
+  EnterOutline,
 ]
 
 export const appConfig: ApplicationConfig = {
