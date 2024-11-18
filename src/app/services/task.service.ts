@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { orderBy } from '@angular/fire/firestore'
+import { orderBy, where } from '@angular/fire/firestore'
 import { map, Observable, switchMap } from 'rxjs'
 import { NewTask, SelectedTask, Task } from '../model/task.model'
 import { getCurrentDate } from '../utils/date'
@@ -15,6 +15,7 @@ export class TaskService {
   getTasksObservable(): Observable<Task[]> {
     return this.firestoreService.getCollecitonObservable<Task>(
       'tasks',
+      where('tableId', '==', getTableId()),
       orderBy('createdAt', 'desc'),
     )
   }
