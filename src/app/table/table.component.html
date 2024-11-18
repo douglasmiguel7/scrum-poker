@@ -352,28 +352,46 @@
                   nz-button
                   nzSize="large"
                   nzType="primary"
-                  [disabled]="votes.length !== (players$ | async)?.length"
-                  [nzLoading]="votes.length !== (players$ | async)?.length"
+                  [disabled]="
+                    (votes$ | async)?.length !== (players$ | async)?.length
+                  "
+                  [nzLoading]="
+                    (votes$ | async)?.length !== (players$ | async)?.length
+                  "
                   (click)="handleCardsRevealed()"
                 >
-                  @if (votes.length === (players$ | async)?.length) {
+                  @if (
+                    (votes$ | async)?.length === (players$ | async)?.length
+                  ) {
                     Revelar cartas
                   }
 
                   @if (
-                    votes.length !== (players$ | async)?.length &&
-                    ((players$ | async)?.length || 0) - votes.length === 1
+                    (votes$ | async)?.length !== (players$ | async)?.length &&
+                    ((players$ | async)?.length || 0) -
+                      ((votes$ | async)?.length || 0) ===
+                      1
                   ) {
                     Arguardando
-                    {{ ((players$ | async)?.length || 0) - votes.length }} voto
+                    {{
+                      ((players$ | async)?.length || 0) -
+                        ((votes$ | async)?.length || 0)
+                    }}
+                    voto
                   }
 
                   @if (
-                    votes.length !== (players$ | async)?.length &&
-                    ((players$ | async)?.length || 0) - votes.length > 1
+                    (votes$ | async)?.length !== (players$ | async)?.length &&
+                    ((players$ | async)?.length || 0) -
+                      ((votes$ | async)?.length || 0) >
+                      1
                   ) {
                     Arguardando
-                    {{ ((players$ | async)?.length || 0) - votes.length }} votos
+                    {{
+                      ((players$ | async)?.length || 0) -
+                        ((votes$ | async)?.length || 0)
+                    }}
+                    votos
                   }
                 </button>
               </nz-space>
@@ -394,7 +412,7 @@
                 >
                   <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
                   <nz-space *nzSpaceItem nzSize="small">
-                    @for (vote of votes; track $index) {
+                    @for (vote of votes$ | async; track vote.id) {
                       <nz-space
                         *nzSpaceItem
                         nzDirection="vertical"
@@ -408,9 +426,9 @@
                           nz-tooltip
                           class="w-20 text-center"
                           nz-tooltip
-                          [nzTooltipTitle]="vote.player"
+                          [nzTooltipTitle]="vote.user.name"
                         >
-                          {{ vote.player }}
+                          {{ vote.user.name }}
                         </span>
                         <button
                           *nzSpaceItem
@@ -419,7 +437,7 @@
                           nzSize="large"
                           nzType="primary"
                         >
-                          {{ vote.estimation }}
+                          {{ vote.value }}
                         </button>
                       </nz-space>
                     }
@@ -434,20 +452,30 @@
                 >
                   <h2 *nzSpaceItem nz-typography class="!m-0">Análise</h2>
                   <nz-space *nzSpaceItem nzSize="small">
-                    @for (vote of votesByQuantity; track $index) {
+                    @for (
+                      voteValueQuantity of voteValueQuantities$ | async;
+                      track voteValueQuantity.value
+                    ) {
                       <nz-space
                         *nzSpaceItem
                         nzDirection="vertical"
                         nzAlign="center"
                         [nzSize]="0"
                       >
-                        <span *nzSpaceItem nz-typography>
-                          {{ vote.quantity }}
-                          @if (vote.quantity === 1) {
+                        <span
+                          *nzSpaceItem
+                          nz-typography
+                          class="w-10 text-center"
+                        >
+                          {{ voteValueQuantity.quantity }}
+                          @if (voteValueQuantity.quantity === 1) {
                             voto
                           }
 
-                          @if (vote.quantity < 1 || vote.quantity > 1) {
+                          @if (
+                            voteValueQuantity.quantity < 1 ||
+                            voteValueQuantity.quantity > 1
+                          ) {
                             votos
                           }
                         </span>
@@ -458,7 +486,7 @@
                           nzSize="large"
                           nzType="primary"
                         >
-                          {{ vote.estimation }}
+                          {{ voteValueQuantity.value }}
                         </button>
                       </nz-space>
                     }
@@ -478,7 +506,7 @@
                   >
                     <h2 *nzSpaceItem nz-typography class="!m-0">Total</h2>
                     <h2 *nzSpaceItem nz-typography class="!m-0">
-                      {{ votingEstimationTotal }}
+                      {{ votesEstimationTotal$ | async }}
                     </h2>
                   </nz-space>
 
@@ -494,7 +522,7 @@
                   >
                     <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
                     <h2 *nzSpaceItem nz-typography class="!m-0">
-                      {{ votingEstimationAverage }}
+                      {{ votesEstimationAverage$ | async }}
                     </h2>
                   </nz-space>
                 </nz-space>
@@ -530,15 +558,15 @@
               }
             </span>
             <span *nzSpaceItem>
-              {{ estimationTotal$ | async }}
+              {{ taskEstimationTotal$ | async }}
 
-              @if ((estimationTotal$ | async) === 1) {
+              @if ((taskEstimationTotal$ | async) === 1) {
                 ponto
               }
 
               @if (
-                ((estimationTotal$ | async) || 0) < 1 ||
-                ((estimationTotal$ | async) || 0) > 1
+                ((taskEstimationTotal$ | async) || 0) < 1 ||
+                ((taskEstimationTotal$ | async) || 0) > 1
               ) {
                 pontos
               }

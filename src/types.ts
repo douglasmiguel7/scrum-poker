@@ -14,10 +14,6 @@ export interface EnvironmentType {
   contacts: { title: string; value: string }[]
 }
 
-export interface WithUserId {
-  userId: string
-}
-
 export interface MergedId {
   id: string
   tableId: string

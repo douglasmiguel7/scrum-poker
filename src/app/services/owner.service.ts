@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
 import { Observable, switchMap } from 'rxjs'
 import { Owner } from '../model/owner.model'
 import { User } from '../model/user.model'
@@ -11,10 +10,7 @@ import { FirestoreService } from './firestore.service'
   providedIn: 'root',
 })
 export class OwnerService {
-  constructor(
-    private firestoreService: FirestoreService,
-    private route: ActivatedRoute,
-  ) {}
+  constructor(private firestoreService: FirestoreService) {}
   async create(): Promise<void> {
     const tableId = getTableId()
 

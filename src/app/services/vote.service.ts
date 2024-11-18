@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
 import { where } from '@angular/fire/firestore'
-import { Observable } from 'rxjs'
+import { map, Observable } from 'rxjs'
 import { Card } from '../model/card.model'
-import { Vote } from '../model/vote.model'
+import { User } from '../model/user.model'
+import { Vote, VoteValueQuantity } from '../model/vote.model'
 import { getCurrentDate } from '../utils/date'
 import { getMergedId, getTableId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
@@ -13,15 +14,21 @@ import { FirestoreService } from './firestore.service'
 export class VoteService {
   constructor(private firestoreService: FirestoreService) {}
 
-  create(card: Card): Vote {
+  async create(card: Card): Promise<Vote> {
     const { id, tableId, userId } = getMergedId()
+
+    const snapshot = await this.firestoreService.getDocumentSnapshot<User>(
+      'users',
+      userId,
+    )
+
     const now = getCurrentDate()
 
     const vote: Vote = {
       id,
       value: card.value,
       cardId: card.id,
-      userId: userId,
+      user: snapshot.data()!,
       tableId: tableId,
       createdAt: now,
       updatedAt: now,
@@ -52,11 +59,41 @@ export class VoteService {
   }
 
   getVotesObservable(): Observable<Vote[]> {
-    const tableId = getTableId()
-
     return this.firestoreService.getCollecitonObservable(
       'votes',
-      where('tableId', '==', tableId),
+      where('tableId', '==', getTableId()),
+    )
+  }
+
+  getEstimationTotalObservable(): Observable<number> {
+    return this.getVotesObservable().pipe(
+      map((votes) => votes.reduce((acc, curr) => curr.value + acc, 0)),
+    )
+  }
+
+  getEstimationAverageObservable(): Observable<number> {
+    return this.getVotesObservable().pipe(
+      map((votes) =>
+        Math.floor(
+          votes.reduce((acc, curr) => curr.value + acc, 0) / votes.length,
+        ),
+      ),
+    )
+  }
+
+  getEstimationByQuantityObservable(): Observable<VoteValueQuantity[]> {
+    return this.getVotesObservable().pipe(
+      map((votes) =>
+        Object.entries(
+          votes.reduce<Record<string, number>>(
+            (acc, curr) => ({
+              ...acc,
+              [curr.value]: (acc[curr.value] || 0) + 1,
+            }),
+            {},
+          ),
+        ).map<VoteValueQuantity>(([value, quantity]) => ({ value, quantity })),
+      ),
     )
   }
 }

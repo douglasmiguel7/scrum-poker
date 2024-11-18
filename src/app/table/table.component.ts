@@ -33,7 +33,7 @@ import { Table } from '../model/table.model'
 import { NewTask, Task } from '../model/task.model'
 import { UserRole } from '../model/user-role.model'
 import { User } from '../model/user.model'
-import { Vote } from '../model/vote.model'
+import { Vote, VoteValueQuantity } from '../model/vote.model'
 import { CardService } from '../services/card.service'
 import { OwnerService } from '../services/owner.service'
 import { PlayerService } from '../services/player.service'
@@ -94,13 +94,6 @@ export class TableComponent implements OnInit {
   minutes = 0
   minutesOptions = [1, 2, 5, 10, 20, 30]
   cardsRevealed = false
-  votes: { player: string; estimation: number }[] = []
-  votingEstimationTotal = this.votes.reduce(
-    (prev, curr) => prev + curr.estimation,
-    0,
-  )
-  votingEstimationAverage = 0
-  votesByQuantity: { estimation: string; quantity: number }[] = []
 
   // new
   env = environment
@@ -117,10 +110,13 @@ export class TableComponent implements OnInit {
   players$: Observable<User[]>
   spectators$: Observable<User[]>
   userRole$: Observable<UserRole>
-  estimationTotal$: Observable<number>
+  taskEstimationTotal$: Observable<number>
   votes$: Observable<Vote[]>
   vote$: Observable<Vote>
   selectedTask$: Observable<Task>
+  votesEstimationTotal$: Observable<number>
+  votesEstimationAverage$: Observable<number>
+  voteValueQuantities$: Observable<VoteValueQuantity[]>
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -149,13 +145,18 @@ export class TableComponent implements OnInit {
     this.table$ = this.tableService.getTableObservable()
     this.owner$ = this.ownerService.getOwnerObservable()
     this.tasks$ = this.taskService.getTasksObservable()
+    this.selectedTask$ = this.taskService.getSelectedTaskIdObservable()
+    this.taskEstimationTotal$ = this.taskService.getEstimationTotalObservable()
     this.players$ = this.playerService.getPlayersObservable()
     this.spectators$ = this.spectatorService.getSpectatorsObservable()
     this.userRole$ = this.userRoleService.getUserRoleObservable()
-    this.estimationTotal$ = this.taskService.getEstimationTotalObservable()
     this.votes$ = this.voteService.getVotesObservable()
     this.vote$ = this.voteService.getVoteObservable()
-    this.selectedTask$ = this.taskService.getSelectedTaskIdObservable()
+    this.votesEstimationAverage$ =
+      this.voteService.getEstimationAverageObservable()
+    this.votesEstimationTotal$ = this.voteService.getEstimationTotalObservable()
+    this.voteValueQuantities$ =
+      this.voteService.getEstimationByQuantityObservable()
   }
 
   ngOnInit(): void {
@@ -233,8 +234,6 @@ export class TableComponent implements OnInit {
   }
 
   handleRestartTimer(): void {
-    console.log({ minutes: this.minutes })
-
     this.countdownConfig = {
       ...this.countdownConfig,
       leftTime: 60 * this.minutes,
@@ -301,37 +300,16 @@ export class TableComponent implements OnInit {
     this.taskService.update(id, { title })
   }
 
-  handleVote(card: Card) {
+  async handleVote(card: Card) {
     if (this.vote) {
-      this.vote = this.voteService.update(this.vote, card)
+      this.vote = await this.voteService.update(this.vote, card)
       return
     }
 
     if (!this.vote) {
-      this.vote = this.voteService.create(card)
+      this.vote = await this.voteService.create(card)
       return
     }
-
-    // TODO get this and implement later
-    // this.votingEstimationTotal = this.votes.reduce(
-    //   (prev, curr) => prev + curr.estimation,
-    //   0,
-    // )
-
-    // this.votingEstimationAverage = Math.floor(
-    //   this.votes.reduce((prev, curr) => prev + curr.estimation, 0) /
-    //     this.votes.length,
-    // )
-
-    // this.votesByQuantity = Object.entries(
-    //   this.votes.reduce(
-    //     (prev, curr) => ({
-    //       ...prev,
-    //       [curr.estimation]: (prev[curr.estimation] || 0) + 1,
-    //     }),
-    //     {} as Record<number, number>,
-    //   ),
-    // ).map(([estimation, quantity]) => ({ estimation, quantity }))
   }
 
   handleCardsRevealed() {
