@@ -750,7 +750,7 @@
         nz-button
         class="overflow-hidden !p-0 !w-10 !h-16"
         nzSize="large"
-        [nzType]="vote?.cardId === card.id ? 'primary' : 'dashed'"
+        [nzType]="(vote$ | async)?.cardId === card.id ? 'primary' : 'dashed'"
         (click)="handleVote(card)"
         nz-tooltip
         [nzTooltipTitle]="card.tip"

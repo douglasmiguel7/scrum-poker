@@ -39,17 +39,40 @@ export class VoteService {
     return vote
   }
 
-  update(vote: Vote, card: Card): Vote {
-    const newVote: Vote = {
+  async update(card: Card): Promise<void> {
+    const { id } = getMergedId()
+
+    const snapshot = await this.firestoreService.getDocumentSnapshot<Vote>(
+      'votes',
+      id,
+    )
+
+    if (!snapshot.exists()) {
+      this.create(card)
+      return
+    }
+
+    const vote = snapshot.data()
+
+    const updatedVote: Vote = {
       ...vote,
       cardId: card.id,
       value: card.value,
       updatedAt: getCurrentDate(),
     }
 
-    this.firestoreService.update('votes', vote.id, newVote)
+    this.firestoreService.update('votes', vote.id, updatedVote)
+  }
 
-    return newVote
+  async exists(): Promise<boolean> {
+    const { id } = getMergedId()
+
+    const snapshot = await this.firestoreService.getDocumentSnapshot(
+      'votes',
+      id,
+    )
+
+    return snapshot.exists()
   }
 
   getVoteObservable(): Observable<Vote> {

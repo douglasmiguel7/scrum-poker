@@ -98,7 +98,6 @@ export class TableComponent implements OnInit {
   // new
   env = environment
   toggleAddAnotherTask = false
-  vote: Vote | null = null
   validateForm: FormGroup
   changingUserRole = false
 
@@ -301,13 +300,15 @@ export class TableComponent implements OnInit {
   }
 
   async handleVote(card: Card) {
-    if (this.vote) {
-      this.vote = await this.voteService.update(this.vote, card)
+    const exists = await this.voteService.exists()
+
+    if (exists) {
+      await this.voteService.update(card)
       return
     }
 
-    if (!this.vote) {
-      this.vote = await this.voteService.create(card)
+    if (!exists) {
+      await this.voteService.create(card)
       return
     }
   }
