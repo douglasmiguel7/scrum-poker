@@ -1,3 +1,5 @@
+@let countdownStarted = countdownStarted$ | async;
+
 <nz-layout>
   <!-- page header -->
   <nz-header nzTheme="light" nz-flex nzJustify="space-between" nzAlign="center">
@@ -143,81 +145,86 @@
 
     <nz-page-header-extra>
       <nz-space nzSize="middle" nzAlign="center">
-        <countdown
-          *nzSpaceItem
-          [config]="countdownConfig"
-          (event)="handleTimerEvent($event)"
-        />
-        <button
-          *nzSpaceItem
-          nz-button
-          nzType="link"
-          nz-dropdown
-          nzTrigger="click"
-          [nzDropdownMenu]="menu"
-          [disabled]="countdownStarted"
-        >
-          <span nz-icon nzType="play-circle" nzTheme="outline"></span>
-          Iniciar
-          <span nz-icon nzType="down"></span>
-        </button>
-        <nz-dropdown-menu #menu="nzDropdownMenu">
-          <ul nz-menu>
-            @for (option of minutesOptions; track option) {
-              <li
-                tabindex="1"
-                nz-menu-item
-                (click)="handleStartTimer(option)"
-                (keyup)="handleStartTimer(option)"
-              >
-                <a>
-                  @if (option === 1) {
-                    {{ option }} minuto
-                  }
+        @let countdown = countdown$ | async;
 
-                  @if (option > 1) {
-                    {{ option }} minutos
-                  }
-                </a>
-              </li>
-            }
-          </ul>
-        </nz-dropdown-menu>
-        <button
-          *nzSpaceItem
-          nz-button
-          nzType="link"
-          class="!p-0"
-          (click)="handleAddOneMinute()"
-          [disabled]="!countdownStarted"
-        >
-          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-          Adicionar 1 minuto
-        </button>
-        <button
-          *nzSpaceItem
-          nz-button
-          nzType="link"
-          class="!p-0"
-          (click)="handleRestartTimer()"
-          [disabled]="!countdownStarted"
-        >
-          <span nz-icon nzType="redo" nzTheme="outline"></span>
-          Reiniciar
-        </button>
-        <button
-          *nzSpaceItem
-          nz-button
-          nzType="text"
-          nzDanger
-          class="!p-0"
-          [disabled]="!countdownStarted"
-          (click)="handleStopTimer()"
-        >
-          <span nz-icon nzType="close-circle" nzTheme="outline"></span>
-          Parar
-        </button>
-        <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
+        @if (countdown) {
+          <countdown
+            ngV
+            *nzSpaceItem
+            [config]="countdown"
+            (event)="handleCountdownEvent($event)"
+          />
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="link"
+            nz-dropdown
+            nzTrigger="click"
+            [nzDropdownMenu]="menu"
+            [disabled]="countdownStarted"
+          >
+            <span nz-icon nzType="play-circle" nzTheme="outline"></span>
+            Iniciar
+            <span nz-icon nzType="down"></span>
+          </button>
+          <nz-dropdown-menu #menu="nzDropdownMenu">
+            <ul nz-menu>
+              @for (option of minutesOptions; track option) {
+                <li
+                  tabindex="1"
+                  nz-menu-item
+                  (click)="handleStartCountdown(option)"
+                  (keyup)="handleStartCountdown(option)"
+                >
+                  <a>
+                    @if (option === 1) {
+                      {{ option }} minuto
+                    }
+
+                    @if (option > 1) {
+                      {{ option }} minutos
+                    }
+                  </a>
+                </li>
+              }
+            </ul>
+          </nz-dropdown-menu>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="link"
+            class="!p-0"
+            (click)="handleAddOneMinute()"
+            [disabled]="!countdownStarted"
+          >
+            <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+            Adicionar 1 minuto
+          </button>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="link"
+            class="!p-0"
+            (click)="handleRestartCountdown()"
+            [disabled]="!countdownStarted"
+          >
+            <span nz-icon nzType="redo" nzTheme="outline"></span>
+            Reiniciar
+          </button>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="text"
+            nzDanger
+            class="!p-0"
+            [disabled]="!countdownStarted"
+            (click)="handleStopCountdown()"
+          >
+            <span nz-icon nzType="close-circle" nzTheme="outline"></span>
+            Parar
+          </button>
+          <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
+        }
         <span
           *nzSpaceItem
           nz-typography

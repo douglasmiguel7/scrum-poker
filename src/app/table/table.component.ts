@@ -29,12 +29,14 @@ import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
 import { Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
+import { Countdown } from '../model/countdown.model'
 import { Table } from '../model/table.model'
 import { NewTask, Task } from '../model/task.model'
 import { UserRole } from '../model/user-role.model'
 import { User } from '../model/user.model'
 import { Vote, VoteValueQuantity } from '../model/vote.model'
 import { CardService } from '../services/card.service'
+import { CountdownService } from '../services/countdown.service'
 import { OwnerService } from '../services/owner.service'
 import { PlayerService } from '../services/player.service'
 import { SpectatorService } from '../services/spectator.service'
@@ -47,7 +49,6 @@ import { init } from '../utils/id'
 
 const LEFT_TIME_KEY = 'time'
 const LEFT_TIME_DEFAULT = 0
-const TIMER_STARTED_KEY = 'time_started'
 const MINUTES_KEY = 'selected_minutes'
 const MINUTES_DEFAULT = 1
 
@@ -84,7 +85,6 @@ export class TableComponent implements OnInit {
   title = 'scrum-pokera'
 
   // old
-  countdownStarted = false
   countdownConfig: CountdownConfig = {
     demand: false,
     format: 'mm:ss',
@@ -116,6 +116,8 @@ export class TableComponent implements OnInit {
   votesEstimationTotal$: Observable<number>
   votesEstimationAverage$: Observable<number>
   voteValueQuantities$: Observable<VoteValueQuantity[]>
+  countdown$: Observable<Countdown>
+  countdownStarted$: Observable<boolean>
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -129,6 +131,7 @@ export class TableComponent implements OnInit {
     private spectatorService: SpectatorService,
     private userRoleService: UserRoleService,
     private voteService: VoteService,
+    private countdownService: CountdownService,
   ) {
     console.log('table component constructor')
 
@@ -156,17 +159,21 @@ export class TableComponent implements OnInit {
     this.votesEstimationTotal$ = this.voteService.getEstimationTotalObservable()
     this.voteValueQuantities$ =
       this.voteService.getEstimationByQuantityObservable()
+    this.countdown$ = this.countdownService.getCountdownObservable()
+    this.countdownStarted$ =
+      this.countdownService.getCountdownStartedObservable()
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     console.log('init table component')
 
-    this.loadTimer()
+    // this.loadTimer()
 
     this.tableService.create()
     this.userService.create()
     this.spectatorService.create()
     this.userRoleService.create()
+    this.countdownService.create()
   }
 
   private loadTimer(): void {
@@ -181,7 +188,7 @@ export class TableComponent implements OnInit {
       leftTime: leftTime / 1000,
     }
 
-    this.countdownStarted = localStorage.getItem(TIMER_STARTED_KEY) === 'true'
+    // this.countdownStarted = localStorage.getItem(TIMER_STARTED_KEY) === 'true'
 
     let minutes = Number(localStorage.getItem(MINUTES_KEY) || MINUTES_DEFAULT)
     minutes = isNaN(minutes) ? MINUTES_DEFAULT : minutes
@@ -217,74 +224,24 @@ export class TableComponent implements OnInit {
     this.taskService.delete(id)
   }
 
-  handleStartTimer(minutes: number): void {
-    this.countdownStarted = true
-
-    this.countdownConfig = {
-      ...this.countdownConfig,
-      leftTime: 60 * minutes,
-    }
-
-    this.minutes = minutes
-
-    localStorage.setItem(TIMER_STARTED_KEY, 'true')
-
-    localStorage.setItem(MINUTES_KEY, `${minutes}`)
+  handleStartCountdown(minutes: number): void {
+    this.countdownService.start(minutes)
   }
 
-  handleRestartTimer(): void {
-    this.countdownConfig = {
-      ...this.countdownConfig,
-      leftTime: 60 * this.minutes,
-    }
+  handleRestartCountdown(): void {
+    this.countdownService.restart()
   }
 
-  handleStopTimer(): void {
-    this.countdownStarted = false
-
-    this.countdownConfig = {
-      ...this.countdownConfig,
-      leftTime: 0,
-    }
-
-    localStorage.setItem(TIMER_STARTED_KEY, 'false')
-
-    localStorage.setItem(LEFT_TIME_KEY, '0')
+  handleStopCountdown(): void {
+    this.countdownService.stop()
   }
 
   handleAddOneMinute(): void {
-    let leftTime = (localStorage.getItem(LEFT_TIME_KEY) || 0) as number
-    if (leftTime <= 0 || isNaN(leftTime)) {
-      leftTime = LEFT_TIME_DEFAULT
-    }
-
-    this.countdownConfig = {
-      ...this.countdownConfig,
-      leftTime: leftTime / 1000 + 60,
-    }
-
-    this.minutes = this.minutes + 1
-
-    localStorage.setItem(MINUTES_KEY, `${this.minutes}`)
+    this.countdownService.addOneMinute()
   }
 
-  handleTimerEvent(event: CountdownEvent): void {
-    switch (event.action) {
-      case 'done':
-        this.countdownStarted = false
-
-        localStorage.setItem(LEFT_TIME_KEY, '0')
-
-        break
-      case 'notify':
-        if (!this.countdownStarted) {
-          break
-        }
-
-        localStorage.setItem(LEFT_TIME_KEY, `${event.left}`)
-
-        break
-    }
+  handleCountdownEvent(event: CountdownEvent): void {
+    this.countdownService.handleEvent(event)
   }
 
   handleSelectedTask(task: Task) {

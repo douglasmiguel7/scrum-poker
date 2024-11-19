@@ -31,3 +31,4 @@ export type CollectionName =
   | 'userRoles'
   | 'votes'
   | 'selectedTasks'
+  | 'countdowns'

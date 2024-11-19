@@ -102,13 +102,13 @@ export class FirestoreService {
     name: CollectionName,
     ...ids: string[]
   ): Observable<T[]> {
-    console.log(
-      `observing collection (by ids) -> ${name} where id in "${ids.join(',')}"`,
-    )
-
     if (!ids.length) {
       return of([])
     }
+
+    console.log(
+      `observing collection (by ids) -> ${name} where id in "${ids.join(',')}"`,
+    )
 
     const reference = this.getCollectionReference(name)
 
