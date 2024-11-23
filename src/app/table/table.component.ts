@@ -79,7 +79,7 @@ import { init } from '../utils/id'
   styleUrl: './table.component.css',
 })
 export class TableComponent implements OnInit {
-  title = 'scrum-pokera'
+  title = 'scrum-poker'
 
   // old
   cardsRevealed = false
