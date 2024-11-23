@@ -32,3 +32,4 @@ export type CollectionName =
   | 'votes'
   | 'selectedTasks'
   | 'countdowns'
+  | 'minutes'

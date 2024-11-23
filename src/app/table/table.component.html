@@ -1,4 +1,5 @@
 @let countdownStarted = countdownStarted$ | async;
+@let minutes = minutes$ | async;
 
 <nz-layout>
   <!-- page header -->
@@ -169,20 +170,20 @@
           </button>
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
-              @for (option of minutesOptions; track option) {
+              @for (minute of minutes; track minute.id) {
                 <li
                   tabindex="1"
                   nz-menu-item
-                  (click)="handleStartCountdown(option)"
-                  (keyup)="handleStartCountdown(option)"
+                  (click)="handleStartCountdown(minute.value)"
+                  (keyup)="handleStartCountdown(minute.value)"
                 >
                   <a>
-                    @if (option === 1) {
-                      {{ option }} minuto
+                    @if (minute.value === 1) {
+                      {{ minute.value }} minuto
                     }
 
-                    @if (option > 1) {
-                      {{ option }} minutos
+                    @if (minute.value > 1) {
+                      {{ minute.value }} minutos
                     }
                   </a>
                 </li>
