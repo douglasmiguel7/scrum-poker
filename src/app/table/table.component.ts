@@ -91,17 +91,17 @@ export class TableComponent implements OnInit {
   changingUserRole = false
 
   user$: Observable<User>
+  userRole$: Observable<UserRole>
   table$: Observable<Table>
   owner$: Observable<User>
   cards$: Observable<Card[]>
-  tasks$: Observable<Task[]>
   players$: Observable<User[]>
   spectators$: Observable<User[]>
-  userRole$: Observable<UserRole>
+  tasks$: Observable<Task[]>
+  selectedTask$: Observable<Task>
   taskEstimationTotal$: Observable<number>
   votes$: Observable<Vote[]>
   vote$: Observable<Vote>
-  selectedTask$: Observable<Task>
   votesEstimationTotal$: Observable<number>
   votesEstimationAverage$: Observable<number>
   voteValueQuantities$: Observable<VoteValueQuantity[]>

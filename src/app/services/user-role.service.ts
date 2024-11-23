@@ -64,6 +64,8 @@ export class UserRoleService {
         role: 'spectator',
       })
 
+      // TODO apagar os votos deste usuario
+
       await this.playerService.delete()
       await this.spectatorService.create()
 

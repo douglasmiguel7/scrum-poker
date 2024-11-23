@@ -1,4 +1,4 @@
-export type Role = 'player' | 'spectator' | 'owner'
+export type Role = 'player' | 'spectator'
 
 export interface UserRole {
   role: Role
