@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { deleteDoc, where } from '@angular/fire/firestore'
+import { where } from '@angular/fire/firestore'
 import { ActivatedRoute } from '@angular/router'
 import { Observable, switchMap } from 'rxjs'
 import { Player } from '../model/player.model'
@@ -51,9 +51,7 @@ export class PlayerService {
   async delete(): Promise<void> {
     const { id } = getMergedId()
 
-    const reference = this.firestoreService.getDocumentReference('players', id)
-
-    await deleteDoc(reference)
+    this.firestoreService.delete('players', id)
   }
 
   getPlayersObservable(): Observable<User[]> {
