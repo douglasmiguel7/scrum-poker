@@ -81,10 +81,10 @@ import { init } from '../utils/id'
 export class TableComponent implements OnInit {
   title = 'scrum-poker'
 
-  // old
+  // TODO think how we restart voting to another task
+  // TODO sync with firestore
   cardsRevealed = false
 
-  // new
   env = environment
   toggleAddAnotherTask = false
   validateForm: FormGroup
