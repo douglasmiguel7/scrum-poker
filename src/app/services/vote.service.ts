@@ -75,6 +75,12 @@ export class VoteService {
     return snapshot.exists()
   }
 
+  async delete(): Promise<void> {
+    const { id } = getMergedId()
+
+    this.firestoreService.delete('votes', id)
+  }
+
   getVoteObservable(): Observable<Vote> {
     const { id } = getMergedId()
 

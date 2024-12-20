@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { UserRole } from '../model/user-role.model'
 import { getCurrentDate } from '../utils/date'
@@ -7,6 +6,7 @@ import { getMergedId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { PlayerService } from './player.service'
 import { SpectatorService } from './spectator.service'
+import { VoteService } from './vote.service'
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ import { SpectatorService } from './spectator.service'
 export class UserRoleService {
   constructor(
     private firestoreService: FirestoreService,
-    private route: ActivatedRoute,
+    private voteService: VoteService,
     private spectatorService: SpectatorService,
     private playerService: PlayerService,
   ) {}
@@ -64,10 +64,9 @@ export class UserRoleService {
         role: 'spectator',
       })
 
-      // TODO apagar os votos deste usuario
-
       await this.playerService.delete()
       await this.spectatorService.create()
+      await this.voteService.delete()
 
       return
     }
