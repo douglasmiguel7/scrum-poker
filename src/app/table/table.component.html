@@ -22,11 +22,9 @@
 
 @let votesRemaining = players.length - votes.length;
 
-@let awaitingPlayers = !players.length;
-@let awaitingVotes = players.length > votes.length;
-@let awaitingOneVote = awaitingVotes && votesRemaining === 1;
-
-@let canRevealCards = isOwner && !awaitingPlayers && !awaitingVotes;
+@let hasPlayers = !!players.length;
+@let allPlayersVoted = hasPlayers && players.length === votes.length;
+@let awaitingOneVote = votesRemaining === 1;
 
 <nz-layout>
   <!-- page header -->
@@ -129,6 +127,7 @@
       <span
         nz-typography
         nzEditable
+        nzEditTooltip="alterar nome"
         [nzContent]="user?.name"
         (nzContentChange)="handleUsernameChange($event)"
       ></span>
@@ -378,19 +377,19 @@
                   [nzSize]="0"
                 >
                   <h2 *nzSpaceItem nz-typography class="!m-0">
-                    @if (awaitingPlayers) {
+                    @if (!hasPlayers) {
                       Aguardando sentarem na mesa
                     }
 
-                    @if (!awaitingVotes) {
+                    @if (allPlayersVoted) {
                       Estamos curiosos 👀
                     }
 
-                    @if (isSpectator && awaitingVotes) {
+                    @if (isSpectator && hasPlayers && !allPlayersVoted) {
                       Aguardando votação
                     }
 
-                    @if (isPlayer && awaitingVotes) {
+                    @if (isPlayer && hasPlayers && !allPlayersVoted) {
                       Escolha sua carta!
                     }
                   </h2>
@@ -400,25 +399,25 @@
                     class="!m-0"
                     nzType="secondary"
                   >
-                    @if (awaitingOneVote) {
+                    @if (hasPlayers && !allPlayersVoted && awaitingOneVote) {
                       Resta
                       {{ votesRemaining }}
                       voto
                     }
 
-                    @if (!awaitingOneVote && awaitingVotes) {
+                    @if (hasPlayers && !allPlayersVoted && !awaitingOneVote) {
                       Restam
                       {{ votesRemaining }}
                       votos
                     }
 
-                    @if (!canRevealCards) {
+                    @if (allPlayersVoted) {
                       Aguardando revelação dos votos
                     }
                   </h5>
                 </nz-space>
 
-                @if (canRevealCards) {
+                @if (allPlayersVoted) {
                   <button
                     *nzSpaceItem
                     nz-button
@@ -676,22 +675,12 @@
                     nzEditable
                     nzEditTooltip="alterar título"
                     nzEllipsis
-                    [class.w-32]="task.voted"
-                    [class.w-30]="!task.voted"
                     [nzContent]="task.title"
                     (nzContentChange)="handleTaskTitleChange(task.id, $event)"
+                    class="w-44"
                   ></p>
                 </ng-template>
                 <ng-template #extra>
-                  @if (task.voted) {
-                    <nz-tag
-                      nz-tooltip
-                      nzTooltipTitle="estimativa"
-                      nzColor="green"
-                    >
-                      {{ task.estimation }}
-                    </nz-tag>
-                  }
                   <button
                     nz-button
                     nzType="link"
@@ -705,8 +694,52 @@
                   </button>
                 </ng-template>
 
-                <p>
+                <nz-space nzDirection="vertical" class="w-full" nzSize="middle">
+                  <nz-space *nzSpaceItem nzSize="small">
+                    @if (task.voted) {
+                      <nz-tag *nzSpaceItem nzColor="green" class="m-0">
+                        {{ task.estimation }}
+
+                        @if (task.estimation === 1) {
+                          ponto
+                        }
+
+                        @if (task.estimation < 1 || task.estimation > 1) {
+                          pontos
+                        }
+                      </nz-tag>
+                    }
+
+                    <span
+                      *nzSpaceItem
+                      nz-typography
+                      nzEditable
+                      [nzEditIcon]="taskEstimationEditIcon"
+                      nzEditTooltip="alterar pontuação"
+                      class="w-full"
+                      (nzContentChange)="
+                        handleTaskEstimationChange(task.id, $event)
+                      "
+                    >
+                      <ng-template #taskEstimationEditIcon>
+                        @if (task.voted) {
+                          <span nz-icon nzType="edit" nzTheme="outline"></span>
+                        }
+
+                        @if (!task.voted) {
+                          <span
+                            nz-icon
+                            nzType="plus-circle"
+                            nzTheme="outline"
+                          ></span>
+                          Adicionar pontuação
+                        }
+                      </ng-template>
+                    </span>
+                  </nz-space>
+
                   <span
+                    *nzSpaceItem
                     nz-typography
                     nzEllipsis
                     nzEditable
@@ -731,39 +764,43 @@
                       }
                     </ng-template>
                   </span>
-                </p>
 
-                <nz-space>
-                  <button
-                    *nzSpaceItem
-                    nz-button
-                    [nzType]="
-                      selectedTask?.id === task.id ? 'primary' : 'dashed'
-                    "
-                    (click)="handleSelectedTask(task)"
-                  >
-                    @if (selectedTask?.id !== task.id) {
-                      Votar essa tarefa
-                    }
-
-                    @if (selectedTask?.id === task.id) {
-                      Votando essa tarefa
-                    }
-                  </button>
-
-                  @if (task.link) {
-                    <a
+                  <nz-space *nzSpaceItem>
+                    <button
                       *nzSpaceItem
                       nz-button
-                      nzType="link"
-                      class="!p-0"
-                      [href]="task.link"
-                      target="_blank"
+                      [nzType]="
+                        selectedTask?.id === task.id ? 'primary' : 'default'
+                      "
+                      (click)="handleSelectedTask(task)"
                     >
-                      <span nz-icon nzType="link" nzTheme="outline"></span>
-                      Abrir link
-                    </a>
-                  }
+                      @if (selectedTask?.id === task.id) {
+                        Votando agora
+                      }
+
+                      @if (selectedTask?.id !== task.id && !task.voted) {
+                        Votar nesta
+                      }
+
+                      @if (selectedTask?.id !== task.id && task.voted) {
+                        Votar novamente
+                      }
+                    </button>
+
+                    @if (task.link) {
+                      <a
+                        *nzSpaceItem
+                        nz-button
+                        nzType="link"
+                        class="!p-0"
+                        [href]="task.link"
+                        target="_blank"
+                      >
+                        <span nz-icon nzType="link" nzTheme="outline"></span>
+                        Abrir link
+                      </a>
+                    }
+                  </nz-space>
                 </nz-space>
               </nz-card>
             }

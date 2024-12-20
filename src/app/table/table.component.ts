@@ -218,6 +218,16 @@ export class TableComponent implements OnInit {
     this.taskService.select(task)
   }
 
+  handleTaskEstimationChange(id: string, value: string) {
+    const estimation = Number(value)
+
+    if (isNaN(estimation)) {
+      return
+    }
+
+    this.taskService.update(id, { estimation, voted: true })
+  }
+
   handleTaskLinkChange(id: string, link: string) {
     this.taskService.update(id, { link })
   }
