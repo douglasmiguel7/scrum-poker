@@ -105,8 +105,19 @@ export class TableService {
     this.firestoreService.deleteByTableId('votes', tableId)
   }
 
-  switch(id: string): void {
-    localStorage.setItem(TABLE_ID_KEY, id)
+  async switch(tableId: string): Promise<void> {
+    const { id } = getMergedId()
+
+    const promises = [
+      this.firestoreService.delete('votes', id),
+      this.firestoreService.delete('players', id),
+      this.firestoreService.delete('spectators', id),
+      this.firestoreService.delete('userRoles', id),
+    ]
+
+    await Promise.all(promises)
+
+    localStorage.setItem(TABLE_ID_KEY, tableId)
     window.location.reload()
   }
 

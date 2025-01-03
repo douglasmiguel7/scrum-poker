@@ -262,8 +262,8 @@ export class TableComponent implements OnInit {
     this.tableService.createNew()
   }
 
-  handleTableSwitch(id: string) {
-    this.tableService.switch(id)
+  handleTableSwitch(tableId: string) {
+    this.tableService.switch(tableId)
   }
 
   handleTableExit() {
