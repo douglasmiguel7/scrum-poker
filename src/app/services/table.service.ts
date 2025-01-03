@@ -65,7 +65,7 @@ export class TableService {
 
     localStorage.setItem(TABLE_ID_KEY, id)
 
-    await this.ownerService.create()
+    await this.ownerService.createByTableId(id)
 
     window.location.reload()
   }
@@ -110,13 +110,17 @@ export class TableService {
     window.location.reload()
   }
 
-  exit(): void {
+  async exit(): Promise<void> {
     const { id } = getMergedId()
 
-    this.firestoreService.delete('votes', id)
-    this.firestoreService.delete('players', id)
-    this.firestoreService.delete('spectators', id)
-    this.firestoreService.delete('userRoles', id)
+    const promises = [
+      this.firestoreService.delete('votes', id),
+      this.firestoreService.delete('players', id),
+      this.firestoreService.delete('spectators', id),
+      this.firestoreService.delete('userRoles', id),
+    ]
+
+    await Promise.all(promises)
 
     window.location.href = '/'
   }

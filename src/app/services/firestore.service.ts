@@ -128,10 +128,10 @@ export class FirestoreService {
     updateDoc(reference, Object.assign({}, data))
   }
 
-  delete(name: CollectionName, key: string): void {
+  async delete(name: CollectionName, key: string): Promise<void> {
     const reference = this.getDocumentReference(name, key)
 
-    deleteDoc(reference)
+    await deleteDoc(reference)
   }
 
   async deleteByTableId(name: CollectionName, tableId: string): Promise<void> {

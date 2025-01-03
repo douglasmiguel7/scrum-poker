@@ -26,6 +26,20 @@ export class OwnerService {
     this.firestoreService.save('owners', tableId, owner)
   }
 
+  async createByTableId(tableId: string): Promise<void> {
+    const exists = await this.firestoreService.exists('owners', tableId)
+    if (exists) {
+      return
+    }
+
+    const owner: Owner = {
+      tableId,
+      userId: getUserId(),
+    }
+
+    this.firestoreService.save('owners', tableId, owner)
+  }
+
   getOwnerObservable(): Observable<User> {
     return this.firestoreService
       .getDocumentObservable<Owner>('owners', getTableId())
