@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { UserRole } from '../model/user-role.model'
-import { getCurrentDate } from '../utils/date'
 import { getMergedId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { PlayerService } from './player.service'
@@ -50,16 +49,10 @@ export class UserRoleService {
 
     const role = snapshot.data()?.role
     if (!role) {
-      console.log(getCurrentDate(), `switch role -> role not found in "${id}"`)
       return
     }
 
     if (role === 'player') {
-      console.log(
-        getCurrentDate(),
-        `switch role -> switching role to "spectator" in "${id}"`,
-      )
-
       this.firestoreService.update('userRoles', id, {
         role: 'spectator',
       })
@@ -72,11 +65,6 @@ export class UserRoleService {
     }
 
     if (role === 'spectator') {
-      console.log(
-        getCurrentDate(),
-        `switch role -> switching role to "player" in "${id}"`,
-      )
-
       this.firestoreService.update('userRoles', id, {
         role: 'player',
       })

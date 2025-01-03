@@ -162,8 +162,6 @@ export class CountdownService {
           return
         }
 
-        console.log('done', event)
-
         this.stop()
 
         break
@@ -172,8 +170,6 @@ export class CountdownService {
         if (!this.started) {
           return
         }
-
-        console.log('notify', event)
 
         localStorage.setItem(
           this.getLeftTimeKey(),

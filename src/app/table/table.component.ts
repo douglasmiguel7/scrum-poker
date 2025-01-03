@@ -89,6 +89,7 @@ export class TableComponent implements OnInit {
   user$: Observable<User>
   userRole$: Observable<UserRole>
   table$: Observable<Table>
+  tables$: Observable<Table[]>
   owner$: Observable<User>
   cards$: Observable<Card[]>
   players$: Observable<User[]>
@@ -120,8 +121,6 @@ export class TableComponent implements OnInit {
     private countdownService: CountdownService,
     private minuteService: MinuteService,
   ) {
-    console.log('table component constructor')
-
     init(this.route)
 
     this.validateForm = this.fb.group({
@@ -132,6 +131,7 @@ export class TableComponent implements OnInit {
     this.user$ = this.userService.getUserObservable()
     this.cards$ = this.cardService.getCardsObservable()
     this.table$ = this.tableService.getTableObservable()
+    this.tables$ = this.tableService.getTablesObservable()
     this.owner$ = this.ownerService.getOwnerObservable()
     this.tasks$ = this.taskService.getTasksObservable()
     this.selectedTask$ = this.taskService.getSelectedTaskIdObservable()
@@ -256,5 +256,13 @@ export class TableComponent implements OnInit {
 
   handleStartNewVoting() {
     this.tableService.startNewVoting()
+  }
+
+  handleTableCreate() {
+    this.tableService.createNew()
+  }
+
+  handleTableSwitch(id: string) {
+    this.tableService.switch(id)
   }
 }

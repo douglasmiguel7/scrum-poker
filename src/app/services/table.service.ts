@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { orderBy, where } from '@angular/fire/firestore'
+import { Router } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
+import { TABLE_ID_KEY } from '../utils/constant'
 import { getCurrentDate } from '../utils/date'
-import { getTableId } from '../utils/id'
+import { getTableId, getUserId, randomUuid } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { OwnerService } from './owner.service'
 
@@ -13,7 +15,7 @@ import { OwnerService } from './owner.service'
 export class TableService {
   constructor(
     private firestoreService: FirestoreService,
-    private route: ActivatedRoute,
+    private router: Router,
     private ownerService: OwnerService,
   ) {}
 
@@ -22,14 +24,8 @@ export class TableService {
 
     const exists = await this.firestoreService.exists('tables', id)
     if (exists) {
-      console.log(
-        getCurrentDate(),
-        `create table -> already exists "tables/${id}"`,
-      )
       return
     }
-
-    console.log(getCurrentDate(), `create table -> creating "tables/${id}"`)
 
     const now = getCurrentDate()
 
@@ -37,6 +33,7 @@ export class TableService {
       id,
       open: true,
       cardsRevealed: false,
+      ownerId: getUserId(),
       name: 'Minha mesa',
       createdAt: now,
       updatedAt: now,
@@ -46,8 +43,43 @@ export class TableService {
     this.ownerService.create()
   }
 
+  async createNew(): Promise<void> {
+    const id = randomUuid()
+    const code = id.split('-')[0]
+    const now = getCurrentDate()
+
+    const table: Table = {
+      id,
+      open: true,
+      cardsRevealed: false,
+      ownerId: getUserId(),
+      name: `Mesa ${code}`,
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    this.firestoreService.save('tables', id, table)
+    localStorage.setItem(TABLE_ID_KEY, id)
+    this.ownerService.create()
+    window.location.reload()
+  }
+
+  switch(id: string): void {
+    localStorage.setItem(TABLE_ID_KEY, id)
+    window.location.reload()
+  }
+
   getTableObservable(): Observable<Table> {
     return this.firestoreService.getDocumentObservable('tables', getTableId())
+  }
+
+  getTablesObservable(): Observable<Table[]> {
+    return this.firestoreService.getCollecitonObservable<Table>(
+      'tables',
+      where('id', '!=', getTableId()),
+      where('ownerId', '==', getUserId()),
+      orderBy('createdAt', 'desc'),
+    )
   }
 
   changeName(name: string): void {

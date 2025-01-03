@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { Observable, switchMap } from 'rxjs'
 import { Owner } from '../model/owner.model'
 import { User } from '../model/user.model'
-import { getCurrentDate } from '../utils/date'
 import { getTableId, getUserId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 
@@ -16,17 +15,8 @@ export class OwnerService {
 
     const exists = await this.firestoreService.exists('owners', tableId)
     if (exists) {
-      console.log(
-        getCurrentDate(),
-        `create owner -> already exists "owner/${tableId}"`,
-      )
       return
     }
-
-    console.log(
-      getCurrentDate(),
-      `create owner -> creating "owners/${tableId}"`,
-    )
 
     const owner: Owner = {
       tableId,

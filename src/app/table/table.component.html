@@ -1,7 +1,8 @@
 @let user = user$ | async;
 @let role = (userRole$ | async)?.role || 'none';
-@let table = table$ | async;
-@let cardsRevealed = !!table?.cardsRevealed;
+@let currentTable = table$ | async;
+@let tables = (tables$ | async) || [];
+@let cardsRevealed = !!currentTable?.cardsRevealed;
 @let owner = owner$ | async;
 @let cards = cards$ | async;
 @let players = (players$ | async) || [];
@@ -146,7 +147,7 @@
         [nzEditIcon]="editableIcon"
         nzEditTooltip="alterar nome"
         (nzContentChange)="handleTableNameChange($event)"
-        [nzContent]="table?.name"
+        [nzContent]="currentTable?.name"
       >
         <ng-template #editableIcon>
           <span
@@ -189,14 +190,14 @@
             nzType="link"
             nz-dropdown
             nzTrigger="click"
-            [nzDropdownMenu]="menu"
+            [nzDropdownMenu]="countdownStartMenu"
             [disabled]="countdownStarted"
           >
             <span nz-icon nzType="play-circle" nzTheme="outline"></span>
             Iniciar
             <span nz-icon nzType="down"></span>
           </button>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
+          <nz-dropdown-menu #countdownStartMenu>
             <ul nz-menu>
               @for (minute of minutes; track minute.id) {
                 <li
@@ -253,12 +254,49 @@
             Parar
           </button>
         }
+        @if (isOwner) {
+          <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="link"
+            nz-dropdown
+            nzTrigger="click"
+            class="!p-0"
+            [nzDropdownMenu]="tablesMenu"
+          >
+            Trocar de mesa
+            <span nz-icon nzType="down"></span>
+          </button>
+          <nz-dropdown-menu #tablesMenu>
+            <ul nz-menu>
+              <li
+                tabindex="1"
+                nz-menu-item
+                (click)="handleTableCreate()"
+                (keyup)="handleTableCreate()"
+              >
+                <a>Criar uma mesa</a>
+              </li>
+              @for (table of tables; track table.id) {
+                <li
+                  tabindex="1"
+                  nz-menu-item
+                  (click)="handleTableSwitch(table.id)"
+                  (keyup)="handleTableSwitch(table.id)"
+                >
+                  <a>{{ table?.name }}</a>
+                </li>
+              }
+            </ul>
+          </nz-dropdown-menu>
+        }
         <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
         <span
           *nzSpaceItem
           nz-typography
           nzCopyable
-          [nzCopyText]="env.appUrl + env.tablesEndpoint + '/' + table?.id"
+          [nzCopyText]="env.appUrl + env.tablesEndpoint + '/' + currentTable?.id"
         >
           Copiar link da mesa
         </span>
