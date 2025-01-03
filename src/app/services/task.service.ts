@@ -3,7 +3,7 @@ import { orderBy, where } from '@angular/fire/firestore'
 import { map, Observable, switchMap } from 'rxjs'
 import { NewTask, SelectedTask, Task } from '../model/task.model'
 import { getCurrentDate } from '../utils/date'
-import { getTableId, randomUuid } from '../utils/id'
+import { getTableId, randomId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 
 @Injectable({
@@ -42,7 +42,7 @@ export class TaskService {
   }
 
   save({ title, link }: NewTask): void {
-    const id = randomUuid()
+    const id = randomId()
     const now = getCurrentDate()
 
     const task: Task = {

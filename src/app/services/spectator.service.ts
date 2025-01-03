@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router'
 import { Observable, switchMap } from 'rxjs'
 import { Spectator } from '../model/spectator.model'
 import { User } from '../model/user.model'
-import { getCurrentDate } from '../utils/date'
 import { getMergedId, getTableId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 
@@ -22,26 +21,13 @@ export class SpectatorService {
 
     let exists = await this.firestoreService.exists('players', id)
     if (exists) {
-      console.log(
-        getCurrentDate(),
-        `create spectator -> already exists as a player "players/${id}"`,
-      )
       return
     }
 
     exists = await this.firestoreService.exists('spectators', id)
     if (exists) {
-      console.log(
-        getCurrentDate(),
-        `create spectator -> already exists "spectators/${id}"`,
-      )
       return
     }
-
-    console.log(
-      getCurrentDate(),
-      `create spectator -> creating "spectators/${id}"`,
-    )
 
     const spectator: Spectator = {
       userId,

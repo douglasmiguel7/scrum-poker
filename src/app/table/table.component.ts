@@ -25,11 +25,12 @@ import { NzTagModule } from 'ng-zorro-antd/tag'
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { NzWaterMarkModule } from 'ng-zorro-antd/water-mark'
-import { CountdownConfig, CountdownEvent, CountdownModule } from 'ngx-countdown'
+import { CountdownEvent, CountdownModule } from 'ngx-countdown'
 import { Observable } from 'rxjs'
 import { environment } from '../../environments/environment'
 import { Card } from '../model/card.model'
 import { Countdown } from '../model/countdown.model'
+import { Minute } from '../model/minute.model'
 import { Table } from '../model/table.model'
 import { NewTask, Task } from '../model/task.model'
 import { UserRole } from '../model/user-role.model'
@@ -37,6 +38,7 @@ import { User } from '../model/user.model'
 import { Vote, VoteValueQuantity } from '../model/vote.model'
 import { CardService } from '../services/card.service'
 import { CountdownService } from '../services/countdown.service'
+import { MinuteService } from '../services/minute.service'
 import { OwnerService } from '../services/owner.service'
 import { PlayerService } from '../services/player.service'
 import { SpectatorService } from '../services/spectator.service'
@@ -46,11 +48,6 @@ import { UserRoleService } from '../services/user-role.service'
 import { UserService } from '../services/user.service'
 import { VoteService } from '../services/vote.service'
 import { init } from '../utils/id'
-
-const LEFT_TIME_KEY = 'time'
-const LEFT_TIME_DEFAULT = 0
-const MINUTES_KEY = 'selected_minutes'
-const MINUTES_DEFAULT = 1
 
 @Component({
   selector: 'app-table',
@@ -82,42 +79,32 @@ const MINUTES_DEFAULT = 1
   styleUrl: './table.component.css',
 })
 export class TableComponent implements OnInit {
-  title = 'scrum-pokera'
+  title = 'scrum-poker'
 
-  // old
-  countdownConfig: CountdownConfig = {
-    demand: false,
-    format: 'mm:ss',
-    leftTime: LEFT_TIME_DEFAULT,
-    notify: 0,
-  }
-  minutes = 0
-  minutesOptions = [1, 2, 5, 10, 20, 30]
-  cardsRevealed = false
-
-  // new
   env = environment
   toggleAddAnotherTask = false
   validateForm: FormGroup
   changingUserRole = false
 
   user$: Observable<User>
+  userRole$: Observable<UserRole>
   table$: Observable<Table>
+  tables$: Observable<Table[]>
   owner$: Observable<User>
   cards$: Observable<Card[]>
-  tasks$: Observable<Task[]>
   players$: Observable<User[]>
   spectators$: Observable<User[]>
-  userRole$: Observable<UserRole>
+  tasks$: Observable<Task[]>
+  selectedTask$: Observable<Task>
   taskEstimationTotal$: Observable<number>
   votes$: Observable<Vote[]>
   vote$: Observable<Vote>
-  selectedTask$: Observable<Task>
   votesEstimationTotal$: Observable<number>
   votesEstimationAverage$: Observable<number>
   voteValueQuantities$: Observable<VoteValueQuantity[]>
   countdown$: Observable<Countdown>
   countdownStarted$: Observable<boolean>
+  minutes$: Observable<Minute[]>
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -132,9 +119,8 @@ export class TableComponent implements OnInit {
     private userRoleService: UserRoleService,
     private voteService: VoteService,
     private countdownService: CountdownService,
+    private minuteService: MinuteService,
   ) {
-    console.log('table component constructor')
-
     init(this.route)
 
     this.validateForm = this.fb.group({
@@ -145,6 +131,7 @@ export class TableComponent implements OnInit {
     this.user$ = this.userService.getUserObservable()
     this.cards$ = this.cardService.getCardsObservable()
     this.table$ = this.tableService.getTableObservable()
+    this.tables$ = this.tableService.getTablesObservable()
     this.owner$ = this.ownerService.getOwnerObservable()
     this.tasks$ = this.taskService.getTasksObservable()
     this.selectedTask$ = this.taskService.getSelectedTaskIdObservable()
@@ -162,38 +149,15 @@ export class TableComponent implements OnInit {
     this.countdown$ = this.countdownService.getCountdownObservable()
     this.countdownStarted$ =
       this.countdownService.getCountdownStartedObservable()
+    this.minutes$ = this.minuteService.getMinutesObservable()
   }
 
   async ngOnInit(): Promise<void> {
-    console.log('init table component')
-
-    // this.loadTimer()
-
     this.tableService.create()
     this.userService.create()
     this.spectatorService.create()
     this.userRoleService.create()
     this.countdownService.create()
-  }
-
-  private loadTimer(): void {
-    let leftTime = Number(
-      localStorage.getItem(LEFT_TIME_KEY) || LEFT_TIME_DEFAULT,
-    )
-
-    leftTime = isNaN(leftTime) ? LEFT_TIME_DEFAULT : leftTime
-
-    this.countdownConfig = {
-      ...this.countdownConfig,
-      leftTime: leftTime / 1000,
-    }
-
-    // this.countdownStarted = localStorage.getItem(TIMER_STARTED_KEY) === 'true'
-
-    let minutes = Number(localStorage.getItem(MINUTES_KEY) || MINUTES_DEFAULT)
-    minutes = isNaN(minutes) ? MINUTES_DEFAULT : minutes
-
-    this.minutes = minutes
   }
 
   async handleUsernameChange(name: string) {
@@ -248,6 +212,16 @@ export class TableComponent implements OnInit {
     this.taskService.select(task)
   }
 
+  handleTaskEstimationChange(id: string, value: string) {
+    const estimation = Number(value)
+
+    if (isNaN(estimation)) {
+      return
+    }
+
+    this.taskService.update(id, { estimation, voted: true })
+  }
+
   handleTaskLinkChange(id: string, link: string) {
     this.taskService.update(id, { link })
   }
@@ -270,13 +244,29 @@ export class TableComponent implements OnInit {
     }
   }
 
-  handleCardsRevealed() {
-    this.cardsRevealed = !this.cardsRevealed
+  handleRevealCards() {
+    this.tableService.revealCards()
   }
 
   async handleUserRoleChange() {
     this.changingUserRole = true
     await this.userRoleService.switchRole()
     this.changingUserRole = false
+  }
+
+  handleStartNewVoting() {
+    this.tableService.startNewVoting()
+  }
+
+  handleTableCreate() {
+    this.tableService.createNew()
+  }
+
+  handleTableSwitch(tableId: string) {
+    this.tableService.switch(tableId)
+  }
+
+  handleTableExit() {
+    this.tableService.exit()
   }
 }

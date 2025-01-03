@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
 import { Observable } from 'rxjs'
 import { UserRole } from '../model/user-role.model'
-import { getCurrentDate } from '../utils/date'
 import { getMergedId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { PlayerService } from './player.service'
 import { SpectatorService } from './spectator.service'
+import { VoteService } from './vote.service'
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +13,7 @@ import { SpectatorService } from './spectator.service'
 export class UserRoleService {
   constructor(
     private firestoreService: FirestoreService,
-    private route: ActivatedRoute,
+    private voteService: VoteService,
     private spectatorService: SpectatorService,
     private playerService: PlayerService,
   ) {}
@@ -50,32 +49,22 @@ export class UserRoleService {
 
     const role = snapshot.data()?.role
     if (!role) {
-      console.log(getCurrentDate(), `switch role -> role not found in "${id}"`)
       return
     }
 
     if (role === 'player') {
-      console.log(
-        getCurrentDate(),
-        `switch role -> switching role to "spectator" in "${id}"`,
-      )
-
       this.firestoreService.update('userRoles', id, {
         role: 'spectator',
       })
 
       await this.playerService.delete()
       await this.spectatorService.create()
+      await this.voteService.delete()
 
       return
     }
 
     if (role === 'spectator') {
-      console.log(
-        getCurrentDate(),
-        `switch role -> switching role to "player" in "${id}"`,
-      )
-
       this.firestoreService.update('userRoles', id, {
         role: 'player',
       })

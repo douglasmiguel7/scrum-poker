@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 import { User } from '../model/user.model'
 import { getCurrentDate } from '../utils/date'
-import { FirestoreService } from './firestore.service'
 import { getUserId } from '../utils/id'
+import { FirestoreService } from './firestore.service'
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +16,8 @@ export class UserService {
 
     const exists = await this.firestoreService.exists('users', id)
     if (exists) {
-      console.log(
-        getCurrentDate(),
-        `create user -> already exists "users/${id}"`,
-      )
       return
     }
-
-    console.log(getCurrentDate(), `create user -> creating "user/${id}"`)
 
     const now = getCurrentDate()
 

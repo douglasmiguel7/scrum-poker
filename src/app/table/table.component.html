@@ -1,4 +1,32 @@
+@let user = user$ | async;
+@let role = (userRole$ | async)?.role || 'none';
+@let currentTable = table$ | async;
+@let tables = (tables$ | async) || [];
+@let cardsRevealed = !!currentTable?.cardsRevealed;
+@let owner = owner$ | async;
+@let cards = cards$ | async;
+@let players = (players$ | async) || [];
+@let spectators = (spectators$ | async) || [];
+@let tasks = (tasks$ | async) || [];
+@let selectedTask = selectedTask$ | async;
+@let taskEstimationTotal = (taskEstimationTotal$ | async) || 0;
+@let votes = (votes$ | async) || [];
+@let currentVote = vote$ | async;
+@let votesEstimationTotal = votesEstimationTotal$ | async;
+@let votesEstimationAverage = votesEstimationAverage$ | async;
+@let voteValueQuantities = voteValueQuantities$ | async;
+@let countdown = countdown$ | async;
 @let countdownStarted = countdownStarted$ | async;
+@let minutes = minutes$ | async;
+@let isOwner = owner && user && owner.id === user.id;
+@let isSpectator = role === 'spectator';
+@let isPlayer = role === 'player';
+
+@let votesRemaining = players.length - votes.length;
+
+@let hasPlayers = !!players.length;
+@let allPlayersVoted = hasPlayers && players.length === votes.length;
+@let awaitingOneVote = votesRemaining === 1;
 
 <nz-layout>
   <!-- page header -->
@@ -97,11 +125,12 @@
       </a>
     </span>
     <div nz-flex nzAlign="center" nzGap="small">
-      <nz-avatar [nzText]="(user$ | async)?.name?.charAt(0)"></nz-avatar>
+      <nz-avatar [nzText]="user?.name?.charAt(0)"></nz-avatar>
       <span
         nz-typography
         nzEditable
-        [nzContent]="(user$ | async)?.name"
+        nzEditTooltip="alterar nome"
+        [nzContent]="user?.name"
         (nzContentChange)="handleUsernameChange($event)"
       ></span>
     </div>
@@ -114,11 +143,11 @@
     <nz-page-header-title>
       <span
         nz-typography
-        nzEditable
+        [nzEditable]="isOwner"
         [nzEditIcon]="editableIcon"
         nzEditTooltip="alterar nome"
         (nzContentChange)="handleTableNameChange($event)"
-        [nzContent]="(table$ | async)?.name"
+        [nzContent]="currentTable?.name"
       >
         <ng-template #editableIcon>
           <span
@@ -133,20 +162,18 @@
     <nz-page-header-subtitle>
       criado por
       <strong>
-        @if ((owner$ | async)?.id === (user$ | async)?.id) {
+        @if (isOwner) {
           você
         }
 
-        @if ((owner$ | async)?.id !== (user$ | async)?.id) {
-          {{ (owner$ | async)?.name }}
+        @if (!isOwner) {
+          {{ owner?.name }}
         }
       </strong>
     </nz-page-header-subtitle>
 
     <nz-page-header-extra>
       <nz-space nzSize="middle" nzAlign="center">
-        @let countdown = countdown$ | async;
-
         @if (countdown) {
           <countdown
             ngV
@@ -154,35 +181,38 @@
             [config]="countdown"
             (event)="handleCountdownEvent($event)"
           />
+        }
+
+        @if (isOwner) {
           <button
             *nzSpaceItem
             nz-button
             nzType="link"
             nz-dropdown
             nzTrigger="click"
-            [nzDropdownMenu]="menu"
+            [nzDropdownMenu]="countdownStartMenu"
             [disabled]="countdownStarted"
           >
             <span nz-icon nzType="play-circle" nzTheme="outline"></span>
             Iniciar
             <span nz-icon nzType="down"></span>
           </button>
-          <nz-dropdown-menu #menu="nzDropdownMenu">
+          <nz-dropdown-menu #countdownStartMenu>
             <ul nz-menu>
-              @for (option of minutesOptions; track option) {
+              @for (minute of minutes; track minute.id) {
                 <li
                   tabindex="1"
                   nz-menu-item
-                  (click)="handleStartCountdown(option)"
-                  (keyup)="handleStartCountdown(option)"
+                  (click)="handleStartCountdown(minute.value)"
+                  (keyup)="handleStartCountdown(minute.value)"
                 >
                   <a>
-                    @if (option === 1) {
-                      {{ option }} minuto
+                    @if (minute.value === 1) {
+                      {{ minute.value }} minuto
                     }
 
-                    @if (option > 1) {
-                      {{ option }} minutos
+                    @if (minute.value > 1) {
+                      {{ minute.value }} minutos
                     }
                   </a>
                 </li>
@@ -224,17 +254,66 @@
             Parar
           </button>
           <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="link"
+            nz-dropdown
+            nzTrigger="click"
+            class="!p-0"
+            [nzDropdownMenu]="tablesMenu"
+          >
+            Trocar de mesa
+            <span nz-icon nzType="down"></span>
+          </button>
+          <nz-dropdown-menu #tablesMenu>
+            <ul nz-menu>
+              <li
+                tabindex="1"
+                nz-menu-item
+                (click)="handleTableCreate()"
+                (keyup)="handleTableCreate()"
+              >
+                <a>Criar uma mesa</a>
+              </li>
+              <li nz-menu-divider></li>
+              @for (table of tables; track table.id) {
+                <li
+                  tabindex="1"
+                  nz-menu-item
+                  (click)="handleTableSwitch(table.id)"
+                  (keyup)="handleTableSwitch(table.id)"
+                >
+                  <a>{{ table?.name }}</a>
+                </li>
+              }
+            </ul>
+          </nz-dropdown-menu>
         }
+        <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
         <span
           *nzSpaceItem
           nz-typography
           nzCopyable
           [nzCopyText]="
-            env.appUrl + env.tablesEndpoint + '/' + (table$ | async)?.id
+            env.appUrl + env.tablesEndpoint + '/' + currentTable?.id
           "
         >
-          Copiar link do convite
+          Copiar link da mesa
         </span>
+        @if (!isOwner) {
+          <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzDanger
+            nzType="link"
+            class="!p-0"
+            (click)="handleTableExit()"
+          >
+            Sair da mesa
+          </button>
+        }
       </nz-space>
     </nz-page-header-extra>
   </nz-page-header>
@@ -258,25 +337,23 @@
             <span nz-icon nzType="swap" nzTheme="outline"></span>
           }
 
-          @if (!changingUserRole && (userRole$ | async)?.role === 'spectator') {
+          @if (!changingUserRole && isSpectator) {
             Sentar na mesa
           }
 
-          @if (!changingUserRole && (userRole$ | async)?.role === 'player') {
+          @if (!changingUserRole && isPlayer) {
             Ficar assistindo
           }
         </button>
         <div *nzSpaceItem>
-          <h4>Na mesa ({{ (players$ | async)?.length }})</h4>
+          <h4>Na mesa ({{ players.length }})</h4>
           <nz-space nzDirection="vertical">
-            @for (player of players$ | async; track player.id) {
+            @for (player of players; track player.id) {
               <nz-space *nzSpaceItem nzAlign="baseline">
                 <nz-avatar
                   *nzSpaceItem
                   [nzText]="
-                    (user$ | async)?.id === player.id
-                      ? 'V'
-                      : player.name.charAt(0)
+                    user?.id === player.id ? 'V' : player.name.charAt(0)
                   "
                 />
                 <span *nzSpaceItem nz-typography nzEllipsis class="w-32">
@@ -285,11 +362,11 @@
                     [nzTooltipTitle]="player.name"
                     nzTooltipPlacement="right"
                   >
-                    @if ((user$ | async)?.id === player.id) {
+                    @if (user?.id === player.id) {
                       Você
                     }
 
-                    @if ((user$ | async)?.id !== player.id) {
+                    @if (user?.id !== player.id) {
                       {{ player.name }}
                     }
                   </span>
@@ -300,16 +377,14 @@
         </div>
 
         <div *nzSpaceItem>
-          <h4>Assistindo ({{ (spectators$ | async)?.length }})</h4>
+          <h4>Assistindo ({{ spectators.length }})</h4>
           <nz-space nzDirection="vertical">
-            @for (spectator of spectators$ | async; track spectator.id) {
+            @for (spectator of spectators; track spectator.id) {
               <nz-space *nzSpaceItem nzAlign="baseline">
                 <nz-avatar
                   *nzSpaceItem
                   [nzText]="
-                    (user$ | async)?.id === spectator.id
-                      ? 'V'
-                      : spectator.name.charAt(0)
+                    user?.id === spectator.id ? 'V' : spectator.name.charAt(0)
                   "
                 />
                 <span *nzSpaceItem nz-typography nzEllipsis class="w-32">
@@ -318,11 +393,11 @@
                     [nzTooltipTitle]="spectator.name"
                     nzTooltipPlacement="right"
                   >
-                    @if ((user$ | async)?.id === spectator.id) {
+                    @if (user?.id === spectator.id) {
                       Você
                     }
 
-                    @if ((user$ | async)?.id !== spectator.id) {
+                    @if (user?.id !== spectator.id) {
                       {{ spectator.name }}
                     }
                   </span>
@@ -348,56 +423,66 @@
                 nzAlign="center"
                 nzSize="middle"
               >
-                <h2 *nzSpaceItem nz-typography class="!m-0">
-                  Escolha sua carta!
-                </h2>
-                <button
+                <nz-space
                   *nzSpaceItem
-                  nz-button
-                  nzSize="large"
-                  nzType="primary"
-                  [disabled]="
-                    (votes$ | async)?.length !== (players$ | async)?.length
-                  "
-                  [nzLoading]="
-                    (votes$ | async)?.length !== (players$ | async)?.length
-                  "
-                  (click)="handleCardsRevealed()"
+                  nzDirection="vertical"
+                  nzAlign="center"
+                  [nzSize]="0"
                 >
-                  @if (
-                    (votes$ | async)?.length === (players$ | async)?.length
-                  ) {
+                  <h2 *nzSpaceItem nz-typography class="!m-0">
+                    @if (!hasPlayers) {
+                      Aguardando sentarem na mesa
+                    }
+
+                    @if (allPlayersVoted) {
+                      Estamos curiosos 👀
+                    }
+
+                    @if (isSpectator && hasPlayers && !allPlayersVoted) {
+                      Aguardando votação
+                    }
+
+                    @if (isPlayer && hasPlayers && !allPlayersVoted) {
+                      Escolha sua carta!
+                    }
+                  </h2>
+                  <h5
+                    *nzSpaceItem
+                    nz-typography
+                    class="!m-0"
+                    nzType="secondary"
+                  >
+                    @if (hasPlayers && !allPlayersVoted && awaitingOneVote) {
+                      Resta
+                      {{ votesRemaining }}
+                      voto
+                    }
+
+                    @if (hasPlayers && !allPlayersVoted && !awaitingOneVote) {
+                      Restam
+                      {{ votesRemaining }}
+                      votos
+                    }
+
+                    @if (allPlayersVoted) {
+                      Aguardando revelação dos votos
+                    }
+                  </h5>
+                </nz-space>
+
+                @if (allPlayersVoted) {
+                  <button
+                    *nzSpaceItem
+                    nz-button
+                    nzSize="large"
+                    nzType="primary"
+                    [disabled]="votes.length !== players.length"
+                    [nzLoading]="votes.length !== players.length"
+                    (click)="handleRevealCards()"
+                  >
                     Revelar cartas
-                  }
-
-                  @if (
-                    (votes$ | async)?.length !== (players$ | async)?.length &&
-                    ((players$ | async)?.length || 0) -
-                      ((votes$ | async)?.length || 0) ===
-                      1
-                  ) {
-                    Arguardando
-                    {{
-                      ((players$ | async)?.length || 0) -
-                        ((votes$ | async)?.length || 0)
-                    }}
-                    voto
-                  }
-
-                  @if (
-                    (votes$ | async)?.length !== (players$ | async)?.length &&
-                    ((players$ | async)?.length || 0) -
-                      ((votes$ | async)?.length || 0) >
-                      1
-                  ) {
-                    Arguardando
-                    {{
-                      ((players$ | async)?.length || 0) -
-                        ((votes$ | async)?.length || 0)
-                    }}
-                    votos
-                  }
-                </button>
+                  </button>
+                }
               </nz-space>
             }
 
@@ -416,7 +501,7 @@
                 >
                   <h2 *nzSpaceItem nz-typography class="!m-0">Resultado</h2>
                   <nz-space *nzSpaceItem nzSize="small">
-                    @for (vote of votes$ | async; track vote.id) {
+                    @for (vote of votes; track vote.id) {
                       <nz-space
                         *nzSpaceItem
                         nzDirection="vertical"
@@ -457,7 +542,7 @@
                   <h2 *nzSpaceItem nz-typography class="!m-0">Análise</h2>
                   <nz-space *nzSpaceItem nzSize="small">
                     @for (
-                      voteValueQuantity of voteValueQuantities$ | async;
+                      voteValueQuantity of voteValueQuantities;
                       track voteValueQuantity.value
                     ) {
                       <nz-space
@@ -510,7 +595,7 @@
                   >
                     <h2 *nzSpaceItem nz-typography class="!m-0">Total</h2>
                     <h2 *nzSpaceItem nz-typography class="!m-0">
-                      {{ votesEstimationTotal$ | async }}
+                      {{ votesEstimationTotal }}
                     </h2>
                   </nz-space>
 
@@ -522,14 +607,23 @@
                     [nzSize]="0"
                     nz-tooltip
                     nzTooltipPlacement="bottom"
-                    nzTooltipTitle="soma da pontuação ÷ quantidade de votos"
+                    nzTooltipTitle="soma da pontuação divido por quantidade de votos"
                   >
                     <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
                     <h2 *nzSpaceItem nz-typography class="!m-0">
-                      {{ votesEstimationAverage$ | async }}
+                      {{ votesEstimationAverage }}
                     </h2>
                   </nz-space>
                 </nz-space>
+
+                <button
+                  *nzSpaceItem
+                  nz-button
+                  nzType="primary"
+                  (click)="handleStartNewVoting()"
+                >
+                  Iniciar nova votação
+                </button>
               </nz-space>
             }
           </nz-space>
@@ -548,30 +642,24 @@
             <ng-template #spaceSplit>•</ng-template>
 
             <span *nzSpaceItem>
-              {{ (tasks$ | async)?.length }}
+              {{ tasks.length }}
 
-              @if ((tasks$ | async)?.length === 1) {
+              @if (tasks.length === 1) {
                 tarefa
               }
 
-              @if (
-                ((tasks$ | async)?.length || 0) < 1 ||
-                ((tasks$ | async)?.length || 0) > 1
-              ) {
+              @if (tasks.length < 1 || tasks.length > 1) {
                 tarefas
               }
             </span>
             <span *nzSpaceItem>
-              {{ taskEstimationTotal$ | async }}
+              {{ taskEstimationTotal }}
 
-              @if ((taskEstimationTotal$ | async) === 1) {
+              @if (taskEstimationTotal === 1) {
                 ponto
               }
 
-              @if (
-                ((taskEstimationTotal$ | async) || 0) < 1 ||
-                ((taskEstimationTotal$ | async) || 0) > 1
-              ) {
+              @if (taskEstimationTotal < 1 || taskEstimationTotal > 1) {
                 pontos
               }
             </span>
@@ -635,7 +723,7 @@
         <!-- tasks -->
         <div *nzSpaceItem>
           <nz-space nzDirection="vertical" class="w-full">
-            @for (task of tasks$ | async; track task.id) {
+            @for (task of tasks; track task.id) {
               <nz-card
                 *nzSpaceItem
                 nzHoverable
@@ -649,22 +737,12 @@
                     nzEditable
                     nzEditTooltip="alterar título"
                     nzEllipsis
-                    [class.w-32]="task.voted"
-                    [class.w-30]="!task.voted"
                     [nzContent]="task.title"
                     (nzContentChange)="handleTaskTitleChange(task.id, $event)"
+                    class="w-44"
                   ></p>
                 </ng-template>
                 <ng-template #extra>
-                  @if (task.voted) {
-                    <nz-tag
-                      nz-tooltip
-                      nzTooltipTitle="estimativa"
-                      nzColor="green"
-                    >
-                      {{ task.estimation }}
-                    </nz-tag>
-                  }
                   <button
                     nz-button
                     nzType="link"
@@ -678,8 +756,52 @@
                   </button>
                 </ng-template>
 
-                <p>
+                <nz-space nzDirection="vertical" class="w-full" nzSize="middle">
+                  <nz-space *nzSpaceItem nzSize="small">
+                    @if (task.voted) {
+                      <nz-tag *nzSpaceItem nzColor="green" class="m-0">
+                        {{ task.estimation }}
+
+                        @if (task.estimation === 1) {
+                          ponto
+                        }
+
+                        @if (task.estimation < 1 || task.estimation > 1) {
+                          pontos
+                        }
+                      </nz-tag>
+                    }
+
+                    <span
+                      *nzSpaceItem
+                      nz-typography
+                      nzEditable
+                      [nzEditIcon]="taskEstimationEditIcon"
+                      nzEditTooltip="alterar pontuação"
+                      class="w-full"
+                      (nzContentChange)="
+                        handleTaskEstimationChange(task.id, $event)
+                      "
+                    >
+                      <ng-template #taskEstimationEditIcon>
+                        @if (task.voted) {
+                          <span nz-icon nzType="edit" nzTheme="outline"></span>
+                        }
+
+                        @if (!task.voted) {
+                          <span
+                            nz-icon
+                            nzType="plus-circle"
+                            nzTheme="outline"
+                          ></span>
+                          Adicionar pontuação
+                        }
+                      </ng-template>
+                    </span>
+                  </nz-space>
+
                   <span
+                    *nzSpaceItem
                     nz-typography
                     nzEllipsis
                     nzEditable
@@ -704,41 +826,43 @@
                       }
                     </ng-template>
                   </span>
-                </p>
 
-                <nz-space>
-                  <button
-                    *nzSpaceItem
-                    nz-button
-                    [nzType]="
-                      (selectedTask$ | async)?.id === task.id
-                        ? 'primary'
-                        : 'dashed'
-                    "
-                    (click)="handleSelectedTask(task)"
-                  >
-                    @if ((selectedTask$ | async)?.id !== task.id) {
-                      Votar essa tarefa
-                    }
-
-                    @if ((selectedTask$ | async)?.id === task.id) {
-                      Votando essa tarefa
-                    }
-                  </button>
-
-                  @if (task.link) {
-                    <a
+                  <nz-space *nzSpaceItem>
+                    <button
                       *nzSpaceItem
                       nz-button
-                      nzType="link"
-                      class="!p-0"
-                      [href]="task.link"
-                      target="_blank"
+                      [nzType]="
+                        selectedTask?.id === task.id ? 'primary' : 'default'
+                      "
+                      (click)="handleSelectedTask(task)"
                     >
-                      <span nz-icon nzType="link" nzTheme="outline"></span>
-                      Abrir link
-                    </a>
-                  }
+                      @if (selectedTask?.id === task.id) {
+                        Votando agora
+                      }
+
+                      @if (selectedTask?.id !== task.id && !task.voted) {
+                        Votar nesta
+                      }
+
+                      @if (selectedTask?.id !== task.id && task.voted) {
+                        Votar novamente
+                      }
+                    </button>
+
+                    @if (task.link) {
+                      <a
+                        *nzSpaceItem
+                        nz-button
+                        nzType="link"
+                        class="!p-0"
+                        [href]="task.link"
+                        target="_blank"
+                      >
+                        <span nz-icon nzType="link" nzTheme="outline"></span>
+                        Abrir link
+                      </a>
+                    }
+                  </nz-space>
                 </nz-space>
               </nz-card>
             }
@@ -751,26 +875,28 @@
   <nz-divider class="m-0"></nz-divider>
 
   <!-- page footer -->
-  <nz-footer nz-flex nzJustify="center" nzGap="large">
-    @for (card of cards$ | async; track card.id) {
-      <button
-        nz-button
-        class="overflow-hidden !p-0 !w-10 !h-16"
-        nzSize="large"
-        [nzType]="(vote$ | async)?.cardId === card.id ? 'primary' : 'dashed'"
-        (click)="handleVote(card)"
-        nz-tooltip
-        [nzTooltipTitle]="card.tip"
-        [nzTooltipTrigger]="card.tip !== null ? 'hover' : null"
-      >
-        @if (!card.icon) {
-          {{ card.value }}
-        }
+  @if (role === 'player') {
+    <nz-footer nz-flex nzJustify="center" nzGap="large">
+      @for (card of cards; track card.id) {
+        <button
+          nz-button
+          class="overflow-hidden !p-0 !w-10 !h-16"
+          nzSize="large"
+          [nzType]="currentVote?.cardId === card.id ? 'primary' : 'dashed'"
+          (click)="handleVote(card)"
+          nz-tooltip
+          [nzTooltipTitle]="card.tip"
+          [nzTooltipTrigger]="card.tip !== null ? 'hover' : null"
+        >
+          @if (!card.icon) {
+            {{ card.value }}
+          }
 
-        @if (card.icon) {
-          <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
-        }
-      </button>
-    }
-  </nz-footer>
+          @if (card.icon) {
+            <span nz-icon [nzType]="card.icon" nzTheme="outline"></span>
+          }
+        </button>
+      }
+    </nz-footer>
+  }
 </nz-layout>

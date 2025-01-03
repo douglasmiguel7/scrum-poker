@@ -9,22 +9,29 @@ export const init = (activatedRoute: ActivatedRoute): void => {
   route = activatedRoute
 }
 
-export const randomUuid = () => v4()
+export const randomId = () => v4()
 
 export const validateUuid = (uuid: string): boolean => {
   return validate(uuid) && version(uuid) === 4
 }
 
 export const getTableId = (): string => {
-  return (
-    route.snapshot.paramMap.get('id') ||
-    localStorage.getItem(TABLE_ID_KEY) ||
-    randomUuid()
-  )
+  let tableId =
+    route.snapshot.paramMap.get('id') || localStorage.getItem(TABLE_ID_KEY)
+
+  if (tableId) {
+    return tableId
+  }
+
+  tableId = randomId()
+
+  localStorage.setItem(TABLE_ID_KEY, tableId)
+
+  return tableId
 }
 
 export const getUserId = (): string => {
-  const id = localStorage.getItem(USER_ID_KEY) || randomUuid()
+  const id = localStorage.getItem(USER_ID_KEY) || randomId()
 
   localStorage.setItem(USER_ID_KEY, id)
 
