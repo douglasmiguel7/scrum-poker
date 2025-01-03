@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { orderBy, where } from '@angular/fire/firestore'
-import { Router } from '@angular/router'
 import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
 import { TABLE_ID_KEY } from '../utils/constant'
@@ -15,7 +14,6 @@ import { OwnerService } from './owner.service'
 export class TableService {
   constructor(
     private firestoreService: FirestoreService,
-    private router: Router,
     private ownerService: OwnerService,
   ) {}
 
@@ -67,7 +65,7 @@ export class TableService {
 
     localStorage.setItem(TABLE_ID_KEY, id)
 
-    this.ownerService.create()
+    await this.ownerService.create()
 
     window.location.reload()
   }
