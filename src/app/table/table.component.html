@@ -1,6 +1,7 @@
 @let user = user$ | async;
 @let role = (userRole$ | async)?.role || 'none';
 @let table = table$ | async;
+@let cardsRevealed = !!table?.cardsRevealed;
 @let owner = owner$ | async;
 @let cards = cards$ | async;
 @let players = (players$ | async) || [];
@@ -259,7 +260,7 @@
           nzCopyable
           [nzCopyText]="env.appUrl + env.tablesEndpoint + '/' + table?.id"
         >
-          Copiar link do convite
+          Copiar link da mesa
         </span>
       </nz-space>
     </nz-page-header-extra>
@@ -425,7 +426,7 @@
                     nzType="primary"
                     [disabled]="votes.length !== players.length"
                     [nzLoading]="votes.length !== players.length"
-                    (click)="handleCardsRevealed()"
+                    (click)="handleRevealCards()"
                   >
                     Revelar cartas
                   </button>
@@ -554,7 +555,7 @@
                     [nzSize]="0"
                     nz-tooltip
                     nzTooltipPlacement="bottom"
-                    nzTooltipTitle="soma da pontuação ÷ quantidade de votos"
+                    nzTooltipTitle="soma da pontuação divido por quantidade de votos"
                   >
                     <h2 *nzSpaceItem nz-typography class="!m-0">Média</h2>
                     <h2 *nzSpaceItem nz-typography class="!m-0">
@@ -562,6 +563,15 @@
                     </h2>
                   </nz-space>
                 </nz-space>
+
+                <button
+                  *nzSpaceItem
+                  nz-button
+                  nzType="primary"
+                  (click)="handleStartNewVoting()"
+                >
+                  Iniciar nova votação
+                </button>
               </nz-space>
             }
           </nz-space>

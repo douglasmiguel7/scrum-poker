@@ -36,6 +36,7 @@ export class TableService {
     const table: Table = {
       id,
       open: true,
+      cardsRevealed: false,
       name: 'Minha mesa',
       createdAt: now,
       updatedAt: now,
@@ -53,5 +54,21 @@ export class TableService {
     this.firestoreService.update('tables', getTableId(), {
       name,
     })
+  }
+
+  revealCards(): void {
+    this.firestoreService.update('tables', getTableId(), {
+      cardsRevealed: true,
+    })
+  }
+
+  startNewVoting(): void {
+    const tableId = getTableId()
+
+    this.firestoreService.update('tables', tableId, {
+      cardsRevealed: false,
+    })
+
+    this.firestoreService.deleteByTableId('votes', tableId)
   }
 }

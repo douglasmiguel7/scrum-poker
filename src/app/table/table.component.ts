@@ -81,10 +81,6 @@ import { init } from '../utils/id'
 export class TableComponent implements OnInit {
   title = 'scrum-poker'
 
-  // TODO think how we restart voting to another task
-  // TODO sync with firestore
-  cardsRevealed = false
-
   env = environment
   toggleAddAnotherTask = false
   validateForm: FormGroup
@@ -157,8 +153,6 @@ export class TableComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    console.log('init table component')
-
     this.tableService.create()
     this.userService.create()
     this.spectatorService.create()
@@ -250,13 +244,17 @@ export class TableComponent implements OnInit {
     }
   }
 
-  handleCardsRevealed() {
-    this.cardsRevealed = !this.cardsRevealed
+  handleRevealCards() {
+    this.tableService.revealCards()
   }
 
   async handleUserRoleChange() {
     this.changingUserRole = true
     await this.userRoleService.switchRole()
     this.changingUserRole = false
+  }
+
+  handleStartNewVoting() {
+    this.tableService.startNewVoting()
   }
 }
