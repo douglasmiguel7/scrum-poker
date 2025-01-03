@@ -29,12 +29,12 @@ export class PlayerService {
       return
     }
 
-    const spectator: Player = {
+    const player: Player = {
       userId,
       tableId,
     }
 
-    this.firestoreService.save('players', id, spectator)
+    this.firestoreService.save('players', id, player)
   }
 
   async delete(): Promise<void> {
