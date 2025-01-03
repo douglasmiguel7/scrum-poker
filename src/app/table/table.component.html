@@ -253,8 +253,6 @@
             <span nz-icon nzType="close-circle" nzTheme="outline"></span>
             Parar
           </button>
-        }
-        @if (isOwner) {
           <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
           <button
             *nzSpaceItem
@@ -296,10 +294,25 @@
           *nzSpaceItem
           nz-typography
           nzCopyable
-          [nzCopyText]="env.appUrl + env.tablesEndpoint + '/' + currentTable?.id"
+          [nzCopyText]="
+            env.appUrl + env.tablesEndpoint + '/' + currentTable?.id
+          "
         >
           Copiar link da mesa
         </span>
+        @if (!isOwner) {
+          <nz-divider *nzSpaceItem class="!m-0" nzType="vertical"></nz-divider>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzDanger
+            nzType="link"
+            class="!p-0"
+            (click)="handleTableExit()"
+          >
+            Sair da mesa
+          </button>
+        }
       </nz-space>
     </nz-page-header-extra>
   </nz-page-header>

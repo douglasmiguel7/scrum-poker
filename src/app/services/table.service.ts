@@ -5,7 +5,7 @@ import { Observable } from 'rxjs'
 import { Table } from '../model/table.model'
 import { TABLE_ID_KEY } from '../utils/constant'
 import { getCurrentDate } from '../utils/date'
-import { getTableId, getUserId, randomUuid } from '../utils/id'
+import { getMergedId, getTableId, getUserId, randomId } from '../utils/id'
 import { FirestoreService } from './firestore.service'
 import { OwnerService } from './owner.service'
 
@@ -21,31 +21,14 @@ export class TableService {
 
   async create(): Promise<void> {
     const id = getTableId()
+    const code = id.split('-')[0].substring(0, 4)
 
     const exists = await this.firestoreService.exists('tables', id)
+
     if (exists) {
       return
     }
 
-    const now = getCurrentDate()
-
-    const table: Table = {
-      id,
-      open: true,
-      cardsRevealed: false,
-      ownerId: getUserId(),
-      name: 'Minha mesa',
-      createdAt: now,
-      updatedAt: now,
-    }
-
-    this.firestoreService.save('tables', id, table)
-    this.ownerService.create()
-  }
-
-  async createNew(): Promise<void> {
-    const id = randomUuid()
-    const code = id.split('-')[0]
     const now = getCurrentDate()
 
     const table: Table = {
@@ -59,13 +42,33 @@ export class TableService {
     }
 
     this.firestoreService.save('tables', id, table)
+
     localStorage.setItem(TABLE_ID_KEY, id)
+
     this.ownerService.create()
-    window.location.reload()
   }
 
-  switch(id: string): void {
+  async createNew(): Promise<void> {
+    const id = randomId()
+    const code = id.split('-')[0].substring(0, 4)
+    const now = getCurrentDate()
+
+    const table: Table = {
+      id,
+      open: true,
+      cardsRevealed: false,
+      ownerId: getUserId(),
+      name: `Mesa ${code}`,
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    this.firestoreService.save('tables', id, table)
+
     localStorage.setItem(TABLE_ID_KEY, id)
+
+    this.ownerService.create()
+
     window.location.reload()
   }
 
@@ -102,5 +105,21 @@ export class TableService {
     })
 
     this.firestoreService.deleteByTableId('votes', tableId)
+  }
+
+  switch(id: string): void {
+    localStorage.setItem(TABLE_ID_KEY, id)
+    window.location.reload()
+  }
+
+  exit(): void {
+    const { id } = getMergedId()
+
+    this.firestoreService.delete('votes', id)
+    this.firestoreService.delete('players', id)
+    this.firestoreService.delete('spectators', id)
+    this.firestoreService.delete('userRoles', id)
+
+    window.location.href = '/'
   }
 }
