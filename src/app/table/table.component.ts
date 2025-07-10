@@ -48,6 +48,7 @@ import { UserRoleService } from '../services/user-role.service'
 import { UserService } from '../services/user.service'
 import { VoteService } from '../services/vote.service'
 import { init } from '../utils/id'
+import { sleep } from '../utils/thread'
 
 @Component({
   selector: 'app-table',
@@ -85,6 +86,7 @@ export class TableComponent implements OnInit {
   toggleAddAnotherTask = false
   validateForm: FormGroup
   changingUserRole = false
+  loadingTable = false
 
   user$: Observable<User>
   userRole$: Observable<UserRole>
@@ -258,11 +260,15 @@ export class TableComponent implements OnInit {
     this.tableService.startNewVoting()
   }
 
-  handleTableCreate() {
+  async handleTableCreate() {
+    this.loadingTable = true
+    await sleep(250)
     this.tableService.createNew()
   }
 
-  handleTableSwitch(tableId: string) {
+  async handleTableSwitch(tableId: string) {
+    this.loadingTable = true
+    await sleep(250)
     this.tableService.switch(tableId)
   }
 

@@ -23,6 +23,7 @@ import {
   InfoCircleOutline,
   LinkedinOutline,
   LinkOutline,
+  LoadingOutline,
   PlayCircleOutline,
   PlusCircleOutline,
   QuestionOutline,
@@ -53,6 +54,7 @@ const icons: IconDefinition[] = [
   DeleteOutline,
   EnterOutline,
   InfoCircleOutline,
+  LoadingOutline,
 ]
 
 export const appConfig: ApplicationConfig = {

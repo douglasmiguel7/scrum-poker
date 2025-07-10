@@ -271,7 +271,12 @@
             nzTrigger="click"
             class="!p-0"
             [nzDropdownMenu]="tablesMenu"
+            [nzDisabled]="loadingTable"
           >
+            @if (loadingTable) {
+              <span nz-icon nzType="loading" nzTheme="outline" nzSpin></span>
+            }
+
             Trocar de mesa
             <span nz-icon nzType="down"></span>
           </button>
