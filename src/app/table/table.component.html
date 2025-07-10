@@ -31,10 +31,7 @@
 <nz-layout>
   <!-- page header -->
   <nz-header nzTheme="light" nz-flex nzJustify="space-between" nzAlign="center">
-    <h2 nz-typography class="!m-0">
-      <span nz-icon nzType="fast-forward" nzTheme="outline"></span>
-      Scrum Poker
-    </h2>
+    <h2 nz-typography class="!m-0">💡 Estime Ai</h2>
     <span nz-typography>
       Feito com ❤️ por
       <a
@@ -175,17 +172,29 @@
     <nz-page-header-extra>
       <nz-space nzSize="middle" nzAlign="center">
         @if (countdown) {
-          <countdown
-            ngV
-            *nzSpaceItem
-            [config]="countdown"
-            (event)="handleCountdownEvent($event)"
-          />
+          <nz-space *nzSpaceItem nzSize="small" nzAlign="center">
+            <countdown
+              *nzSpaceItem
+              [config]="countdown"
+              (event)="handleCountdownEvent($event)"
+            />
+
+            <span
+              *nzSpaceItem
+              nz-icon
+              nzType="info-circle"
+              nzTheme="outline"
+              nz-tooltip
+              nzTooltipTitle="devido um problema de sincronização deve ser iniciado apenas quando todos estiverem sentados na mesa; recarregar a página também pode causar perda da sincronização da contagem regressiva"
+              nzTooltipPlacement="bottom"
+            ></span>
+          </nz-space>
         }
 
         @if (isOwner) {
           <button
             *nzSpaceItem
+            class="!p-0"
             nz-button
             nzType="link"
             nz-dropdown
@@ -274,9 +283,11 @@
                 (click)="handleTableCreate()"
                 (keyup)="handleTableCreate()"
               >
-                <a>Criar uma mesa</a>
+                <a>Criar nova mesa</a>
               </li>
-              <li nz-menu-divider></li>
+              @if (tables.length) {
+                <li nz-menu-divider></li>
+              }
               @for (table of tables; track table.id) {
                 <li
                   tabindex="1"
@@ -284,7 +295,7 @@
                   (click)="handleTableSwitch(table.id)"
                   (keyup)="handleTableSwitch(table.id)"
                 >
-                  <a>{{ table?.name }}</a>
+                  <a>Ir para "{{ table?.name }}"</a>
                 </li>
               }
             </ul>
@@ -512,7 +523,6 @@
                           *nzSpaceItem
                           nz-typography
                           nzEllipsis
-                          nz-tooltip
                           class="w-20 text-center"
                           nz-tooltip
                           [nzTooltipTitle]="vote.user.name"
