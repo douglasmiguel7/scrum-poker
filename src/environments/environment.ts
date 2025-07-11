@@ -11,5 +11,6 @@ export const environment: EnvironmentType = {
     apiKey: 'AIzaSyCmUQk2t8bBqMx4-Ysv9LAU3iTRsMvUD2c',
     authDomain: 'scrum-poker-f387c.firebaseapp.com',
     messagingSenderId: '257699867582',
+    measurementId: 'G-X7CZ9EZ6FR',
   },
 }

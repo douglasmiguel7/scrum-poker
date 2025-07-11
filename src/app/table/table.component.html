@@ -31,7 +31,12 @@
 <nz-layout>
   <!-- page header -->
   <nz-header nzTheme="light" nz-flex nzJustify="space-between" nzAlign="center">
-    <h2 nz-typography class="!m-0">💡 Scrum Poker</h2>
+    <nz-space nzSize="middle">
+      <h2 *nzSpaceItem nz-typography class="!m-0">💡Scrum Poker</h2>
+      <span *nzSpaceItem nz-typography nzType="secondary">
+        {{ env.appVersion }}
+      </span>
+    </nz-space>
     <span nz-typography>
       Feito com ❤️ por
       <a
@@ -76,19 +81,8 @@
                 target="_blank"
                 class="!p-0"
               >
-                <span nz-icon nzType="linkedin" nzTheme="outline"></span>
+                <span nz-icon nzType="linkedin" nzTheme="fill"></span>
                 LinkedIn
-              </a>
-              <a
-                *nzSpaceItem
-                nz-button
-                nzType="link"
-                [href]="env.whatsappUrl"
-                target="_blank"
-                class="!p-0"
-              >
-                <span nz-icon nzType="whats-app" nzTheme="outline"></span>
-                WhatsApp
               </a>
               <a
                 *nzSpaceItem
@@ -109,8 +103,8 @@
                 target="_blank"
                 class="!p-0"
               >
-                <span nz-icon nzType="code" nzTheme="outline"></span>
-                Repository
+                <span nz-icon nzType="branches" nzTheme="outline"></span>
+                Source Code
               </a>
             </nz-space>
           </div>

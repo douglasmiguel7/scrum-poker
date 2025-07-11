@@ -19,14 +19,14 @@ import { FormsModule } from '@angular/forms'
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
 import { IconDefinition } from '@ant-design/icons-angular'
 import {
+  BranchesOutline,
   CloseCircleOutline,
-  CodeOutline,
   CoffeeOutline,
   DeleteOutline,
   EnterOutline,
   GithubOutline,
   InfoCircleOutline,
-  LinkedinOutline,
+  LinkedinFill,
   LinkOutline,
   LoadingOutline,
   PlayCircleOutline,
@@ -53,15 +53,17 @@ const icons: IconDefinition[] = [
   RedoOutline,
   PlusCircleOutline,
   GithubOutline,
-  LinkedinOutline,
+  LinkedinFill,
   WhatsAppOutline,
-  CodeOutline,
+  BranchesOutline,
   LinkOutline,
   DeleteOutline,
   EnterOutline,
   InfoCircleOutline,
   LoadingOutline,
 ]
+
+console.log('environment:', environment)
 
 export const appConfig: ApplicationConfig = {
   providers: [
