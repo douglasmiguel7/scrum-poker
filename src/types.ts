@@ -1,3 +1,5 @@
+import { FirebaseOptions } from '@angular/fire/app'
+
 export interface EnvironmentType {
   appUrl: string
   appVersion: string
@@ -12,6 +14,8 @@ export interface EnvironmentType {
   tablesEndpoint: string
   whatsappUrl: string
   contacts: { title: string; value: string }[]
+  firebaseOptions: FirebaseOptions
+  appCheckSiteKey: string
 }
 
 export interface MergedId {
