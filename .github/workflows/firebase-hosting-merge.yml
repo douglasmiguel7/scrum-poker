@@ -22,13 +22,13 @@ jobs:
       - name: Install Dependencies
         run: npm i
 
-      - name: Build
-        run: npm run build
-
       - name: Release
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: npm run build
 
       - name: Deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
