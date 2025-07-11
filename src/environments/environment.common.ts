@@ -20,6 +20,8 @@ const environment: EnvironmentType = {
     { title: 'Telefone', value: `+${phoneNumber}` },
     { title: 'E-mail', value: 'douglasandrademiguel@gmail.com' },
   ],
+  firebaseOptions: {},
+  appCheckSiteKey: '6Lebpn8rAAAAAIXF0BsiC16eWoLWZiBwk6VVGXX1',
 }
 
 export default environment
