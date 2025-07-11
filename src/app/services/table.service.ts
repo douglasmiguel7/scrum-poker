@@ -135,4 +135,28 @@ export class TableService {
 
     window.location.href = '/'
   }
+
+  async deleteCurrent(): Promise<void> {
+    const tableId = getTableId()
+
+    const tables = await this.firestoreService.getDocuments<Table>(
+      'tables',
+      where('id', '!=', tableId),
+      where('ownerId', '==', getUserId()),
+      orderBy('createdAt', 'desc'),
+    )
+
+    localStorage.setItem(TABLE_ID_KEY, tables[0].id)
+
+    await this.firestoreService.delete('tables', tableId)
+    await this.firestoreService.delete('countdowns', tableId)
+    await this.firestoreService.deleteByTableId('owners', tableId)
+    await this.firestoreService.deleteByTableId('spectators', tableId)
+    await this.firestoreService.deleteByTableId('players', tableId)
+    await this.firestoreService.deleteByTableId('userRoles', tableId)
+    await this.firestoreService.deleteByTableId('tasks', tableId)
+    await this.firestoreService.deleteByTableId('votes', tableId)
+
+    window.location.reload()
+  }
 }

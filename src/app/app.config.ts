@@ -19,10 +19,11 @@ import {
   CoffeeOutline,
   DeleteOutline,
   EnterOutline,
-  FastForwardOutline,
   GithubOutline,
+  InfoCircleOutline,
   LinkedinOutline,
   LinkOutline,
+  LoadingOutline,
   PlayCircleOutline,
   PlusCircleOutline,
   QuestionOutline,
@@ -37,7 +38,6 @@ import { routes } from './app.routes'
 registerLocaleData(pt)
 
 const icons: IconDefinition[] = [
-  FastForwardOutline,
   CoffeeOutline,
   QuestionOutline,
   UserOutline,
@@ -53,6 +53,8 @@ const icons: IconDefinition[] = [
   LinkOutline,
   DeleteOutline,
   EnterOutline,
+  InfoCircleOutline,
+  LoadingOutline,
 ]
 
 export const appConfig: ApplicationConfig = {
