@@ -31,7 +31,7 @@
 <nz-layout>
   <!-- page header -->
   <nz-header nzTheme="light" nz-flex nzJustify="space-between" nzAlign="center">
-    <h2 nz-typography class="!m-0">💡 Estime Ai</h2>
+    <h2 nz-typography class="!m-0">💡 Scrum Poker</h2>
     <span nz-typography>
       Feito com ❤️ por
       <a
@@ -277,7 +277,7 @@
               <span nz-icon nzType="loading" nzTheme="outline" nzSpin></span>
             }
 
-            Trocar de mesa
+            Minhas mesas
             <span nz-icon nzType="down"></span>
           </button>
           <nz-dropdown-menu #tablesMenu>
@@ -290,7 +290,16 @@
               >
                 <a>Criar nova mesa</a>
               </li>
+
               @if (tables.length) {
+                <li
+                  tabindex="2"
+                  nz-menu-item
+                  (click)="handleCurrentTableDelete()"
+                  (keyup)="handleCurrentTableDelete()"
+                >
+                  <a nz-typography nzType="danger">Apagar esta mesa</a>
+                </li>
                 <li nz-menu-divider></li>
               }
               @for (table of tables; track table.id) {

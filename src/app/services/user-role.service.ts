@@ -19,7 +19,7 @@ export class UserRoleService {
   ) {}
 
   async create(): Promise<void> {
-    const { id } = getMergedId()
+    const { id, tableId } = getMergedId()
 
     const exists = await this.firestoreService.exists('userRoles', id)
     if (exists) {
@@ -28,6 +28,7 @@ export class UserRoleService {
 
     const userRole: UserRole = {
       role: 'spectator',
+      tableId,
     }
 
     this.firestoreService.save('userRoles', id, userRole)

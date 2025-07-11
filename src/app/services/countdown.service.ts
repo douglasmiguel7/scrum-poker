@@ -23,16 +23,6 @@ export class CountdownService {
     return isNaN(leftTime) ? 0 : leftTime
   }
 
-  private calculateLeftTime(currentLeftTime: number): number {
-    const leftTime = this.getLeftTime()
-
-    if (this.started) {
-      return leftTime
-    }
-
-    return currentLeftTime
-  }
-
   private setLeftTime(leftTime: number): void {
     localStorage.setItem(this.getLeftTimeKey(), leftTime.toString())
   }

@@ -97,6 +97,24 @@ export class FirestoreService {
     return collectionData(collectionQuery).pipe(traceUntilFirst('firestore'))
   }
 
+  async getDocuments<T>(
+    name: CollectionName,
+    ...constraints: QueryConstraint[]
+  ): Promise<T[]> {
+    const reference = this.getCollectionReference(name)
+
+    const collectionQuery = query(reference, ...constraints)
+
+    const snapshot = await getDocs(collectionQuery)
+
+    const snapshots = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+
+    return snapshots as T[]
+  }
+
   async getDocumentSnapshot<T>(
     name: CollectionName,
     key: string,

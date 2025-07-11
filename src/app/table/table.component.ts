@@ -266,6 +266,12 @@ export class TableComponent implements OnInit {
     this.tableService.createNew()
   }
 
+  async handleCurrentTableDelete() {
+    this.loadingTable = true
+    await sleep(250)
+    this.tableService.deleteCurrent()
+  }
+
   async handleTableSwitch(tableId: string) {
     this.loadingTable = true
     await sleep(250)
