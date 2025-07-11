@@ -63,8 +63,6 @@ const icons: IconDefinition[] = [
   LoadingOutline,
 ]
 
-console.log('environment:', environment)
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
