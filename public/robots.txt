@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://www.estimeai.com/sitemap.xml
+Sitemap: https://www.estimeai.com.br/sitemap.xml
