@@ -8,7 +8,7 @@ const environment: EnvironmentType = {
   githubUsername: '@douglasmiguel7',
   githubProfileUrl: 'https://github.com/douglasmiguel7',
   repositoryUrl: 'https://github.com/douglasmiguel7/scrum-poker',
-  linkedInProfileUrl: 'https://www.linkedin.com/in/douglasmiguel7',
+  linkedInProfileUrl: 'https://www.linkedin.com/in/douglasandrade7',
   profilePictureUrl: 'https://avatars.githubusercontent.com/u/17931093',
   tablesEndpoint: '/tables',
   contacts: [{ title: 'E-mail', value: 'douglasandrade7.dev@proton.me' }],
