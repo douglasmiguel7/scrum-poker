@@ -1,5 +1,4 @@
 import { Routes, UrlMatcher, UrlMatchResult, UrlSegment } from '@angular/router'
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 import { TableComponent } from './table/table.component'
 import { validateUuid } from './utils/id'
 
@@ -34,6 +33,9 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    component: PageNotFoundComponent,
+    loadComponent: () =>
+      import('./page-not-found/page-not-found.component').then(
+        (m) => m.PageNotFoundComponent,
+      ),
   },
 ]

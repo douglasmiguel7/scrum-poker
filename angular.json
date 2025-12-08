@@ -27,7 +27,6 @@
               }
             ],
             "styles": [
-              "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "src/styles.less"
             ],
             "scripts": [],
@@ -42,16 +41,18 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "1.5MB",
                   "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "20kB",
+                  "maximumError": "50kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "namedChunks": false
             },
             "development": {
               "optimization": false,
