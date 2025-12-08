@@ -8,7 +8,7 @@ export const environment: EnvironmentType = {
     projectId: 'scrum-poker-f387c',
     appId: '1:257699867582:web:d4e569c7ad67e3a8a627ef',
     storageBucket: 'scrum-poker-f387c.firebasestorage.app',
-    apiKey: 'AIzaSyBVaaRkxGMAuYTJzsxrmZpEaQgpc_K6pSI',
+    apiKey: 'AIzaSyCmUQk2t8bBqMx4-Ysv9LAU3iTRsMvUD2c',
     authDomain: 'scrum-poker-f387c.firebaseapp.com',
     messagingSenderId: '257699867582',
     measurementId: 'G-X7CZ9EZ6FR',

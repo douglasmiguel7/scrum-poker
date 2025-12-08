@@ -348,6 +348,47 @@
           nz-button
           nzType="link"
           class="!p-0"
+          (click)="handleToggleSuggestionModal()"
+          [nzLoading]="changingUserRole"
+          nzBlock
+          nz-tooltip
+          nzTooltipTitle="Faça uma sugestão, crítica ou relate um bug"
+          nzTooltipPlacement="bottom"
+        >
+          <span nz-icon nzType="bulb" nzTheme="outline"></span>
+          Faça uma sugestão
+        </button>
+        <nz-modal
+          [(nzVisible)]="suggestionModalOpen"
+          nzTitle="Sugestão"
+          (nzOnCancel)="handleToggleSuggestionModal()"
+        >
+          <div *nzModalContent>
+            <form nz-form nzLayout="vertical" [formGroup]="createSuggestionForm">
+              <nz-form-item>
+                <nz-form-label nzRequired nzLabelWrap>Faça aqui sua sugestão, crítica ou relate um bug</nz-form-label>
+                <nz-form-control>
+                  <textarea nz-input formControlName="text" class="w-full"></textarea>
+                </nz-form-control>
+              </nz-form-item>
+            </form>
+          </div>
+          <div *nzModalFooter>
+            <button
+              nz-button
+              nzType="default"
+              (click)="handleToggleSuggestionModal()"
+            >
+              Cancelar
+            </button>
+            <button nz-button nzType="primary" (click)="handleSendSuggestion()">Enviar</button>
+          </div>
+        </nz-modal>
+        <button
+          *nzSpaceItem
+          nz-button
+          nzType="link"
+          class="!p-0"
           (click)="handleUserRoleChange()"
           [nzLoading]="changingUserRole"
           nzBlock
@@ -700,7 +741,7 @@
 
           <!-- add another task form -->
           @if (toggleAddAnotherTask) {
-            <form nz-form nzLayout="vertical" [formGroup]="validateForm">
+            <form nz-form nzLayout="vertical" [formGroup]="createTaskForm">
               <nz-form-item>
                 <nz-form-label nzRequired nzLabelWrap>Título</nz-form-label>
                 <nz-form-control>

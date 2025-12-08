@@ -48,7 +48,7 @@ export class TaskService {
     const task: Task = {
       id,
       tableId: getTableId(),
-      link,
+      link: link || undefined,
       title,
       estimation: 0,
       voted: false,

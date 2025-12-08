@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common'
 import { Component, OnInit } from '@angular/core'
 
 import {
+  FormControl,
   FormGroup,
-  NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms'
@@ -18,6 +18,7 @@ import { NzFormModule } from 'ng-zorro-antd/form'
 import { NzIconModule } from 'ng-zorro-antd/icon'
 import { NzInputModule } from 'ng-zorro-antd/input'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
+import { NzModalModule } from 'ng-zorro-antd/modal'
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header'
 import { NzPopoverModule } from 'ng-zorro-antd/popover'
 import { NzSpaceModule } from 'ng-zorro-antd/space'
@@ -32,7 +33,7 @@ import { Card } from '../model/card.model'
 import { Countdown } from '../model/countdown.model'
 import { Minute } from '../model/minute.model'
 import { Table } from '../model/table.model'
-import { NewTask, Task } from '../model/task.model'
+import { Task } from '../model/task.model'
 import { UserRole } from '../model/user-role.model'
 import { User } from '../model/user.model'
 import { Vote, VoteValueQuantity } from '../model/vote.model'
@@ -49,6 +50,7 @@ import { UserService } from '../services/user.service'
 import { VoteService } from '../services/vote.service'
 import { init } from '../utils/id'
 import { sleep } from '../utils/thread'
+import { SuggestionService } from '../services/suggestion.service'
 
 @Component({
   selector: 'app-table',
@@ -75,6 +77,7 @@ import { sleep } from '../utils/thread'
     ReactiveFormsModule,
     NzFormModule,
     NzInputModule,
+    NzModalModule,
   ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.css',
@@ -84,9 +87,22 @@ export class TableComponent implements OnInit {
 
   env = environment
   toggleAddAnotherTask = false
-  validateForm: FormGroup
+  createTaskForm = new FormGroup({
+    title: new FormControl('', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+    link: new FormControl(''),
+  })
   changingUserRole = false
   loadingTable = false
+  suggestionModalOpen = true
+  createSuggestionForm = new FormGroup({
+    text: new FormControl('', {
+      validators: [Validators.required],
+      nonNullable: true,
+    }),
+  })
 
   user$: Observable<User>
   userRole$: Observable<UserRole>
@@ -109,7 +125,6 @@ export class TableComponent implements OnInit {
   minutes$: Observable<Minute[]>
 
   constructor(
-    private fb: NonNullableFormBuilder,
     private route: ActivatedRoute,
     private userService: UserService,
     private tableService: TableService,
@@ -122,13 +137,9 @@ export class TableComponent implements OnInit {
     private voteService: VoteService,
     private countdownService: CountdownService,
     private minuteService: MinuteService,
+    private suggestionService: SuggestionService,
   ) {
     init(this.route)
-
-    this.validateForm = this.fb.group({
-      title: this.fb.control('', [Validators.required]),
-      link: this.fb.control(''),
-    })
 
     this.user$ = this.userService.getUserObservable()
     this.cards$ = this.cardService.getCardsObservable()
@@ -175,15 +186,15 @@ export class TableComponent implements OnInit {
   }
 
   handleSaveAnotherTask(): void {
-    if (!this.validateForm?.valid) {
+    if (this.createTaskForm.invalid) {
       return
     }
 
-    const value = this.validateForm.value as NewTask
+    const value = this.createTaskForm.getRawValue()
 
     this.taskService.save(value)
 
-    this.validateForm.reset()
+    this.createTaskForm.reset()
   }
 
   handleDeleteTask(id: string) {
@@ -280,5 +291,21 @@ export class TableComponent implements OnInit {
 
   handleTableExit() {
     this.tableService.exit()
+  }
+
+  handleToggleSuggestionModal() {
+    this.suggestionModalOpen = !this.suggestionModalOpen
+  }
+
+  handleSendSuggestion(): void {
+    if (this.createSuggestionForm.invalid) {
+      return
+    }
+
+    const value = this.createSuggestionForm.getRawValue()
+
+    this.suggestionService.save(value)
+
+    this.createSuggestionForm.reset()
   }
 }

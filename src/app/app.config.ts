@@ -20,6 +20,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { IconDefinition } from '@ant-design/icons-angular'
 import {
   BranchesOutline,
+  BulbOutline,
   CloseCircleOutline,
   CoffeeOutline,
   DeleteOutline,
@@ -61,6 +62,7 @@ const icons: IconDefinition[] = [
   EnterOutline,
   InfoCircleOutline,
   LoadingOutline,
+  BulbOutline,
 ]
 
 export const appConfig: ApplicationConfig = {

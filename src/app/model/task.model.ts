@@ -1,6 +1,6 @@
 export interface NewTask {
   title: string
-  link?: string
+  link: string | null
 }
 
 export interface SelectedTask {

@@ -1,5 +1,10 @@
 import { FirebaseOptions } from '@angular/fire/app'
 
+interface Contact {
+  title: string
+  value: string
+}
+
 export interface EnvironmentType {
   appUrl: string
   appVersion: string
@@ -10,7 +15,7 @@ export interface EnvironmentType {
   linkedInProfileUrl: string
   profilePictureUrl: string
   tablesEndpoint: string
-  contacts: { title: string; value: string }[]
+  contacts: Contact[]
   firebaseOptions: FirebaseOptions
   appCheckSiteKey: string
 }
@@ -34,3 +39,4 @@ export type CollectionName =
   | 'selectedTasks'
   | 'countdowns'
   | 'minutes'
+  | 'suggestions'
