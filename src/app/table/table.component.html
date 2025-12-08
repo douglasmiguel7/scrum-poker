@@ -364,11 +364,21 @@
           (nzOnCancel)="handleToggleSuggestionModal()"
         >
           <div *nzModalContent>
-            <form nz-form nzLayout="vertical" [formGroup]="createSuggestionForm">
+            <form
+              nz-form
+              nzLayout="vertical"
+              [formGroup]="createSuggestionForm"
+            >
               <nz-form-item>
-                <nz-form-label nzRequired nzLabelWrap>Faça aqui sua sugestão, crítica ou relate um bug</nz-form-label>
+                <nz-form-label nzRequired nzLabelWrap>
+                  Faça aqui sua sugestão, crítica ou relate um bug
+                </nz-form-label>
                 <nz-form-control>
-                  <textarea nz-input formControlName="text" class="w-full"></textarea>
+                  <textarea
+                    nz-input
+                    formControlName="text"
+                    class="w-full"
+                  ></textarea>
                 </nz-form-control>
               </nz-form-item>
             </form>
@@ -381,7 +391,14 @@
             >
               Cancelar
             </button>
-            <button nz-button nzType="primary" (click)="handleSendSuggestion()">Enviar</button>
+            <button
+              nz-button
+              nzType="primary"
+              (click)="handleSendSuggestion()"
+              [disabled]="createSuggestionForm.invalid"
+            >
+              Enviar
+            </button>
           </div>
         </nz-modal>
         <button
@@ -771,6 +788,7 @@
                   nzType="link"
                   class="!p-0"
                   (click)="handleSaveAnotherTask()"
+                  [disabled]="createTaskForm.invalid"
                 >
                   Salvar
                 </button>

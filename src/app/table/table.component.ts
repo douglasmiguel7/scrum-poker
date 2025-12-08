@@ -18,7 +18,7 @@ import { NzFormModule } from 'ng-zorro-antd/form'
 import { NzIconModule } from 'ng-zorro-antd/icon'
 import { NzInputModule } from 'ng-zorro-antd/input'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
-import { NzModalModule } from 'ng-zorro-antd/modal'
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal'
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header'
 import { NzPopoverModule } from 'ng-zorro-antd/popover'
 import { NzSpaceModule } from 'ng-zorro-antd/space'
@@ -43,6 +43,7 @@ import { MinuteService } from '../services/minute.service'
 import { OwnerService } from '../services/owner.service'
 import { PlayerService } from '../services/player.service'
 import { SpectatorService } from '../services/spectator.service'
+import { SuggestionService } from '../services/suggestion.service'
 import { TableService } from '../services/table.service'
 import { TaskService } from '../services/task.service'
 import { UserRoleService } from '../services/user-role.service'
@@ -50,7 +51,6 @@ import { UserService } from '../services/user.service'
 import { VoteService } from '../services/vote.service'
 import { init } from '../utils/id'
 import { sleep } from '../utils/thread'
-import { SuggestionService } from '../services/suggestion.service'
 
 @Component({
   selector: 'app-table',
@@ -138,6 +138,7 @@ export class TableComponent implements OnInit {
     private countdownService: CountdownService,
     private minuteService: MinuteService,
     private suggestionService: SuggestionService,
+    private modalService: NzModalService,
   ) {
     init(this.route)
 
@@ -302,10 +303,19 @@ export class TableComponent implements OnInit {
       return
     }
 
-    const value = this.createSuggestionForm.getRawValue()
+    // const value = this.createSuggestionForm.getRawValue()
 
-    this.suggestionService.save(value)
+    // this.suggestionService.save(value)
 
     this.createSuggestionForm.reset()
+
+    this.modalService.success({
+      nzTitle: 'Obrigado por colaborar',
+      nzContent: 'Mensagem enviada com sucesso!',
+      nzClosable: false,
+      nzOnOk: () => {
+        this.suggestionModalOpen = false
+      },
+    })
   }
 }
