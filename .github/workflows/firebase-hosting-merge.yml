@@ -18,9 +18,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          cache: npm
 
       - name: Install Dependencies
-        run: npm i
+        run: npm ci
 
       - name: Release
         run: npx semantic-release

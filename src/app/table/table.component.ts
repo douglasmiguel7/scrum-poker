@@ -96,7 +96,7 @@ export class TableComponent implements OnInit {
   })
   changingUserRole = false
   loadingTable = false
-  suggestionModalOpen = true
+  suggestionModalOpen = false
   createSuggestionForm = new FormGroup({
     text: new FormControl('', {
       validators: [Validators.required],
