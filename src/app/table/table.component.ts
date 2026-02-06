@@ -75,7 +75,6 @@ import { sleep } from '../utils/thread'
     NzTagModule,
     NzPopoverModule,
     ReactiveFormsModule,
-    NzFormModule,
     NzInputModule,
     NzModalModule,
   ],
