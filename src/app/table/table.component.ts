@@ -303,9 +303,9 @@ export class TableComponent implements OnInit {
       return
     }
 
-    // const value = this.createSuggestionForm.getRawValue()
+    const value = this.createSuggestionForm.getRawValue()
 
-    // this.suggestionService.save(value)
+    this.suggestionService.save(value)
 
     this.createSuggestionForm.reset()
 
