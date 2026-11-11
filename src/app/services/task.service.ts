@@ -48,7 +48,8 @@ export class TaskService {
     const task: Task = {
       id,
       tableId: getTableId(),
-      link: link || undefined,
+      // Firestore refuses undefined fields: without a link, there's no field.
+      ...(link && { link }),
       title,
       estimation: 0,
       voted: false,
