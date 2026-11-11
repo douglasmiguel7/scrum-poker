@@ -1,4 +1,8 @@
-User-agent: *
-Disallow:
+# The app (app.estimeai.com.br): tables are private and opening one creates
+# data, so nothing here goes into search results. The site to index is
+# estimeai.com.br. AdSense's crawler still reads the pages to pick the ads.
+User-agent: Mediapartners-Google
+Allow: /
 
-Sitemap: https://estimeai.com.br/sitemap.xml
+User-agent: *
+Disallow: /
