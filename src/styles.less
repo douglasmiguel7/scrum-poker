@@ -1,6 +1,9 @@
 @tailwind utilities;
 
 @import 'ng-zorro-antd/style/default.less';
+// The CDK overlay's positioning (tooltips, popovers, dropdowns, modals):
+// default.less leaves it out, and without it they render below the page.
+@import 'ng-zorro-antd/style/patch.less';
 
 @import 'ng-zorro-antd/button/style/entry.less';
 @import 'ng-zorro-antd/layout/style/entry.less';
