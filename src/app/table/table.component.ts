@@ -20,7 +20,6 @@ import { NzInputModule } from 'ng-zorro-antd/input'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal'
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header'
-import { NzPopoverModule } from 'ng-zorro-antd/popover'
 import { NzSpaceModule } from 'ng-zorro-antd/space'
 import { NzTagModule } from 'ng-zorro-antd/tag'
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
@@ -73,7 +72,6 @@ import { sleep } from '../utils/thread'
     NzToolTipModule,
     NzCardModule,
     NzTagModule,
-    NzPopoverModule,
     ReactiveFormsModule,
     NzInputModule,
     NzModalModule,

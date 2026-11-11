@@ -39,80 +39,8 @@
     </nz-space>
     <span nz-typography>
       Feito com ❤️ por
-      <a
-        nz-popover
-        [nzPopoverContent]="madeWithLovePopover"
-        nzPopoverPlacement="bottom"
-        [href]="env.githubProfileUrl"
-      >
-        <ng-template #madeWithLovePopover>
-          <nz-page-header class="p-0">
-            <nz-avatar
-              nz-page-header-avatar
-              [nzSrc]="env.profilePictureUrl"
-            ></nz-avatar>
-            <nz-page-header-title>Douglas Andrade</nz-page-header-title>
-            <nz-page-header-extra>
-              <nz-tag nzColor="green" class="m-0">Open Source</nz-tag>
-            </nz-page-header-extra>
-          </nz-page-header>
-
-          <div nz-flex nzVertical nzGap="small">
-            <!-- meu dados -->
-            <div>
-              <strong>Engenheiro de software</strong>
-              @for (contact of env.contacts; track $index) {
-                <div>
-                  <strong>{{ contact.title }}:</strong>
-                  <span nz-typography nzCopyable [nzCopyText]="contact.value">
-                    {{ contact.value }}
-                  </span>
-                </div>
-              }
-            </div>
-
-            <!-- links -->
-            <nz-space nzSize="large">
-              <a
-                *nzSpaceItem
-                nz-button
-                nzType="link"
-                [href]="env.linkedInProfileUrl"
-                target="_blank"
-                class="!p-0"
-              >
-                <span nz-icon nzType="linkedin" nzTheme="fill"></span>
-                LinkedIn
-              </a>
-              <a
-                *nzSpaceItem
-                nz-button
-                nzType="link"
-                [href]="env.githubProfileUrl"
-                target="_blank"
-                class="!p-0"
-              >
-                <span nz-icon nzType="github" nzTheme="outline"></span>
-                GitHub
-              </a>
-              <a
-                *nzSpaceItem
-                nz-button
-                nzType="link"
-                [href]="env.repositoryUrl"
-                target="_blank"
-                class="!p-0"
-              >
-                <span nz-icon nzType="branches" nzTheme="outline"></span>
-                Source Code
-              </a>
-            </nz-space>
-          </div>
-        </ng-template>
-
-        <u>
-          <strong>{{ env.githubUsername }}</strong>
-        </u>
+      <a href="https://cafezinholabs.com" target="_blank" rel="noopener">
+        <u><strong>Cafezinho Labs</strong></u>
       </a>
     </span>
     <div nz-flex nzAlign="center" nzGap="small">

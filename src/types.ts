@@ -1,21 +1,10 @@
 import { FirebaseOptions } from '@angular/fire/app'
 
-interface Contact {
-  title: string
-  value: string
-}
-
 export interface EnvironmentType {
   appUrl: string
   appVersion: string
   appVersionTitle: string
-  githubUsername: string
-  githubProfileUrl: string
-  repositoryUrl: string
-  linkedInProfileUrl: string
-  profilePictureUrl: string
   tablesEndpoint: string
-  contacts: Contact[]
   firebaseOptions: FirebaseOptions
   appCheckSiteKey: string
 }
